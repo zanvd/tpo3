@@ -1,0 +1,22 @@
+---
+ip: "192.168.2.2"
+memory: 1024
+cpus: 2
+provider: virtualbox
+
+#authorize: ~/.ssh/id_rsa.pub
+
+#keys:
+#    - ~/.ssh/id_rsa
+
+folders:
+    - map: ../tpo3
+      to: /home/vagrant/tpo3
+
+sites:
+    - map: patronaza.si
+      to: /home/vagrant/tpo3/public
+
+databases:
+    - homestead
+
