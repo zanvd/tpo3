@@ -1,5 +1,5 @@
 ---
-ip: "192.168.2.2"
+ip: "192.168.100.2"
 memory: 1024
 cpus: 2
 provider: virtualbox
@@ -14,7 +14,7 @@ folders:
       to: /home/vagrant/tpo3
 
 sites:
-    - map: patronaza.si
+    - map: patronaza.tpo
       to: /home/vagrant/tpo3/public
 
 databases:
