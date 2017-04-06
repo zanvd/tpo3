@@ -1,5 +1,5 @@
 # Homestead installation
-[Homestead Reference]https://laravel.com/docs/5.4/homestead
+[Homestead Reference](https://laravel.com/docs/5.4/homestead)
 
 ## Clone TPO repo:
 [tpo3](https://github.com/zanvd/tpo3)
