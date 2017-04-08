@@ -16,7 +16,7 @@
 5. copy Homestead.yaml from TPO repo (virt-conf/Homestead.yaml) to homestead root
 6. _(optional) Modify configuration to suite your needs._
 7. copy .env-dev from TPO repo (virt-conf/.evn-dev) to TPO root and rename to .env
-8. add line to your hosts /etc/hosts file: `192.168.100.2   patronaza.tpo`
+8. add line to your hosts /etc/hosts file (on Windows C:\Windows\System32\drivers\etc\hosts): `192.168.100.2   patronaza.tpo`
 
 ## Post installation:
 1. start virtual machine `vagrant up`
