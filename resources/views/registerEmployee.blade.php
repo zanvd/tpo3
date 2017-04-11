@@ -5,7 +5,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="icon" href="{{ URL::asset('favicon1.ico') }}">
-        <title>Patronaža</title>
+        <title>Registracija</title>
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css?family=Raleway:100,600" rel="stylesheet" type="text/css">
@@ -21,7 +21,7 @@
             <form class="article-comment" method="POST" action="/login">
             <div class="container">
                 <div class="title">
-                Registracija uporabnika
+                Registracija uslužbenca
                 </div>
                 <div class="rowContainer">
                   <label><b>E-mail:</b></label>
@@ -40,34 +40,20 @@
                   <input type="text" placeholder="Vnesite piriimek..." name="surname" required>
                 </div>
                 <div class="rowContainer">
-                  <label><b>Spol:</b></label><br>
-                  <input type="radio" name="spol" value="moski" checked> <label>Moški </label>
-                  <input type="radio" name="spol" value="zenska"> <label>Ženska</label>
-                </div>
-                <div class="rowContainer2">
-                  <label><b>Datum rojstva:</b></label>
-                  <input type="date" placeholder="Vnesite datum oblike: dan.mesec.leto" name="birthDate" inputmode="numeric" required>
-                </div>
-                <div class="rowContainer">
                   <label><b>Telefon:</b></label>
                   <input type="text" placeholder="Vnesite vašo telefonsko številko..." name="phoneNumber" pattern="[0-9]{8,9}"required>
                 </div>
-                <div class="rowContainer">
-                  <label><b>Naslov:</b></label>
-                  <input type="text" placeholder="Vnesite naslov..." name="addres" required>
+                <div class="rowContainer2">
+                  <label><b>Šira uslužbenca:</b></label>
+                  <input type="text" placeholder="Vnesite šifro uslužbenca..." name="areaNumber" required>
                 </div>
                 <div class="rowContainer2">
-                  <label><b>Šira okoliša:</b></label>
-                  <input type="text" placeholder="Vnesite šifro okoliša..." name="areaNumber" required>
-                </div>
-                <div class="rowContainer2">
-                  <label><b>ZZZS številka:</b></label>
-                  <input type="text" placeholder="Vnesite ZZZS številko..." name="zzzs" pattern="[0-9]{9}" required>
+                  <label><b>Šifra izvajalca:</b></label>
+                  <input type="text" placeholder="Vnesite šifro izvajalca..." name="zzzs" required>
                 </div>
                 <div class="rowContainer">
                   <button type="submit">Registracija</button>
                 </div>
-              
             </div>
             </form>
             
