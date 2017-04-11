@@ -84,3 +84,9 @@ button {
 button:hover {
   background-color: #ee3b3f;  
 }
+
+form {
+  display:inline;
+  margin:0px;
+  padding:0px;
+}

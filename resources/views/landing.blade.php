@@ -16,16 +16,20 @@
     <body>
         <div class="heading links">
           <div class="logo"><a href=""><img src="{{ URL::asset('cornerLogo2.png') }}" alt="logo"/></a></div>
-          <a href="{{ url('/login') }}">Prijava</a>
-          <a href="{{ url('/login') }}">Registracija</a>
+          <a href="{{ url('/prijava') }}">Prijava</a>
+          <a href="{{ url('/register') }}">Registracija</a>
         </div>
         <div class="content">
           <div class="vsebovalnikBesedila">
             <div class="title"> Dobrodošli </div>
             <div class="info"> Za uporabo aplikacije je potrebna registracija. Če že imate račun se prijavite. </div>
             <div clas="vsebovalnikGumbov">
+              <form action="{{ url('/register') }}">
               <button type="submit">Registracija</button>
+              </form>
+              <form action="{{ url('/prijava') }}">
               <button type="submit">Prijava</button>
+              </form>
             </div>
           </div>
         </div>
