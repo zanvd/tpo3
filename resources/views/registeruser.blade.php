@@ -62,7 +62,7 @@
                 </div>
                 <div class="rowContainer2">
                   <label><b>ZZZS številka:</b></label>
-                  <input type="text" placeholder="Vnesite ZZZS številko..." name="zzzs" pattern="[0-9]{9}" required>
+                  <input type="text" placeholder="Vnesite ZZZS številko..." name="zzzs" required>
                 </div>
                 <div class="rowContainer">
                   <button type="submit">Registracija</button>
