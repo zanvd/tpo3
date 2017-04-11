@@ -14,9 +14,11 @@
         
     </head>
     <body>
+        <div class="main">
         <div class="heading">
           <div class="logo"><a href=""><img src="{{ URL::asset('cornerLogo2.png') }}" alt="logo"/></a></div>
         </div>
+        <div class="mainJunior">
         <div class="content">
             <form class="article-comment" method="POST" action="/login">
             <div class="container">
@@ -76,6 +78,8 @@
             </div>
             </form>
             
+        </div>
+        </div>
         </div>
 
 
