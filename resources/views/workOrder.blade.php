@@ -5,7 +5,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="icon" href="{{ URL::asset('favicon1.ico') }}">
-        <title>Registracija</title>
+        <title>Naov delovni nalog</title>
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css?family=Raleway:100,600" rel="stylesheet" type="text/css">
@@ -200,11 +200,34 @@
                 <div class="titleRow">
                   Naročene storitve
                 </div>
-              
+                <div class="tabContainer">
+                  <div class="smallCol1">
+                  Zap. št.
+                  </div>
+                  <div class="bigCol">
+                  Opis
+                  </div>
+                  <div class="smallCol2">
+                  Število
+                  </div>
+                </div>
+                <!-- test
+                <div class="tabContainer">
+                  <div class="smallCol1-content">
+                  4
+                  </div>
+                  <div class="bigCol-content">
+                  Nek opis
+                  </div>
+                  <div class="smallCol2-content">
+                  2
+                  </div>
+                </div>-->
               </div>
+
             </form>
             
-        </div>
+          </div>
         </div>
         </div>
 
