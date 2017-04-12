@@ -191,7 +191,10 @@
                 <div class="titleRow">
                   Podatki o bolezni
                 </div>
-
+                <div class="rowContainer">
+                  <textarea rows="4" cols="200" name="sicknessDescription"></textarea>
+                  
+              </div>
               </div>
             </form>
             

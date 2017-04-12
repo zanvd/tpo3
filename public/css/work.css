@@ -29,7 +29,7 @@ html, body {
 }
 
 .content {
-  min-width: 480;
+  min-width: 480px;
   width: 90%;
   margin: auto;
 }
@@ -61,7 +61,7 @@ html, body {
   padding-top: 10px;
   background-color: white;
   width: 95%;
-  min-width: 480px;
+  min-width: 425px;
 }
 
 .largeContainer {
@@ -71,20 +71,20 @@ html, body {
   width: 95%;
   margin-right: auto;
   margin-left: auto;
-  min-width: 480px;
+  min-width: 425px;
 }
 
 .container-blank {
   margin-top: 10px;
   width: 95%;
-  min-width: 480px;
+  min-width: 425px;
 }
 
 .containerRow {
   padding-top: 10px;
   background-color: white;
   width: 100%;
-  min-width: 480px;
+  min-width: 425px;
   margin-bottom: 10px;
 }
 
@@ -178,7 +178,7 @@ html, body {
 .links > a:hover {
   color: #ff3b3f;
 }
-input[type=text], input[type=password], input[type=date], input[type=email], input[type=radio] {
+input[type=text], input[type=password], input[type=date], input[type=email], input[type=radio], textarea {
   padding: 8px 5px;
   font-size: 15px;
   margin: 8px;
@@ -212,6 +212,11 @@ button {
   font-family: 'Raleway', sans-serif;
   font-size: 25px;
   cursor: pointer;
+}
+
+textarea {
+  margin-left: 10px;
+  margin-right: 10px;
 }
 
 button:hover {
