@@ -57,7 +57,7 @@
                 </div>
                 <div class="rowContainer">
                   <label><b>Telefon:</b></label>
-                  <input type="text" placeholder="Vnesite telefonsko številko..." name="phoneNumber" pattern="[0-9]{8,9}"required>
+                  <input type="text" placeholder="Vnesite telefonsko številko..." name="phoneNumber" pattern="[0-9]{8,9}" required>
                 </div>
                 <div class="rowContainer">
                   <label><b>Naslov:</b></label>
@@ -84,6 +84,5 @@
 
 
         
-        <script src="js/landing.js"></script>
     </body>
 </html>
