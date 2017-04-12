@@ -64,6 +64,10 @@
                   <input type="text" placeholder="Vnesite naslov..." name="addres" required>
                 </div>
                 <div class="rowContainer2">
+                  <label><b>Poštna številka:</b></label>
+                  <input type="text" placeholder="Vnesite poštno številko..." name="postalCode" required>
+                </div>
+                <div class="rowContainer2">
                   <label><b>Šira okoliša:</b></label>
                   <input type="text" placeholder="Vnesite šifro okoliša..." name="areaNumber" required>
                 </div>
@@ -85,6 +89,10 @@
                 <div class="rowContainer">
                   <label><b>Naslov:</b></label>
                   <input type="text" placeholder="Vnesite naslov..." name="contactAddress" >
+                </div>
+                <div class="rowContainer2">
+                  <label><b>Poštna številka:</b></label>
+                  <input type="text" placeholder="Vnesite poštno številko..." name="contactPostalCode" required>
                 </div>
                 <div class="rowContainer">
                   <label><b>Telefon:</b></label>
