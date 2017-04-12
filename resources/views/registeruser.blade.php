@@ -71,6 +71,33 @@
                   <label><b>ZZZS številka:</b></label>
                   <input type="text" placeholder="Vnesite ZZZS številko..." name="zzzs" pattern="[0-9]{9}" required>
                 </div>
+                <div class="titleRow">
+                  Kontaktna oseba (neobvezno)
+                </div>
+                <div class="rowContainer">
+                  <label><b>Ime:</b></label>
+                  <input type="text" placeholder="Vnesite ime..." name="contactName" >
+                </div>
+                <div class="rowContainer">
+                  <label><b>Priimek:</b></label>
+                  <input type="text" placeholder="Vnesite piriimek..." name="contactSurname" >
+                </div>
+                <div class="rowContainer">
+                  <label><b>Naslov:</b></label>
+                  <input type="text" placeholder="Vnesite naslov..." name="contactAddress" >
+                </div>
+                <div class="rowContainer">
+                  <label><b>Telefon:</b></label>
+                  <input type="text" placeholder="Vnesite telefonsko številko..." name="contactPhoneNumber" pattern="[0-9]{8,9}" >
+                </div>
+                <div class="rowContainer2">
+                  <label><b>Sorodstveno razmerje:</b></label>
+                  <select name="fam">
+                      <option value="1">STARŠ</option>
+                      <option value="2">PARTNER</option>
+                      <option value="3">OTROK</option>
+                  </select>
+                </div>
                 <div class="rowContainer">
                   <button type="submit">Registracija</button>
                 </div>
