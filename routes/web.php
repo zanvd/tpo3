@@ -11,6 +11,20 @@
 |
 */
 
+// Landing page.
 Route::get('/', function () {
     return view('registerUser');
 });
+
+
+// Login routes.
+Route::get('/login', 'LoginController@index');
+
+Route::post('/login', 'LoginController@store');
+
+Route::post('/logout', 'LoginController@destroy');
+
+// Registration routes.
+Route::get('/register', 'RegisterController@index');
+
+Route::post('/register', 'RegisterController@store');
