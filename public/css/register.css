@@ -1,5 +1,5 @@
 html, body {
-  background-color: #efefef;
+  background-color: #e4e4e4;
   color: #a9a9a9;
   font-family: 'Raleway', sans-serif;
   font-weight: 100;
@@ -29,9 +29,10 @@ html, body {
 }
 
 .container {
-  margin-top: 0px;
-  padding-top: 0px;
+  margin-top: 10px;
+  margin-bottom: 10px;
   background-color: white;
+  border: 1px solid #a9a9a9;
 }
 
 .rowContainer{
