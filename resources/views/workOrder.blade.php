@@ -194,7 +194,13 @@
                 <div class="rowContainer">
                   <textarea rows="4" cols="200" name="sicknessDescription"></textarea>
                   
+                </div>
               </div>
+              <div class="largeContainer">
+                <div class="titleRow">
+                  Naročene storitve
+                </div>
+              
               </div>
             </form>
             

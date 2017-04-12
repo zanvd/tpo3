@@ -61,7 +61,7 @@ html, body {
   padding-top: 10px;
   background-color: white;
   width: 95%;
-  min-width: 425px;
+  min-width: 480px;
 }
 
 .largeContainer {
@@ -71,20 +71,20 @@ html, body {
   width: 95%;
   margin-right: auto;
   margin-left: auto;
-  min-width: 425px;
+  min-width: 480px;
 }
 
 .container-blank {
   margin-top: 10px;
   width: 95%;
-  min-width: 425px;
+  min-width: 480px;
 }
 
 .containerRow {
   padding-top: 10px;
   background-color: white;
   width: 100%;
-  min-width: 425px;
+  min-width: 480px;
   margin-bottom: 10px;
 }
 
