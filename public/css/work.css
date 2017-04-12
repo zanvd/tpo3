@@ -30,7 +30,7 @@ html, body {
 
 .content {
   min-width: 480;
-  width: 80%;
+  width: 90%;
   margin: auto;
 }
 
@@ -60,13 +60,23 @@ html, body {
   margin-top: 10px;
   padding-top: 10px;
   background-color: white;
-  width: 45%;
+  width: 95%;
+  min-width: 480px;
+}
+
+.largeContainer {
+  margin-top: 10px;
+  padding-top: 10px;
+  background-color: white;
+  width: 95%;
+  margin-right: auto;
+  margin-left: auto;
   min-width: 480px;
 }
 
 .container-blank {
   margin-top: 10px;
-  width: 45%;
+  width: 95%;
   min-width: 480px;
 }
 
@@ -125,6 +135,16 @@ html, body {
   font-size: 30px;
   text-align: center;
   width: 100%;
+}
+
+@media screen and (min-width: 1100px) {
+    .container {
+        width: 45%;
+    }
+
+    .container-blank {
+        width: 45%;
+    }
 }
 
 /* konec igranja z flexi*/

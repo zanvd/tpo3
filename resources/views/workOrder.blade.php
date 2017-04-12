@@ -163,6 +163,36 @@
                     </div>
                 </div>
               </div>
+              <div class="pairContainer">
+                <div class="container">
+                  <div class="titleRow">
+                    Tuji zavarovanec
+                  </div>
+                  <div class="rowContainer2">
+                    <label><b>Šifra države:</b></label>
+                    <input type="text" placeholder="" name="countryCode" required>
+                  </div>
+                </div>
+                <div class="container">
+                  <div class="titleRow">
+                    Napoten k izvajalcu
+                  </div>
+                  <div class="rowContainer2">
+                    <label><b>Naziv :</b></label>
+                    <input type="text" placeholder="" name="contractorName" required>
+                  </div>
+                  <div class="rowContainer">
+                    <label><b>Naslov :</b></label>
+                    <input type="text" placeholder="" name="contractorAddress" required>
+                  </div>
+                </div>
+              </div>
+              <div class="largeContainer">
+                <div class="titleRow">
+                  Podatki o bolezni
+                </div>
+
+              </div>
             </form>
             
         </div>
