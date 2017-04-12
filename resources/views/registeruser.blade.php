@@ -35,7 +35,7 @@
                 </div>
                 <div class="rowContainer">
                   <label><b></b></label>
-                  <input type="password" placeholder="Ponovno vnesite geslo..." name="password" pattern=".{5,20}[a-zA-Z0-9]" id="geslo" required >
+                  <input type="password" placeholder="Ponovno vnesite geslo..." name="password_confirmation" pattern=".{5,20}[a-zA-Z0-9]" id="geslo" required >
                 </div>
 
                 <div class="rowContainer">
