@@ -43,9 +43,16 @@ html, body {
 
 .pairContainer {
   display: flex;
-  align-items: center;
+  align-items: stretch;
   justify-content: space-around;
   flex-wrap: wrap;
+  clear: both;
+}
+
+.pairRowContainer {
+  display: flex;
+  justify-content: space-around;
+  flex-direction: column;
   clear: both;
 }
 
@@ -55,6 +62,20 @@ html, body {
   background-color: white;
   width: 45%;
   min-width: 480px;
+}
+
+.container-blank {
+  margin-top: 10px;
+  width: 45%;
+  min-width: 480px;
+}
+
+.containerRow {
+  padding-top: 10px;
+  background-color: white;
+  width: 100%;
+  min-width: 480px;
+  margin-bottom: 10px;
 }
 
 .rowContainer{
@@ -73,6 +94,12 @@ html, body {
   padding-left: 10px;
   font-size: 20px;
   width: 25%;
+}
+
+.rowContainer select {
+  margin: auto;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 .rowContainer2 {
@@ -147,6 +174,10 @@ input[type=radio] ~label {
 input[type=radio] {
   margin-top: 20px;
   margin-bottom: 20px;
+}
+
+input[type="text"]:disabled {
+    background: #efefef;
 }
 
 button {

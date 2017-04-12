@@ -102,7 +102,65 @@
                     <input type="email" placeholder="" name="email">
                   </div>
                 </div>
-                <div class="container">
+                <div class="container-blank">
+                    <div class="pairRowContainer">
+                      <div class="containerRow">
+                        <div class="titleRow">
+                          Napotnica
+                        </div>
+                        <div class="rowContainer2">
+                          <label><b>Številka napotnice:</b></label>
+                          <input type="text" placeholder="" name="insuranceNumber" required>
+                        </div>
+                        <div class="rowContainer2">
+                          <label><b>Številka zdravnika:</b></label>
+                          <input type="text" placeholder="" name="insuranceNumber" required>
+                        </div>
+                      </div>
+                      <div class="containerRow">
+                        <div class="titleRow">
+                          Veljavnost naloga
+                        </div>
+                        <div class="rowContainer">
+                          <input type="radio" name="valid" value="moski" checked> <label>ENKRATNO </label>
+                          <input type="radio" name="valid" value="zenska"> <label>OBDOBJE</label>
+                        </div>
+                        <div class="rowContainer2">
+                          <label><b>Mesecev:</b></label>
+                          <input type="text" placeholder="" name="validTime" required disabled="disabled">
+                        </div>
+                      </div>
+                      <div class="containerRow">
+                        <div class="titleRow">
+                          Vrsta storitve
+                        </div>
+                        <div class="rowContainer">
+                          <select name="serviceType">
+                            <option value="1">DELOVNA TERAPIJA</option>
+                            <option value="2">NEGA NA DOMU</option>
+                            <option value="3">STORITVE PSIHOLOGA, LOGOPEDA, SPEC. PEDAGOGA</option>
+                            <option value="4">RENTGENTSKO SLIKANJE</option>
+                            <option value="5">LABORATORIJSKE IN DRUGE STORITVE</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="containerRow">
+                        <div class="titleRow">
+                          Razlog obravnave
+                        </div>
+                        <div class="rowContainer">
+                          <select name="reason">
+                            <option value="1">BOLEZEN</option>
+                            <option value="2">POŠKODBA IZVEN DELA</option>
+                            <option value="3">POKLICNA BOLEZEN</option>
+                            <option value="4">POŠKODBA PRI DELU</option>
+                            <option value="5">POŠKODBA IZVEN DELA PO TRETJI OSEBI</option>
+                            <option value="4">RENTGENTSKO SLIKANJE</option>
+                            <option value="5">TRANSPLANTACIJA</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
                 </div>
               </div>
             </form>
