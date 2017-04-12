@@ -13,12 +13,10 @@ class DelovniNalogEpruveta extends Migration {
     public function up() {
         Schema::create('Delovni_nalog_Epruveta', function(Blueprint $table) {
 			// Collumn definitions.
+			$table->increments('id_dn_epr');
 			$table->unsignedInteger('delovni_nalog');
             $table->unsignedInteger('epruveta');
 			$table->tinyInteger('epruveta_stevilo');
-
-			// Primary key definition.
-			$table->primary(['delovni_nalog', 'epruveta']);
 
 			// Foreign key constraints.
 			$table->foreign('delovni_nalog')->references('id_delovni_nalog')

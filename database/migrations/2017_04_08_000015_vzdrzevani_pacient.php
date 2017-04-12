@@ -13,6 +13,7 @@ class VzdrzevaniPacient extends Migration {
     public function up() {
         Schema::create('Vzdrzevani_pacient', function(Blueprint $table) {
 			// Collumn definitions.
+			$table->increments('id_vzd_pacient');
             $table->unsignedInteger('vzdrzevani_pacient');
             $table->unsignedInteger('skrbnik');
 			$table->unsignedInteger('sorodstveno_razmerje');

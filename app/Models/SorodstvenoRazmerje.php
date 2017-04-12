@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Model;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -9,4 +9,6 @@ class SorodstvenoRazmerje extends Model {
 	protected $table = 'Sorodstveno_razmerje';
 	// Disable timestamps.
 	public $timestamps = false;
+	// Set primary key.
+	protected $primaryKey ='id_sorodstveno_razmerje';
 }

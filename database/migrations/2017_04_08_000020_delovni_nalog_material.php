@@ -13,12 +13,10 @@ class DelovniNalogMaterial extends Migration {
     public function up() {
         Schema::create('Delovni_nalog_Material', function(Blueprint $table) {
 			// Collumn definitions.
+			$table->increments('id_dn_mat');
 			$table->unsignedInteger('delovni_nalog');
 			$table->unsignedInteger('material');
 			$table->integer('material_kolicina');
-
-			// Primary key definition.
-			$table->primary(['delovni_nalog', 'material']);
 
 			// Foreign key constraints.
 			$table->foreign('delovni_nalog')->references('id_delovni_nalog')

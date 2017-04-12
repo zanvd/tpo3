@@ -13,11 +13,9 @@ class DelovniNalogZdravilo extends Migration {
     public function up() {
         Schema::create('Delovni_nalog_Zdravilo', function(Blueprint $table) {
 			// Collumn definitions.
+			$table->increments('id_dn_zdr');
 			$table->unsignedInteger('delovni_nalog');
             $table->unsignedInteger('zdravilo');
-
-			// Primary key definition.
-			$table->primary(['delovni_nalog', 'zdravilo']);
 
 			// Foreign key constraints.
 			$table->foreign('delovni_nalog')->references('id_delovni_nalog')

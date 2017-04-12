@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Model;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -9,4 +9,8 @@ class Posta extends Model {
 	protected $table = 'Posta';
 	// Disable timestamps.
 	public $timestamps = false;
+	// Set primary key.
+	protected $primaryKey = 'postna_stevilka';
+	// Set incrementing to off.
+	public $incrementing = false;
 }

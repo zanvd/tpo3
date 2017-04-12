@@ -13,11 +13,9 @@ class DelovniNalogPacient extends Migration {
     public function up() {
         Schema::create('Delovni_nalog_Pacient', function(Blueprint $table) {
 			// Collumn definitions.
+			$table->increments('id_dn_pac');
 			$table->unsignedInteger('delovni_nalog');
             $table->unsignedInteger('pacient');
-
-			// Primary key definition.
-			$table->primary(['delovni_nalog', 'pacient']);
 
 			// Foreign key constraints.
 			$table->foreign('delovni_nalog')->references('id_delovni_nalog')
