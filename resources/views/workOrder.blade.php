@@ -5,7 +5,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="icon" href="{{ URL::asset('favicon1.ico') }}">
-        <title>Naov delovni nalog</title>
+        <title>Nov delovni nalog</title>
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css?family=Raleway:100,600" rel="stylesheet" type="text/css">
@@ -15,8 +15,9 @@
     </head>
     <body>
         <div class="main">
-        <div class="heading">
+        <div class="heading links">
           <div class="logo"><a href=""><img src="{{ URL::asset('cornerLogo2.png') }}" alt="logo"/></a></div>
+          <a href="{{ url('/prijava') }}">Odjava</a>
         </div>
         <div class="mainJunior">
         <div class="content">
