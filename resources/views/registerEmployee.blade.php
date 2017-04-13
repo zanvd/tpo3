@@ -58,10 +58,19 @@
 					  <label><b>Šifra izvajalca:</b></label>
 					  <input type="text" placeholder="Vnesite šifro izvajalca..." name="zzzs" required>
 					</div>
-					<div class="rowContainer">
-					  <button type="submit">Registracija</button>
-					</div>
 				</div>
+                <div class="rowContainer2">
+                  <label><b>Funkcija:</b></label>
+                  <select name="FUNCTION">
+                      <option value="1">ZDRAVNIK</option>
+                      <option value="2">MEDICINSKA SESTRA</option>
+                      <option value="3">PATRONAŽNA SESTRA</option>
+                  </select>
+                </div>
+                <div class="rowContainer">
+                  <button type="submit">Registracija</button>
+                </div>
+            </div>
             </form>
             
         </div>
