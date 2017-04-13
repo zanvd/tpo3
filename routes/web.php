@@ -11,20 +11,40 @@
 |
 */
 
+
+/**
+ * Define sub-namespace prefixes for usage in routes.
+ * Use as key => value pair ending with backslash.
+ *
+ * @var array
+ */
+$namespacePrefix = [
+	'auth' => 'Auth\\'
+];
+
 // Landing page.
 Route::get('/', function () {
-    return view('welcome');
+    return view('landing');
 });
 
 
 // Login routes.
-Route::get('/login', 'LoginController@index');
+Route::get('/login', $namespacePrefix['auth'].'LoginController@index');
 
-Route::post('/login', 'LoginController@store');
+Route::post('/login', $namespacePrefix['auth'].'LoginController@store');
 
-Route::post('/logout', 'LoginController@destroy');
+Route::post('/logout', $namespacePrefix['auth'].'LoginController@destroy');
 
-// Registration routes.
-Route::get('/register', 'RegisterController@index');
+// Registration routes for patients.
+Route::get('/patient/register',
+	$namespacePrefix['auth'].'RegisterPatientController@index');
 
-Route::post('/register', 'RegisterController@store');
+Route::post('/patient/register',
+	$namespacePrefix['auth'].'RegisterPatientController@store');
+
+// Register routes for workers.
+Route::get('/employee/register',
+	$namespacePrefix['auth'].'RegisterEmployeeController@index');
+
+Route::post('/employee/register',
+	$namespacePrefix['auth'].'RegisterEmployeeController@store');

@@ -22,7 +22,7 @@ class Pacient extends Migration {
 			$table->date('datum_rojstva');
 			$table->char('spol', 1);
 			$table->unsignedInteger('uporabnik');
-			$table->unsignedInteger('kontaktna_oseba');
+			$table->unsignedInteger('kontaktna_oseba')->nullable();
 			$table->unsignedInteger('posta');
 			$table->unsignedInteger('okolis');
 
