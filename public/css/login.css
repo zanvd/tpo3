@@ -1,5 +1,5 @@
 html, body {
-  background-color: #efefef;
+  background-color: #e4e4e4;
   color: #a9a9a9;
   font-family: 'Raleway', sans-serif;
   font-weight: 100;
@@ -31,6 +31,7 @@ html, body {
 .container {
   padding-top: 0px;
   background-color: white;
+  border: 1px solid #a9a9a9;
 }
 
 .rowContainer{
@@ -40,20 +41,20 @@ html, body {
 
 .rowContainer input {
   flex: 1;
-  padding-right: 5px;
+  padding-right: 10px;
 }
 
 .rowContainer label {
   margin: auto;
   padding-right: 5px;
-  padding-left: 5px;
+  padding-left: 10px;
   font-size: 20px;
   width: 15%;
 }
 
 .rowContainer button {
   flex: 1;
-  margin: 5px;
+  margin: 10px;
 }
 
 .content {

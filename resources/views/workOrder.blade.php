@@ -20,7 +20,7 @@
         </div>
         <div class="mainJunior">
         <div class="content">
-            <form class="article-comment" method="POST" action="/login">
+            <form class="article-comment" method="POST" action="/postOrder">
               <div class="titleContainer title">
                   Delovni nalog
               </div>
@@ -122,12 +122,12 @@
                           Veljavnost naloga
                         </div>
                         <div class="rowContainer">
-                          <input type="radio" name="valid" value="moski" checked> <label>ENKRATNO </label>
-                          <input type="radio" name="valid" value="zenska"> <label>OBDOBJE</label>
+                          <input type="radio" name="valid" value="moski" onclick="enableField()" checked> <label>ENKRATNO </label>
+                          <input type="radio" name="valid" value="zenska" onclick="disableField()"> <label>OBDOBJE</label>
                         </div>
                         <div class="rowContainer2">
                           <label><b>Mesecev:</b></label>
-                          <input type="text" placeholder="" name="validTime" required disabled="disabled">
+                          <input id="optionalField"type="text" placeholder="" name="validTime" required disabled="disabled">
                         </div>
                       </div>
                       <div class="containerRow">
@@ -211,6 +211,9 @@
                   Število
                   </div>
                 </div>
+                <div id="serviceContainer">
+
+                </div>
                 <!-- test
                 <div class="tabContainer">
                   <div class="smallCol1-content">
@@ -223,8 +226,26 @@
                   2
                   </div>
                 </div>-->
+                <div class="tabContainer">
+                  <div class="smallCol1-content">
+                    <input id ="orderNumber" type="text" placeholder="" name="orderNumber" >
+                  </div>
+                  <div class="bigCol-content">
+                    <input id="orderDesc" type="text" placeholder="" name="orderDesc" >
+                  </div>
+                  <div class="smallCol2-content">
+                    <input id="orderQuantity" type="text" placeholder="" name="orderQuantity" >
+                  </div>
+                </div>
+                <div class="tabContainer">
+                  <button type="button" onclick="addService()">Dodaj</button>
+                </div>
               </div>
-
+              <div class="largeContainer">
+                <div class="tabContainer">
+                  <button type="submit">Oddaj delovni nalog</button>
+                </div>
+              </div>
             </form>
             
           </div>
@@ -232,6 +253,6 @@
         </div>
 
 
-        
+        <script src="{{ URL::asset('js/work.js') }}"></script>
     </body>
 </html>

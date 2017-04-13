@@ -151,28 +151,44 @@ html, body {
     }
 }
 
+.tabContainerContent {
+  display: flex;
+  width: 100%;
+  clear: both;
+}
+
+.tabContainerContent:hover {
+  background-color: #FFC7C7;
+}
+
 .tabContainer {
   display: flex;
   width: 100%;
+  clear: both;
+}
+
+.tabContainer button {
+  width: 100%;
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-bottom: 10px;
 }
 
 .smallCol1 {
+  margin-left:10px;
   margin-top:10px;
-  flex: 1;
-  border-top: 1px solid #a9a9a9;
-  border-bottom: 1px solid #a9a9a9;
-  border-right: 1px solid #a9a9a9;
+  width: 20%;
+  border: 1px solid #a9a9a9;
   text-align: center;
   font-size: 25px;
   font-weight: bold;
 }
 
 .smallCol2 {
+  margin-right:10px;
   margin-top:10px;
-  flex: 1;
-  border-top: 1px solid #a9a9a9;
-  border-bottom: 1px solid #a9a9a9;
-  border-left: 1px solid #a9a9a9;
+  width: 20%;
+  border: 1px solid #a9a9a9;
   text-align: center;
   font-size: 25px;
   font-weight: bold;
@@ -189,13 +205,15 @@ html, body {
 }
 
 .smallCol1-content {
-  flex: 1;
+  margin-left:10px;
+  width: 20%;
   text-align: center;
   font-size: 25px;
 }
 
 .smallCol2-content {
-  flex: 1;
+  margin-right:10px;
+  width: 20%;
   text-align: center;
   font-size: 25px;
 }
@@ -204,6 +222,21 @@ html, body {
   text-align: center;
   width: 60%;
   font-size: 25px;
+}
+
+.smallCol1-content input{
+  width: 60%;
+  margin: auto;
+}
+
+.smallCol2-content input{
+  width: 60%;
+  margin: auto;
+}
+
+.bigCol-content input{
+  width: 80%;
+  margin: auto;
 }
 
 

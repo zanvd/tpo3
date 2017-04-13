@@ -35,7 +35,7 @@
                 </div>
                 <div class="rowContainer">
                   <label><b></b></label>
-                  <input type="password" placeholder="Ponovno vnesite geslo..." name="password" pattern=".{5,20}[a-zA-Z0-9]" id="geslo" required >
+                  <input type="password" placeholder="Ponovno vnesite geslo..." name="password_confirmation" pattern=".{5,20}[a-zA-Z0-9]" id="geslo" required >
                 </div>
                 <div class="rowContainer">
                   <label><b>Ime:</b></label>
@@ -47,7 +47,7 @@
                 </div>
                 <div class="rowContainer">
                   <label><b>Telefon:</b></label>
-                  <input type="text" placeholder="Vnesite vašo telefonsko številko..." name="phoneNumber" pattern="[0-9]{8,9}"required>
+                  <input type="text" placeholder="Vnesite vašo telefonsko številko..." name="phoneNumber" pattern="[0-9]{9}"required>
                 </div>
                 <div class="rowContainer2">
                   <label><b>Šira uslužbenca:</b></label>
@@ -56,6 +56,14 @@
                 <div class="rowContainer2">
                   <label><b>Šifra izvajalca:</b></label>
                   <input type="text" placeholder="Vnesite šifro izvajalca..." name="zzzs" required>
+                </div>
+                <div class="rowContainer2">
+                  <label><b>Funkcija:</b></label>
+                  <select name="FUNCTION">
+                      <option value="1">ZDRAVNIK</option>
+                      <option value="2">MEDICINSKA SESTRA</option>
+                      <option value="3">PATRONAŽNA SESTRA</option>
+                  </select>
                 </div>
                 <div class="rowContainer">
                   <button type="submit">Registracija</button>
