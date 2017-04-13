@@ -20,13 +20,6 @@ class LoginController extends Controller {
 	use AuthenticatesUsers;
 
     /**
-     * Where to redirect users after login.
-     *
-     * @var string
-     */
-	protected $redirectTo = '/profile';
-
-    /**
      * Create a new controller instance.
 	 *
      */
@@ -53,16 +46,16 @@ class LoginController extends Controller {
     	$email = request('email');
     	$password = request('password');
     	// Try to authenticate user.
-		if (!auth()->attempt(['email' => $email, 'geslo' =>$password])) {
+		if (!auth()->attempt(['email' => $email, 'password' => $password])) {
 			// If authentication fails, return back to login page
 			// with error message.
-			return back()->withErrors([
-				'message' => 'Napravilen email ali geslo. Prosimo poizkusite znova.'
+			return view('login')->withErrors([
+				'message' => 'Nepravilen email ali geslo. Prosimo, poizkusite znova.'
 			]);
 		}
 
-		// Authentication succeeded. Route to provided page.
-		return redirect($this->redirectTo);
+		// Authentication succeeded. Redirect to home page.
+		return redirect('/');
 	}
 
 	/**

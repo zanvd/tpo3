@@ -11,13 +11,6 @@ use App\Models\Pacient as Patient;
 class RegisterPatientController extends Controller {
 
     /**
-     * Where to redirect users after registration.
-     *
-     * @var string
-     */
-	protected $redirectTo = '/';
-
-    /**
      * Create a new controller instance.
      *
      */
@@ -52,16 +45,16 @@ class RegisterPatientController extends Controller {
 			'address'				=> 'required',
 			'areaNumber'			=> 'required',
 			'zzzs'					=> 'required|digits:9',
-			'contactSurname'		=> 'string',
+			/*'contactSurname'		=> 'string',
 			'contactName'			=> 'string',
-			'contactPhoneNumber'	=> 'digits:9'
+			'contactPhoneNumber'	=> 'digits:9'*/
 		]);
 
 		// Create new user and populate attributes.
 		$user = new User;
 
 		$user->email = request('email');
-		$user->geslo = bcrypt(request('password'));
+		$user->password = bcrypt(request('password'));
 		$user->vloga = 'pacient';
 
 		$user->save();
@@ -91,15 +84,18 @@ class RegisterPatientController extends Controller {
 
 		$patient->zavarovanje_stevilka = request('zzzs');
 		$patient->priimek = request('surname');
-		$patient->name = request('name');
+		$patient->ime = request('name');
 		$patient->naslov = request('address');
 		$patient->telefon = request('phoneNumber');
-		$patient->datum_rojstva = request('birthDate');
+		$patient->datum_rojstva = \DateTime::createFromFormat(
+										'd.m.Y',
+										request('birthDate')
+									)->format('Y-m-d');
 		$patient->spol = request('sex');
 		$patient->uporabnik = $user->id_uporabnik;
 		$patient->kontaktna_oseba = $contactEmpty ?
 			null : $contact->id_kontaktna_oseba;
-		$patient->postna_stevilka = request('postalCode');
+		$patient->posta = request('postalCode');
 		$patient->okolis = request('areaNumber');
 
 		$patient->save();
@@ -107,6 +103,6 @@ class RegisterPatientController extends Controller {
 		// Login user and redirect to home page.
 		auth()->login($user);
 
-		return redirect($this->redirectTo);
+		return redirect('/');
 	}
 }

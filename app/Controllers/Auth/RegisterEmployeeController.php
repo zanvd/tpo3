@@ -8,12 +8,6 @@ use App\Models\Uporabnik as User;
 use App\Models\DelavecZd as Employee;
 
 class RegisterEmployeeController extends Controller {
-	/**
-	 * Where to redirect users after registration.
-	 *
-	 * @var string
-	 */
-	protected $redirectTo = '/';
 
 	/**
 	 * Create a new controller instance
@@ -49,7 +43,7 @@ class RegisterEmployeeController extends Controller {
 		$user = new User;
 
 		$user->email = request('email');
-		$user->geslo = request('password');
+		$user->password = request('password');
 		$user->vloga = 'usluzbenec';
 
 		$user->save();
@@ -70,6 +64,6 @@ class RegisterEmployeeController extends Controller {
 		// Login user and redirect to home page.
 		auth()->login($user);
 
-		return redirect($this->redirectTo);
+		return redirect('/');
 	}
 }

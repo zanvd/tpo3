@@ -24,27 +24,36 @@ $namespacePrefix = [
 
 // Landing page.
 Route::get('/', function () {
-    return view('landing');
+		return view('landing');
 });
 
 
 // Login routes.
-Route::get('/login', $namespacePrefix['auth'].'LoginController@index');
+Route::get('/prijava', $namespacePrefix['auth'].'LoginController@index');
 
-Route::post('/login', $namespacePrefix['auth'].'LoginController@store');
+Route::post('/prijava', $namespacePrefix['auth'].'LoginController@store');
 
-Route::post('/logout', $namespacePrefix['auth'].'LoginController@destroy');
+Route::get('/odjava', $namespacePrefix['auth'].'LoginController@destroy');
 
 // Registration routes for patients.
-Route::get('/patient/register',
+Route::get('/registracija/pacient',
 	$namespacePrefix['auth'].'RegisterPatientController@index');
 
-Route::post('/patient/register',
+Route::post('/registracija/pacient',
 	$namespacePrefix['auth'].'RegisterPatientController@store');
 
 // Register routes for workers.
-Route::get('/employee/register',
+Route::get('/registracija/zaposleni',
 	$namespacePrefix['auth'].'RegisterEmployeeController@index');
 
-Route::post('/employee/register',
+Route::post('/registracija/zaposleni',
 	$namespacePrefix['auth'].'RegisterEmployeeController@store');
+
+// Register routes for work order.
+Route::get('delovni-nalog', function() {
+	return view('workOrder');
+});
+
+Route::post('delovni-nalog', function () {
+	return view('workOrder');
+});
