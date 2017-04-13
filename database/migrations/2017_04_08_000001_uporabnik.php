@@ -15,7 +15,7 @@ class Uporabnik extends Migration {
 			// Collumn definitions.
             $table->increments('id_uporabnik');
             $table->string('email', 128)->unique();
-			$table->char('geslo', 128);
+			$table->char('password', 128);
 			$table->string('vloga', 30);
         });
     }

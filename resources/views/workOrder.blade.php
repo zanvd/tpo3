@@ -20,7 +20,7 @@
         </div>
         <div class="mainJunior">
         <div class="content">
-            <form class="article-comment" method="POST" action="/login">
+            <form class="article-comment" method="POST" action="/delovni-nalog">
               <div class="titleContainer title">
                   Delovni nalog
               </div>

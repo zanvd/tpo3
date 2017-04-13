@@ -20,47 +20,48 @@
         </div>
         <div class="mainJunior">
         <div class="content">
-            <form class="article-comment" method="POST" action="/login">
-            <div class="container">
-                <div class="title">
-                Registracija uslužbenca
-                </div>
-                <div class="rowContainer">
-                  <label><b>E-mail:</b></label>
-                  <input type="email" placeholder="Vnestie e-naslov..." name="email" required>
-                </div>
-                <div class="rowContainer">
-                  <label><b>Geslo:</b></label>
-                  <input type="password" placeholder="Vnesite geslo..." name="password" pattern=".{5,20}[a-zA-Z0-9]" id="geslo" required >
-                </div>
-                <div class="rowContainer">
-                  <label><b></b></label>
-                  <input type="password" placeholder="Ponovno vnesite geslo..." name="password" pattern=".{5,20}[a-zA-Z0-9]" id="geslo" required >
-                </div>
-                <div class="rowContainer">
-                  <label><b>Ime:</b></label>
-                  <input type="text" placeholder="Vnesite ime..." name="name" required>
-                </div>
-                <div class="rowContainer">
-                  <label><b>Priimek:</b></label>
-                  <input type="text" placeholder="Vnesite piriimek..." name="surname" required>
-                </div>
-                <div class="rowContainer">
-                  <label><b>Telefon:</b></label>
-                  <input type="text" placeholder="Vnesite vašo telefonsko številko..." name="phoneNumber" pattern="[0-9]{8,9}"required>
-                </div>
-                <div class="rowContainer2">
-                  <label><b>Šira uslužbenca:</b></label>
-                  <input type="text" placeholder="Vnesite šifro uslužbenca..." name="areaNumber" required>
-                </div>
-                <div class="rowContainer2">
-                  <label><b>Šifra izvajalca:</b></label>
-                  <input type="text" placeholder="Vnesite šifro izvajalca..." name="zzzs" required>
-                </div>
-                <div class="rowContainer">
-                  <button type="submit">Registracija</button>
-                </div>
-            </div>
+            <form class="article-comment" method="POST" action="/registracija/zaposleni">
+				{{ csrf_field() }}
+				<div class="container">
+					<div class="title">
+					Registracija uslužbenca
+					</div>
+					<div class="rowContainer">
+					  <label><b>E-mail:</b></label>
+					  <input type="email" placeholder="Vnestie e-naslov..." name="email" required>
+					</div>
+					<div class="rowContainer">
+					  <label><b>Geslo:</b></label>
+					  <input type="password" placeholder="Vnesite geslo..." name="password" pattern=".{5,20}[a-zA-Z0-9]" id="geslo" required >
+					</div>
+					<div class="rowContainer">
+					  <label><b></b></label>
+					  <input type="password" placeholder="Ponovno vnesite geslo..." name="password" pattern=".{5,20}[a-zA-Z0-9]" id="geslo" required >
+					</div>
+					<div class="rowContainer">
+					  <label><b>Ime:</b></label>
+					  <input type="text" placeholder="Vnesite ime..." name="name" required>
+					</div>
+					<div class="rowContainer">
+					  <label><b>Priimek:</b></label>
+					  <input type="text" placeholder="Vnesite piriimek..." name="surname" required>
+					</div>
+					<div class="rowContainer">
+					  <label><b>Telefon:</b></label>
+					  <input type="text" placeholder="Vnesite vašo telefonsko številko..." name="phoneNumber" pattern="[0-9]{8,9}"required>
+					</div>
+					<div class="rowContainer2">
+					  <label><b>Šira uslužbenca:</b></label>
+					  <input type="text" placeholder="Vnesite šifro uslužbenca..." name="areaNumber" required>
+					</div>
+					<div class="rowContainer2">
+					  <label><b>Šifra izvajalca:</b></label>
+					  <input type="text" placeholder="Vnesite šifro izvajalca..." name="zzzs" required>
+					</div>
+					<div class="rowContainer">
+					  <button type="submit">Registracija</button>
+					</div>
+				</div>
             </form>
             
         </div>

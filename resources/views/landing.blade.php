@@ -9,25 +9,25 @@
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css?family=Raleway:100,600" rel="stylesheet" type="text/css">
-        <link rel="stylesheet" type="text/css" href="{{ URL::asset('css/landing.css') }}">
         <!-- Styles -->
+		<link rel="stylesheet" type="text/css" href="{{ URL::asset('css/landing.css') }}">
         
     </head>
     <body>
         <div class="heading links">
           <div class="logo"><a href=""><img src="{{ URL::asset('cornerLogo2.png') }}" alt="logo"/></a></div>
-          <a href="{{ url('/prijava') }}">Prijava</a>
-          <a href="{{ url('/register') }}">Registracija</a>
+          <a href="/prijava">Prijava</a>
+          <a href="/registracija/pacient">Registracija</a>
         </div>
         <div class="content">
           <div class="vsebovalnikBesedila">
             <div class="title"> Dobrodošli </div>
             <div class="info"> Za uporabo aplikacije je potrebna registracija. Če že imate račun se prijavite. </div>
             <div clas="vsebovalnikGumbov">
-              <form action="{{ url('/register') }}">
+              <form action="/registracija/pacient">
               <button type="submit">Registracija</button>
               </form>
-              <form action="{{ url('/prijava') }}">
+              <form action="/prijava">
               <button type="submit">Prijava</button>
               </form>
             </div>
