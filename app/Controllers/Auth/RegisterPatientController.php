@@ -2,23 +2,13 @@
 
 namespace App\Controllers\Auth;
 
-use App\Http\Controller;
+use App\Controllers\Controller;
 
 use App\Models\KontaktnaOseba as Contact;
 use App\Models\Uporabnik as User;
 use App\Models\Pacient as Patient;
 
-class RegisterController extends Controller {
-    /*
-    |--------------------------------------------------------------------------
-    | Register Controller
-    |--------------------------------------------------------------------------
-    |
-    | This controller handles the registration of new users as well as their
-    | validation and creation. By default this controller uses a trait to
-    | provide this functionality without requiring any additional code.
-    |
-    */
+class RegisterPatientController extends Controller {
 
     /**
      * Where to redirect users after registration.
@@ -30,7 +20,6 @@ class RegisterController extends Controller {
     /**
      * Create a new controller instance.
      *
-     * @return void
      */
 	public function __construct() {
 		// Only guest users can access register page.
@@ -42,7 +31,7 @@ class RegisterController extends Controller {
 	 *
 	 */
 	public function index() {
-		return view('registration');
+		return view('registerUser');
 	}
 
     /**
@@ -50,7 +39,7 @@ class RegisterController extends Controller {
      * After successful registration log the user in.
 	 *
      */
-	protected function store() {
+	public function store() {
 		// Validate given data.
 		$this->validate(request(), [
 			'email'					=> 'required|email',
@@ -61,7 +50,7 @@ class RegisterController extends Controller {
 			'birthDate'				=> 'required|date_format:d.m.Y|before:today',
 			'phoneNumber'			=> 'required|digits:9',
 			'address'				=> 'required',
-			'areaNumber'			=> 'required|numeric',
+			'areaNumber'			=> 'required',
 			'zzzs'					=> 'required|digits:9',
 			'contactSurname'		=> 'string',
 			'contactName'			=> 'string',
@@ -115,7 +104,7 @@ class RegisterController extends Controller {
 
 		$patient->save();
 
-		// Login the user and redirect to home page.
+		// Login user and redirect to home page.
 		auth()->login($user);
 
 		return redirect($this->redirectTo);
