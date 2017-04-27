@@ -20,107 +20,97 @@
         </div>
         <div class="mainJunior">
         <div class="content">
-            <form class="article-comment" method="POST" action="/registracija/pacient">
-				{{ csrf_field() }}
-				<div class="container">
-					<div class="title">
-					Registracija uporabnika
-					</div>
-					@if (count($errors))
-						<div class="alert alert-danger">
-							<ul>
-								@foreach($errors->all() as $error)
-									<li>{{ $error }}</li>
-								@endforeach
-							</ul>
-						</div>
-					@endif
-					<div class="rowContainer">
-					  <label><b>E-mail:</b></label>
-					  <input type="email" placeholder="Vnestie e-naslov..." name="email" required>
-					</div>
-					<div class="rowContainer">
-					  <label><b>Geslo:</b></label>
-					  <input type="password" placeholder="Vnesite geslo..." name="password" pattern=".{5,20}[a-zA-Z0-9]" id="geslo" required >
-					</div>
-					<div class="rowContainer">
-					  <label><b></b></label>
-					  <input type="password" placeholder="Ponovno vnesite geslo..." name="password_confirmation" pattern=".{5,20}[a-zA-Z0-9]" id="geslo" required >
-					</div>
+            <form class="article-comment" method="POST" action="/login">
+            <div class="container">
+                <div class="title">
+                Registracija uporabnika
+                </div>
+                <div class="rowContainer">
+                  <label><b>E-mail:</b></label>
+                  <input type="email" placeholder="Vnestie e-naslov..." name="email" required>
+                </div>
+                <div class="rowContainer">
+                  <label><b>Geslo:</b></label>
+                  <input type="password" placeholder="Vnesite geslo..." name="password" pattern=".{5,20}[a-zA-Z0-9]" id="geslo" required >
+                </div>
+                <div class="rowContainer">
+                  <label><b></b></label>
+                  <input type="password" placeholder="Ponovno vnesite geslo..." name="password_confirmation" pattern=".{5,20}[a-zA-Z0-9]" id="geslo" required >
+                </div>
 
-					<div class="rowContainer">
-					  <label><b>Ime:</b></label>
-					  <input type="text" placeholder="Vnesite ime..." name="name" required>
-					</div>
-					<div class="rowContainer">
-					  <label><b>Priimek:</b></label>
-					  <input type="text" placeholder="Vnesite piriimek..." name="surname" required>
-					</div>
-					<div class="rowContainer">
-					  <label><b>Spol:</b></label><br>
-					  <input type="radio" name="sex" value="m" checked> <label>Moški </label>
-					  <input type="radio" name="sex" value="z"> <label>Ženska</label>
-					</div>
-					<div class="rowContainer2">
-					  <label><b>Datum rojstva:</b></label>
-					  <input type="date" placeholder="Vnesite datum oblike: dan.mesec.leto" name="birthDate" inputmode="numeric" required>
-					</div>
-					<div class="rowContainer">
-					  <label><b>Telefon:</b></label>
-					  <input type="text" placeholder="Vnesite telefonsko številko..." name="phoneNumber" pattern="[0-9]{8,9}" required>
-					</div>
-					<div class="rowContainer">
-					  <label><b>Naslov:</b></label>
-					  <input type="text" placeholder="Vnesite naslov..." name="address" required>
-					</div>
-					<div class="rowContainer2">
-					  <label><b>Poštna številka:</b></label>
-					  <input type="text" placeholder="Vnesite poštno številko..." name="postalCode" required>
-					</div>
-					<div class="rowContainer2">
-					  <label><b>Šira okoliša:</b></label>
-					  <input type="text" placeholder="Vnesite šifro okoliša..." name="areaNumber" required>
-					</div>
-					<div class="rowContainer2">
-					  <label><b>ZZZS številka:</b></label>
-					  <input type="text" placeholder="Vnesite ZZZS številko..." name="zzzs" pattern="[0-9]{9}" required>
-					</div>
-					<div class="titleRow">
-					  Kontaktna oseba (neobvezno)
-					</div>
-					<div class="rowContainer">
-					  <label><b>Ime:</b></label>
-					  <input type="text" placeholder="Vnesite ime..." name="contactName" >
-					</div>
-					<div class="rowContainer">
-					  <label><b>Priimek:</b></label>
-					  <input type="text" placeholder="Vnesite piriimek..." name="contactSurname" >
-					</div>
-					<div class="rowContainer">
-					  <label><b>Naslov:</b></label>
-					  <input type="text" placeholder="Vnesite naslov..." name="contactAddress" >
-					</div>
-					<div class="rowContainer2">
-					  <label><b>Poštna številka:</b></label>
-					  <input type="text" placeholder="Vnesite poštno številko..." name="contactPostalCode" >
-					</div>
-					<div class="rowContainer">
-					  <label><b>Telefon:</b></label>
-					  <input type="text" placeholder="Vnesite telefonsko številko..." name="contactPhoneNumber" pattern="[0-9]{8,9}" >
-					</div>
-					<div class="rowContainer2">
-					  <label><b>Sorodstveno razmerje:</b></label>
-					  <select name="fam">
-						  <option value="1">STARŠ</option>
-						  <option value="2">PARTNER</option>
-						  <option value="3">OTROK</option>
-					  </select>
-					</div>
-					<div class="rowContainer">
-					  <button type="submit">Registracija</button>
-					</div>
-
-				</div>
+                <div class="rowContainer">
+                  <label><b>Ime:</b></label>
+                  <input type="text" placeholder="Vnesite ime..." name="name" required>
+                </div>
+                <div class="rowContainer">
+                  <label><b>Priimek:</b></label>
+                  <input type="text" placeholder="Vnesite piriimek..." name="surname" required>
+                </div>
+                <div class="rowContainer">
+                  <label><b>Spol:</b></label><br>
+                  <input type="radio" name="spol" value="moski" checked> <label>Moški </label>
+                  <input type="radio" name="spol" value="zenska"> <label>Ženska</label>
+                </div>
+                <div class="rowContainer2">
+                  <label><b>Datum rojstva:</b></label>
+                  <input type="date" placeholder="Vnesite datum oblike: dan.mesec.leto" name="birthDate" inputmode="numeric" required>
+                </div>
+                <div class="rowContainer">
+                  <label><b>Telefon:</b></label>
+                  <input type="text" placeholder="Vnesite telefonsko številko..." name="phoneNumber" pattern="[0-9]{9}" required>
+                </div>
+                <div class="rowContainer">
+                  <label><b>Naslov:</b></label>
+                  <input type="text" placeholder="Vnesite naslov..." name="addres" required>
+                </div>
+                <div class="rowContainer2">
+                  <label><b>Poštna številka:</b></label>
+                  <input type="text" placeholder="Vnesite poštno številko..." name="postalCode" required>
+                </div>
+                <div class="rowContainer2">
+                  <label><b>Šira okoliša:</b></label>
+                  <input type="text" placeholder="Vnesite šifro okoliša..." name="areaNumber" required>
+                </div>
+                <div class="rowContainer2">
+                  <label><b>ZZZS številka:</b></label>
+                  <input type="text" placeholder="Vnesite ZZZS številko..." name="zzzs" pattern="[0-9]{9}" required>
+                </div>
+                <div class="titleRow">
+                  Kontaktna oseba (neobvezno)
+                </div>
+                <div class="rowContainer">
+                  <label><b>Ime:</b></label>
+                  <input type="text" placeholder="Vnesite ime..." name="contactName" >
+                </div>
+                <div class="rowContainer">
+                  <label><b>Priimek:</b></label>
+                  <input type="text" placeholder="Vnesite piriimek..." name="contactSurname" >
+                </div>
+                <div class="rowContainer">
+                  <label><b>Naslov:</b></label>
+                  <input type="text" placeholder="Vnesite naslov..." name="contactAddress" >
+                </div>
+                <div class="rowContainer2">
+                  <label><b>Poštna številka:</b></label>
+                  <input type="text" placeholder="Vnesite poštno številko..." name="contactPostalCode" required>
+                </div>
+                <div class="rowContainer">
+                  <label><b>Telefon:</b></label>
+                  <input type="text" placeholder="Vnesite telefonsko številko..." name="contactPhoneNumber" pattern="[0-9]{8,9}" >
+                </div>
+                <div class="rowContainer2">
+                  <label><b>Sorodstveno razmerje:</b></label>
+                  <select name="fam">
+                      <option value="1">STARŠ</option>
+                      <option value="2">PARTNER</option>
+                      <option value="3">OTROK</option>
+                  </select>
+                </div>
+                <div class="rowContainer">
+                  <button type="submit">Registracija</button>
+                </div>
+              
+            </div>
             </form>
             
         </div>
