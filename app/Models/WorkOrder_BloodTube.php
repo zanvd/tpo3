@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Material extends Model
-{
-    //
+class WorkOrder_BloodTube extends Model {
+
 }
