@@ -14,6 +14,7 @@ class CreateWorkOrderMaterialTable extends Migration {
 		Schema::create('WorkOrder_Material', function (Blueprint $table) {
 			$table->unsignedInteger('material_id');
 			$table->unsignedInteger('work_order_id');
+			$table->integer('material_quantity');
 
 			$table->foreign('material_id')->references('material_id')->on('Material');
 			$table->foreign('work_order_id')->references('work_order_id')->on('WorkOrder');

@@ -12,7 +12,7 @@ class CreateWorkOrderIllnessTable extends Migration {
 	 */
 	public function up() {
 		Schema::create('WorkOrder_Illness', function (Blueprint $table) {
-			$table->unsignedInteger('illness_id');
+			$table->string('illness_id', 7);
 			$table->unsignedInteger('work_order_id');
 
 			$table->foreign('illness_id')->references('illness_id')->on('Illness');
