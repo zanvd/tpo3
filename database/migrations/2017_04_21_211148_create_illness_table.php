@@ -12,7 +12,7 @@ class CreateIllnessTable extends Migration {
 	 */
 	public function up() {
 		Schema::create('Illness', function (Blueprint $table) {
-			$table->increments('illness_id');
+			$table->string('illness_id', 7)->primary();
 			$table->string('illness_name', 255);
 		});
 	}
