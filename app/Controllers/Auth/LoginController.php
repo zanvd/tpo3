@@ -4,6 +4,7 @@ namespace App\Controllers\Auth;
 
 use App\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller {
     /*
@@ -18,6 +19,17 @@ class LoginController extends Controller {
     */
 
 	use AuthenticatesUsers;
+
+	/**
+	 * Redirect to the provided link.
+	 *
+	 * @param string $link|/
+	 *
+	 * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+	 */
+	protected function redirectTo ($link = '/') {
+		return redirect($link);
+	}
 
     /**
      * Create a new controller instance.
@@ -54,8 +66,41 @@ class LoginController extends Controller {
 			]);
 		}
 
-		// Authentication succeeded. Redirect to home page.
-		return redirect('/');
+		$user = Auth::user();
+
+		// Check if user exists.
+		if ($user === NULL)
+			return view('login')->withErrors([
+				'message' => 'Napaka pri prijavi. Prosimo, poizkusite znova.'
+			]);
+
+		// Check if user has been activated.
+		if (!$user->active)
+			return view('login')->withErrors([
+				'message' => 'Prosimo, aktivirajte račun.'
+			]);
+
+		// Redirect to the appropriate page based on user's role.
+		$role = $user->userRole->user_role_title;
+
+		switch ($role) {
+			case 'admin':
+				return $this->redirectTo('administrator/profil');
+				break;
+			case 'zaposleni':
+				return $this->redirectTo('zaposleni/profil');
+				break;
+			case 'pacient':
+				return $this->redirectTo('pacient/profil');
+				break;
+			default:
+				// Something went wrong.
+				// Logout user and ask them to try again.
+				auth()->logout();
+				return view('login')->withErrors([
+					'message' => 'Napaka pri prijavi. Prosimo, poizkusite znova.'
+				]);
+		}
 	}
 
 	/**
@@ -65,7 +110,6 @@ class LoginController extends Controller {
 	public function destroy() {
 		auth()->logout();
 
-		// Redirect to home page.
-		return redirect('/');
+		 return $this->redirectTo();
 	}
 }
