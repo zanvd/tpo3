@@ -27,15 +27,14 @@ Route::get('/', function () {
 		return view('landing');
 });
 
-
-// Login routes.
+// Register routes for login.
 Route::get('/prijava', $namespacePrefix['auth'].'LoginController@index');
 
 Route::post('/prijava', $namespacePrefix['auth'].'LoginController@store');
 
 Route::get('/odjava', $namespacePrefix['auth'].'LoginController@destroy');
 
-// Registration routes for patients.
+// Register routes for patients.
 Route::get('/registracija/pacient',
 	$namespacePrefix['auth'].'RegisterPatientController@index');
 

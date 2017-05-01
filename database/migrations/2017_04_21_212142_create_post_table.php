@@ -13,7 +13,7 @@ class CreatePostTable extends Migration {
 	public function up() {
 		Schema::create('Post', function (Blueprint $table) {
 			$table->unsignedInteger('post_number')->primary();
-			$table->integer('post_title');
+			$table->string('post_title', 100);
 		});
 	}
 

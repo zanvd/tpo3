@@ -18,6 +18,7 @@ class CreateUserTable extends Migration {
 			$table->dateTime('created_at');
 			$table->dateTime('last_login');
 			$table->boolean('active');
+			$table->rememberToken();
 			$table->unsignedInteger('user_role_id');
 			$table->unsignedInteger('person_id');
 
