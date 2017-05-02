@@ -1,8 +1,7 @@
 <?php
 
 return [
-
-    /*
+	/*
     |--------------------------------------------------------------------------
     | Authentication Language Lines
     |--------------------------------------------------------------------------
@@ -13,8 +12,8 @@ return [
     |
     */
 
-    'failed'	=> 'These credentials do not match our records.',
-    'throttle'	=> 'Too many login attempts. Please try again in :seconds seconds.',
-	'activate'	=> 'Please, activate your account.',
+	'failed'	=> 'Napačen email ali geslo. Prosimo, poizkusite znova.',
+	'throttle'	=> 'Preveč neuspelih poizkusov. Poizkusite znova čez :seconds sekund.',
+	'activate'	=> 'Prosimo, aktivirajte račun.',
 
 ];
