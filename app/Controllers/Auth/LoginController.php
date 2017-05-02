@@ -3,33 +3,14 @@
 namespace App\Controllers\Auth;
 
 use App\Controllers\Controller;
-use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Foundation\Auth\RedirectsUsers;
+use Illuminate\Foundation\Auth\ThrottlesLogins;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Lang;
 
 class LoginController extends Controller {
-    /*
-    |--------------------------------------------------------------------------
-    | Login Controller
-    |--------------------------------------------------------------------------
-    |
-    | This controller handles authenticating users for the application and
-    | redirecting them to your home screen. The controller uses a trait
-    | to conveniently provide its functionality to your applications.
-    |
-    */
-
-	use AuthenticatesUsers;
-
-	/**
-	 * Redirect to the provided link.
-	 *
-	 * @param string $link|/
-	 *
-	 * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
-	 */
-	protected function redirectTo ($link = '/') {
-		return redirect($link);
-	}
+	use RedirectsUsers, ThrottlesLogins;
 
     /**
      * Create a new controller instance.
@@ -44,7 +25,7 @@ class LoginController extends Controller {
     /**
      * Display login page.
 	 *
-     * @return view
+     * @return \Illuminate\Http\Response
      */
     public function index() {
     	return view('login');
@@ -53,17 +34,30 @@ class LoginController extends Controller {
     /**
      * Authenticate user with login parameters.
 	 *
+	 * @param $request \Illuminate\Http\Request
+	 *
+	 * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\Response
      */
-    public function store() {
-    	$email = request('email');
-    	$password = request('password');
+    public function store(Request $request) {
+    	// Check if both email and password are provided.
+		$this->validateLogin($request);
+
+    	// Check for too many login attempts.
+		if ($this->hasTooManyLoginAttempts($request)) {
+			// Fire lockout event.
+			$this->fireLockoutEvent($request);
+
+			// Notify user about temporary access lock.
+			return $this->sendLockoutResponse($request);
+		}
+
     	// Try to authenticate user.
-		if (!auth()->attempt(['email' => $email, 'password' => $password])) {
+		if (!$this->login($request)) {
+			$this->incrementLoginAttempts($request);
 			// If authentication fails, return back to login page
 			// with error message.
-			return view('login')->withErrors([
-				'message' => 'Nepravilen email ali geslo. Prosimo, poizkusite znova.'
-			]);
+
+			return $this->redirectTo('prijava', Lang::get('auth.failed'));
 		}
 
 		$user = Auth::user();
@@ -97,6 +91,10 @@ class LoginController extends Controller {
 				// Something went wrong.
 				// Logout user and ask them to try again.
 				auth()->logout();
+
+				$request->session()->flush();
+				$request->session()->regenerate();
+
 				return view('login')->withErrors([
 					'message' => 'Napaka pri prijavi. Prosimo, poizkusite znova.'
 				]);
@@ -104,12 +102,74 @@ class LoginController extends Controller {
 	}
 
 	/**
-	 * Logout user and destroy session.
+	 * Logout user and reset session.
 	 *
+	 * @param Request $request
+	 *
+	 * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
 	 */
-	public function destroy() {
+	public function destroy(Request $request) {
 		auth()->logout();
 
-		 return $this->redirectTo();
+		$request->session()->flush();
+		$request->session()->regenerate();
+
+		return $this->redirectTo();
+	}
+
+	/**
+	 * Redirect to the provided link.
+	 *
+	 * @param string $link | /
+	 * @param string $message | null
+	 *
+	 * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+	 */
+	protected function redirectTo ($link = '/', $message = null) {
+		// If error message is set, return to login page with errors set.
+		if ($message !== null)
+			return redirect()->back()->withErrors([
+				'message' => $message
+			]);
+		return redirect($link);
+	}
+
+	/**
+	 * Validate form fields.
+	 *
+	 * @param Request $request
+	 *
+	 */
+	protected function validateLogin (Request $request) {
+		$this->validate($request, [
+			$this->username()	=> 'required',
+			'password'			=> 'required'
+		]);
+	}
+
+	/**
+	 * Return name of field which is used as username.
+	 * Required for Throttle key.
+	 *
+	 * @return string
+	 */
+	protected function username () {
+		return 'email';
+	}
+
+	/**
+	 * Perform a login attempt.
+	 *
+	 * @param Request $request
+	 *
+	 * @return boolean
+	 */
+	protected function login (Request $request) {
+		return auth()->attempt([
+				$this->username()	=> $request[$this->username()],
+				'password'			=> $request['password']
+			],
+			$request->has('remember')
+		);
 	}
 }
