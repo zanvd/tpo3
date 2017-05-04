@@ -20,7 +20,6 @@ class LoginController extends Controller {
 		// Allow access only to non-authenticated users.
 		// With the exception of destroy method (logout call).
     	$this->middleware('guest', ['except' => 'destroy']);
-    	error_log(print_r(method_exists($this, 'redirectTo'), true));
 	}
 
     /**
