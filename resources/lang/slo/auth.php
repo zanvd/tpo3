@@ -12,8 +12,8 @@ return [
     |
     */
 
-	'failed'	=> 'Napačen email ali geslo. Prosimo, poizkusite znova.',
-	'throttle'	=> 'Preveč neuspelih poizkusov. Poizkusite znova čez :seconds sekund.',
+	'failed'	=> 'Napačen email ali geslo. Prosimo, poskusite znova.',
+	'throttle'	=> 'Preveč neuspelih poizkusov. Poskusite znova čez :seconds sekund.',
 	'activate'	=> 'Prosimo, aktivirajte račun.',
 
 ];

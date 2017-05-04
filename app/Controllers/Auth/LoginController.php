@@ -3,6 +3,7 @@
 namespace App\Controllers\Auth;
 
 use App\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Foundation\Auth\RedirectsUsers;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Http\Request;
@@ -31,13 +32,13 @@ class LoginController extends Controller {
     	return view('login');
 	}
 
-    /**
-     * Authenticate user with login parameters.
+	/**
+	 * Authenticate user with login parameters.
 	 *
-	 * @param $request \Illuminate\Http\Request
+	 * @param Request $request
 	 *
-	 * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\Response
-     */
+	 * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+	 */
     public function store(Request $request) {
     	// Check if both email and password are provided.
 		$this->validateLogin($request);
@@ -51,7 +52,15 @@ class LoginController extends Controller {
 			return $this->sendLockoutResponse($request);
 		}
 
-    	// Try to authenticate user.
+		// Check if user has been activated.
+		$user = User::where('email', $request['email'])->first();
+		if (!$user->active)
+			return $this->redirectTo('prijava', Lang::get('activate'));
+
+		// Unset user variable.
+		unset($user);
+
+		// Try to authenticate user.
 		if (!$this->login($request)) {
 			$this->incrementLoginAttempts($request);
 			// If authentication fails, return back to login page
@@ -64,21 +73,15 @@ class LoginController extends Controller {
 
 		// Check if user exists.
 		if ($user === NULL)
-			return view('login')->withErrors([
-				'message' => 'Napaka pri prijavi. Prosimo, poizkusite znova.'
-			]);
-
-		/*/ Check if user has been activated.
-		if (!$user->active)
-			return view('login')->withErrors([
-				'message' => 'Prosimo, aktivirajte račun.'
-			]);*/
+			return $this->redirectTo('prijava',
+				'Napaka pri prijavi. Prosimo, poizkusite znova.'
+			);
 
 		// Redirect to the appropriate page based on user's role.
 		$role = $user->userRole->user_role_title;
 
 		switch ($role) {
-			case 'admin':
+			case 'Admin':
 				return $this->redirectTo('administrator/profil');
 				break;
 			case 'zaposleni':
@@ -95,9 +98,9 @@ class LoginController extends Controller {
 				$request->session()->flush();
 				$request->session()->regenerate();
 
-				return view('login')->withErrors([
-					'message' => 'Napaka pri prijavi. Prosimo, poizkusite znova.'
-				]);
+				return $this->redirectTo('prijava',
+					'Napaka pri prijavi. Prosimo, poizkusite znova.'
+				);
 		}
 	}
 
@@ -167,8 +170,7 @@ class LoginController extends Controller {
 	protected function login (Request $request) {
 		return auth()->attempt([
 				$this->username()	=> $request[$this->username()],
-				'password'			=> $request['password'],
-				'active'			=> 1
+				'password'			=> $request['password']
 			],
 			$request->has('remember')
 		);
