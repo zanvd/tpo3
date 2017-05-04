@@ -1,6 +1,6 @@
 <?php
 
-namespace app\Controllers\Auth;
+namespace App\Controllers\Auth;
 
 use App\Controllers\Controller;
 
@@ -8,14 +8,13 @@ use App\Models\Uporabnik as User;
 use App\Models\DelavecZd as Employee;
 
 class RegisterEmployeeController extends Controller {
-
 	/**
 	 * Create a new controller instance
 	 *
 	 */
 	public function __construct() {
-		// Only guest users can access register page.
-		$this->middleware('guest');
+		// Only administrator can access register page.
+		$this->middleware('admin');
 	}
 
 	/**
@@ -26,17 +25,28 @@ class RegisterEmployeeController extends Controller {
 		return view('registerEmployee');
 	}
 
+	/**
+	 * Create new employee.
+	 *
+	 * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+	 */
 	public function store() {
 		// Validate given data.
 		$this->validate(request(), [
 			'email'			=> 'required|email',
-			'password'		=> 'required|confirmed|min:6|max:64',
-			'name'			=> 'required|string',
-			'surname'		=> 'required|string',
-			'phoneNumber'	=> 'required|digits:9',
+			'password'		=> 'required|confirmed|min:5|max:64',
+			'name'			=> 'required|alpha',
+			'surname'		=> 'required|alpha',
+			'phoneNumber'	=> 'required|between:8,15',
 			'function'		=> 'required',
 			'institution'	=> 'required',
 			'areaNumber'	=> 'required',
+			'address'		=> 'required',
+			'postNumber'	=> 'required'
+		], [
+			'alpha'			=> 'Dovoljene so zgolj črke.',
+			'confirmed'		=> 'Gesli se ne ujemata.',
+			'required'		=> 'Polje je zahtevano.'
 		]);
 
 		// Create new user and populate attributes.
