@@ -16,11 +16,9 @@ class CreateVisitTable extends Migration {
 			$table->date('visit_date');
 			$table->boolean('first_visit');
 			$table->boolean('fixed_visit');
-			$table->boolean('done');
-			$table->unsignedInteger('visit_subtype_id');
+			$table->boolean('done')->default(false);
 			$table->unsignedInteger('work_order_id');
 
-			$table->foreign('visit_subtype_id')->references('visit_subtype_id')->on('VisitSubtype');
 			$table->foreign('work_order_id')->references('work_order_id')->on('WorkOrder');
 		});
 	}
