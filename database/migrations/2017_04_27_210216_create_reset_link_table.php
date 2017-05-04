@@ -13,11 +13,9 @@ class CreateResetLinkTable extends Migration {
 	public function up() {
 		Schema::create('ResetLink', function (Blueprint $table) {
 			$table->increments('reset_link_id');
-			$table->char('reset_link_token', 45);
-			$table->dateTime('reset_link_expiry');
-			$table->unsignedInteger('user_id');
-
-			$table->foreign('user_id')->references('user_id')->on('User');
+			$table->string('email', 100)->unique();
+			$table->char('token', 64);
+			$table->timestamp('created_at');
 		});
 	}
 

@@ -4,29 +4,39 @@ namespace App\Controllers\Auth;
 
 use App\Controllers\Controller;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
+use Illuminate\Http\Request;
 
-class ForgotPasswordController extends Controller
-{
-    /*
-    |--------------------------------------------------------------------------
-    | Password Reset Controller
-    |--------------------------------------------------------------------------
-    |
-    | This controller is responsible for handling password reset emails and
-    | includes a trait which assists in sending these notifications from
-    | your application to your users. Feel free to explore this trait.
-    |
-    */
+class ForgotPasswordController extends Controller {
+	use SendsPasswordResetEmails;
 
-    use SendsPasswordResetEmails;
+	protected $redirectTo = '/';
 
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->middleware('guest');
-    }
+	/**
+	 * Create a new controller instance.
+	 *
+	 * @return void
+	 */
+	public function __construct () {
+		$this->middleware('guest');
+	}
+
+	/**
+	 * Display the form to request a password reset link.
+	 *
+	 * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+	 */
+	public function index () {
+		return view('forgotten');
+	}
+
+	/**
+	 * Send a reset link to the given user.
+	 *
+	 * @param Request $request
+	 *
+	 * @return \Illuminate\Http\RedirectResponse
+	 */
+	public function store (Request $request) {
+		return $this->sendResetLinkEmail($request);
+	}
 }

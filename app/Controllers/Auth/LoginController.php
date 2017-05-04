@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Lang;
 class LoginController extends Controller {
 	use RedirectsUsers, ThrottlesLogins;
 
-    /**
+	/**
      * Create a new controller instance.
 	 *
      */
@@ -20,6 +20,7 @@ class LoginController extends Controller {
 		// Allow access only to non-authenticated users.
 		// With the exception of destroy method (logout call).
     	$this->middleware('guest', ['except' => 'destroy']);
+    	error_log(print_r(method_exists($this, 'redirectTo'), true));
 	}
 
     /**
@@ -68,11 +69,11 @@ class LoginController extends Controller {
 				'message' => 'Napaka pri prijavi. Prosimo, poizkusite znova.'
 			]);
 
-		// Check if user has been activated.
+		/*/ Check if user has been activated.
 		if (!$user->active)
 			return view('login')->withErrors([
 				'message' => 'Prosimo, aktivirajte račun.'
-			]);
+			]);*/
 
 		// Redirect to the appropriate page based on user's role.
 		$role = $user->userRole->user_role_title;
@@ -167,7 +168,8 @@ class LoginController extends Controller {
 	protected function login (Request $request) {
 		return auth()->attempt([
 				$this->username()	=> $request[$this->username()],
-				'password'			=> $request['password']
+				'password'			=> $request['password'],
+				'active'			=> 1
 			],
 			$request->has('remember')
 		);
