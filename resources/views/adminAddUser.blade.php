@@ -88,11 +88,21 @@
                 <div class="form-group">
                   <label>Šifra izvajalca</label>
                     <select class="form-control" name="institution" required>
+                      @if (count($institutions))
+                              @foreach($institutions as $institution)
+                                <option value="{{ $instit->id }}">{{ $institution->value }}</option>
+                              @endforeach
+                      @endif  
                     </select>
                 </div>
                 <div class="form-group">
                   <label>Šifra okoliša</label>
-                    <select class="form-control" name="areaNumber" id="areaNumber" required>
+                    <select class="form-control" name="region" id="region" required>
+                      @if (count($regions))
+                                @foreach($regions as $region)
+                                  <option value="{{ $instit->id }}">{{ $region->value }}</option>
+                                @endforeach
+                        @endif  
                     </select>
                 </div>
                 <button class="btn btn-primary" type="submit">Ustvari</button>
