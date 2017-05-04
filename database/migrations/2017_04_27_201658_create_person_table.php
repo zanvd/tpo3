@@ -18,7 +18,7 @@ class CreatePersonTable extends Migration {
 			$table->string('phone_num', 15);
 			$table->string('address', 100);
 			$table->unsignedInteger('post_number');
-			$table->unsignedInteger('region_id');
+			$table->unsignedInteger('region_id')->nullable();
 
 			$table->foreign('post_number')->references('post_number')
 					->on('Post');
