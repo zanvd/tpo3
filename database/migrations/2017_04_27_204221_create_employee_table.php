@@ -13,7 +13,6 @@ class CreateEmployeeTable extends Migration {
 	public function up() {
 		Schema::create('Employee', function (Blueprint $table) {
 			$table->integer('employee_id')->primary();
-			$table->string('employee_title', 45);
 			$table->unsignedInteger('person_id');
 			$table->unsignedInteger('institution_id');
 
