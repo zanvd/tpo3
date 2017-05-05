@@ -1,7 +1,9 @@
 function disableField() {
-	document.getElementById("areaNumber").setAttribute("disabled","");
+	document.getElementById("region").setAttribute("disabled","");
+	$('.selectpicker').selectpicker('refresh');
 }
 
 function enableField() {
-	document.getElementById("areaNumber").removeAttribute("disabled");
+	document.getElementById("region").removeAttribute("disabled");
+	$('.selectpicker').selectpicker('refresh');
 }

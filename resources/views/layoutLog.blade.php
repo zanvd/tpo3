@@ -8,7 +8,7 @@
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <link rel="icon" href="{{ URL::asset('favicon.ico') }}">
     @yield('title')
-
+    <link rel="stylesheet" type="text/css" href="{{ URL::asset('css/bootstrap-select.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ URL::asset('css/bootstrap.min.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ URL::asset('css/style.css') }}">
   </head>
@@ -31,7 +31,9 @@
         </div>
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav navbar-right">
+            @if( ! empty($name) )
             <li><a href="#">{{$name}}</a></li>
+            @endif
             <li><a href="/odjava">Odjava</a></li>
           </ul>
         </div><!--/.nav-collapse -->
@@ -48,8 +50,12 @@
             @yield('menu')
 
             <div class="well">
+              @if( ! empty($role) )
               <h5><b>Vloga:</b> {{$role}}</h5>
+              @endif
+              @if( ! empty($lastLogin) )
               <h5><b>Zadnja prijava:</b> {{$lastLogin}}</h5>
+              @endif
             </div>
           </div>
 
@@ -67,6 +73,7 @@
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="{{ URL::asset('js/bootstrap.min.js') }}"></script>
+    <script src="{{ URL::asset('js/bootstrap-select.js') }}"></script>
     <script src="{{ URL::asset('js/script.js') }}"></script>
   </body>
 </html>

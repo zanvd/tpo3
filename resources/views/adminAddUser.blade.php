@@ -49,7 +49,7 @@
                       <label class="radio-inline flex-child" onclick="disableField()"><input type="radio" name="function">Zdravnik</label>
                       <label class="radio-inline flex-child" onclick="enableField()"><input type="radio" name="function">Vodja PS</label>
                       <label class="radio-inline flex-child" onclick="enableField()"><input type="radio" name="function">Patronažna sestra</label>
-                      <label class="radio-inline flex-child" onclick="enableField()"><input type="radio" name="function">Uslužbenec ZD</label>
+                      <label class="radio-inline flex-child" onclick="enableField()"><input type="radio" name="function" checked>Uslužbenec ZD</label>
                     </div>
                 </div>
                 <div class="form-group">
@@ -82,26 +82,32 @@
                 </div>
                 <div class="form-group">
                   <label>Poštna številka</label>
-                    <select class="form-control" name="postNumber" required>
+                    <select  data-live-search="true" data-live-search-style="startsWith" class="form-control selectpicker" name="postNumber" title="Izberite..." required>
+                      @if( ! empty($posts) )
+                              @foreach($posts as $key => $value)
+                                <option value="{{ $key}}">{{ $value }}</option>
+                              @endforeach
+                      @endif 
                     </select>
+
                 </div>
                 <div class="form-group">
                   <label>Šifra izvajalca</label>
-                    <select class="form-control" name="institution" required>
-                      @if (count($institutions))
-                              @foreach($institutions as $institution)
-                                <option value="{{ $instit->id }}">{{ $institution->value }}</option>
+                    <select  data-live-search="true" data-live-search-style="startsWith" class="form-control selectpicker" name="institution" title="Izberite..." required>
+                      @if( ! empty($institutions) )
+                              @foreach($institutions as $key => $value)
+                                <option value="{{ $key}}">{{ $value }}</option>
                               @endforeach
                       @endif  
                     </select>
                 </div>
                 <div class="form-group">
                   <label>Šifra okoliša</label>
-                    <select class="form-control" name="region" id="region" required>
-                      @if (count($regions))
-                                @foreach($regions as $region)
-                                  <option value="{{ $instit->id }}">{{ $region->value }}</option>
-                                @endforeach
+                    <select id="region" data-live-search="true" data-live-search-style="startsWith" class="form-control selectpicker" name="region" title="Izberite..." required>
+                      @if( ! empty($regions) )
+                              @foreach($regions as $key => $value)
+                                <option value="{{ $key}}">{{ $value }}</option>
+                              @endforeach
                         @endif  
                     </select>
                 </div>
