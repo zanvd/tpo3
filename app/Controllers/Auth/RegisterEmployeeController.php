@@ -4,8 +4,13 @@ namespace App\Controllers\Auth;
 
 use App\Controllers\Controller;
 
+use App\Models\Institution;
+use App\Models\Person;
+use App\Models\Post;
+use App\Models\Region;
 use App\Models\Uporabnik as User;
 use App\Models\DelavecZd as Employee;
+use Carbon\Carbon;
 
 class RegisterEmployeeController extends Controller {
 	/**
@@ -22,7 +27,19 @@ class RegisterEmployeeController extends Controller {
 	 *
 	 */
 	public function index() {
-		return view('registerEmployee');
+		return view('registerEmployee')
+			->with([
+			   'lastLogin'		=> $this->lastLogin(auth()->user()),
+			   'posts'			=> Post::all()->mapWithKeys(function ($post) {
+				   return [$post['post_number'] => $post['post_title']];
+			   }),
+			   'institutions'	=> Institution::all()->mapWithKeys(function ($inst) {
+				   return [$inst['institution_id'] => $inst['institution_title']];
+			   }),
+			   'regions'		=> Region::all()->mapWithKeys(function ($region) {
+				   return [$region['region_id'] => $region['region_title']];
+			   })
+		]);
 	}
 
 	/**
@@ -40,7 +57,6 @@ class RegisterEmployeeController extends Controller {
 			'phoneNumber'	=> 'required|between:8,15',
 			'function'		=> 'required',
 			'institution'	=> 'required',
-			'areaNumber'	=> 'required',
 			'address'		=> 'required',
 			'postNumber'	=> 'required'
 		], [
@@ -49,31 +65,36 @@ class RegisterEmployeeController extends Controller {
 			'required'		=> 'Polje je zahtevano.'
 		]);
 
-		// Create new user and populate attributes.
-		$user = new User;
+		// Create new person and populate attributes.
+		$person = Person::create([
+			'name'			=> request('name'),
+			'surname'		=> request('surname'),
+			'phone_number'	=>request('phoneNumber'),
+			'address'		=> request('address'),
+			'post_number'	=> request('postNumber'),
+			'region_id'		=> array_key_exists(request('region')) ?
+				request('region') : null,
+		]);
 
-		$user->email = request('email');
-		$user->password = request('password');
-		$user->vloga = 'usluzbenec';
-
-		$user->save();
+		dd($person);
 
 		// Create new employee and populate attributes.
-		$employee = new Employee;
+		$employee = Employee::create([
+			'employee_title'	=> request('function'),
+			'person_id'			=> $person->person_id,
+			'institution_id'	=> request('institution')
+		]);
 
-		$employee->priimek = request('surname');
-		$employee->ime = request('name');
-		$employee->telefon = request('phoneNumber');
-		$employee->funkcija = request('function');
-		$employee->uporabnik = $user->uporabnik_id;
-		$employee->izvajalec = request('institution');
-		$employee->okolis = request('areaNumber');
+		// Create new user and populate attributes.
+		$user = User::create([
+			'email'			=> request('email'),
+			'password'		=> bcrypt(request('password')),
+			'created_at'	=> Carbon::now()->toDateTimeString(),
+			'user_role_id'	=> request('userRole'),
+			'person_id'		=> $person->person_id
+		]);
 
-		$employee->save();
-
-		// Login user and redirect to home page.
-		auth()->login($user);
-
-		return redirect('/');
+		return redirect('/registracija/zaposleni')
+			->with(['status' => 'Nov zaposleni uspešno registriran.']);
 	}
 }

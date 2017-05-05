@@ -4,6 +4,7 @@ namespace App\Controllers\Auth;
 
 use App\Controllers\Controller;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Foundation\Auth\RedirectsUsers;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Http\Request;
@@ -77,18 +78,36 @@ class LoginController extends Controller {
 				'Napaka pri prijavi. Prosimo, poizkusite znova.'
 			);
 
+		// Retrieve user's last login.
+		$lastLogin = $this->lastLogin($user);
+
 		// Redirect to the appropriate page based on user's role.
 		$role = $user->userRole->user_role_title;
 
 		switch ($role) {
 			case 'Admin':
-				return $this->redirectTo('administrator/profil');
+				return $this->redirectTo('administrator/profil')
+							->with([
+								'name' => $user->person->name,
+								'role' => $role,
+								'lastLogin' => $lastLogin
+							]);
 				break;
 			case 'zaposleni':
-				return $this->redirectTo('zaposleni/profil');
+				return $this->redirectTo('zaposleni/profil')
+							->with([
+									   'name' => $user->person->name,
+									   'role' => $role,
+									   'lastLogin' => $lastLogin
+								   ]);
 				break;
 			case 'pacient':
-				return $this->redirectTo('pacient/profil');
+				return $this->redirectTo('pacient/profil')
+							->with([
+									   'name' => $user->person->name,
+									   'role' => $role,
+									   'lastLogin' => $lastLogin
+								   ]);
 				break;
 			default:
 				// Something went wrong.
@@ -112,6 +131,10 @@ class LoginController extends Controller {
 	 * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
 	 */
 	public function destroy(Request $request) {
+		// Set new last login to current timestamp.
+		request()->user()->last_login = Carbon::now()->toDateTimeString();
+		request()->user()->save();
+
 		auth()->logout();
 
 		$request->session()->flush();
