@@ -8,8 +8,9 @@ use App\Models\Institution;
 use App\Models\Person;
 use App\Models\Post;
 use App\Models\Region;
-use App\Models\Uporabnik as User;
-use App\Models\DelavecZd as Employee;
+use App\Models\User;
+use App\Models\Employee;
+use App\Models\UserRole;
 use Carbon\Carbon;
 
 class RegisterEmployeeController extends Controller {
@@ -27,9 +28,14 @@ class RegisterEmployeeController extends Controller {
 	 *
 	 */
 	public function index() {
-		return view('registerEmployee')
+		return view('adminAddUser')
 			->with([
+				'name'			=> auth()->user()->person->name . ' ' .auth()->user()->person->surname,
+			   'role'			=> auth()->user()->userRole->user_role_title,
 			   'lastLogin'		=> $this->lastLogin(auth()->user()),
+			   'roles'			=> UserRole::all()->mapWithKeys(function ($role) {
+				   return [$role['user_role_id'] => $role['user_role_title']];
+			   }),
 			   'posts'			=> Post::all()->mapWithKeys(function ($post) {
 				   return [$post['post_number'] => $post['post_title']];
 			   }),
@@ -51,7 +57,7 @@ class RegisterEmployeeController extends Controller {
 		// Validate given data.
 		$this->validate(request(), [
 			'email'			=> 'required|email',
-			'password'		=> 'required|confirmed|min:5|max:64',
+			'password'		=> 'required|confirmed|min:8|max:64',
 			'name'			=> 'required|alpha',
 			'surname'		=> 'required|alpha',
 			'phoneNumber'	=> 'required|between:8,15',
@@ -69,28 +75,30 @@ class RegisterEmployeeController extends Controller {
 		$person = Person::create([
 			'name'			=> request('name'),
 			'surname'		=> request('surname'),
-			'phone_number'	=>request('phoneNumber'),
+			'phone_num'		=> request('phoneNumber'),
 			'address'		=> request('address'),
 			'post_number'	=> request('postNumber'),
-			'region_id'		=> array_key_exists(request('region')) ?
+			'region_id'		=> array_key_exists('region', request()) ?
 				request('region') : null,
 		]);
 
-		dd($person);
+		do
+			$employeeId = intval(rand(0,9) . rand(0,9) . rand(0,9) . rand(0,9) . rand(0,9));
+		while (Employee::find($employeeId) !== null);
 
 		// Create new employee and populate attributes.
-		$employee = Employee::create([
-			'employee_title'	=> request('function'),
+		Employee::create([
+			'employee_id'		=> $employeeId,
 			'person_id'			=> $person->person_id,
 			'institution_id'	=> request('institution')
 		]);
 
 		// Create new user and populate attributes.
-		$user = User::create([
+		User::create([
 			'email'			=> request('email'),
 			'password'		=> bcrypt(request('password')),
 			'created_at'	=> Carbon::now()->toDateTimeString(),
-			'user_role_id'	=> request('userRole'),
+			'user_role_id'	=> request('function'),
 			'person_id'		=> $person->person_id
 		]);
 

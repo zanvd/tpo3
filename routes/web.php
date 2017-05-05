@@ -24,7 +24,7 @@ $namespacePrefix = [
 
 // Landing page.
 Route::get('/', function () {
-		return view('adminAddUser');
+		return view('landing');
 });
 
 // Register routes for login.
@@ -49,8 +49,6 @@ Route::get('/ponastavi-geslo/{email}/{token}', [
 
 Route::post('/ponastavi-geslo',
 			$namespacePrefix['auth'].'ResetPasswordController@store');
-
-
 
 
 // Register routes for patients.

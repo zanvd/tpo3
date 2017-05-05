@@ -55,8 +55,8 @@ class LoginController extends Controller {
 
 		// Check if user has been activated.
 		$user = User::where('email', $request['email'])->first();
-		if (!$user->active)
-			return $this->redirectTo('prijava', Lang::get('activate'));
+		if ($user !== null && !$user->active)
+			return $this->redirectTo('prijava', Lang::get('auth.activate'));
 
 		// Unset user variable.
 		unset($user);
@@ -64,10 +64,12 @@ class LoginController extends Controller {
 		// Try to authenticate user.
 		if (!$this->login($request)) {
 			$this->incrementLoginAttempts($request);
+
 			// If authentication fails, return back to login page
 			// with error message.
-
-			return $this->redirectTo('prijava', Lang::get('auth.failed'));
+			return redirect()->back()->withErrors([
+				'message' => Lang::get('auth.failed')
+			]);
 		}
 
 		$user = Auth::user();
@@ -86,7 +88,7 @@ class LoginController extends Controller {
 
 		switch ($role) {
 			case 'Admin':
-				return $this->redirectTo('administrator/profil')
+				return $this->redirectTo('/registracija/zaposleni')
 							->with([
 								'name' => $user->person->name,
 								'role' => $role,
@@ -169,7 +171,7 @@ class LoginController extends Controller {
 	protected function validateLogin (Request $request) {
 		$this->validate($request, [
 			$this->username()	=> 'required',
-			'password'			=> 'required'
+			'password'			=> 'required|min:8|max:64'
 		]);
 	}
 
