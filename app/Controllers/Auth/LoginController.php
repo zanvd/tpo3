@@ -3,6 +3,8 @@
 namespace App\Controllers\Auth;
 
 use App\Controllers\Controller;
+use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Foundation\Auth\RedirectsUsers;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Http\Request;
@@ -31,13 +33,13 @@ class LoginController extends Controller {
     	return view('login');
 	}
 
-    /**
-     * Authenticate user with login parameters.
+	/**
+	 * Authenticate user with login parameters.
 	 *
-	 * @param $request \Illuminate\Http\Request
+	 * @param Request $request
 	 *
-	 * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\Response
-     */
+	 * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+	 */
     public function store(Request $request) {
     	// Check if both email and password are provided.
 		$this->validateLogin($request);
@@ -51,41 +53,63 @@ class LoginController extends Controller {
 			return $this->sendLockoutResponse($request);
 		}
 
-    	// Try to authenticate user.
+		// Check if user has been activated.
+		$user = User::where('email', $request['email'])->first();
+		if ($user !== null && !$user->active)
+			return $this->redirectTo('prijava', Lang::get('auth.activate'));
+
+		// Unset user variable.
+		unset($user);
+
+		// Try to authenticate user.
 		if (!$this->login($request)) {
 			$this->incrementLoginAttempts($request);
+
 			// If authentication fails, return back to login page
 			// with error message.
-
-			return $this->redirectTo('prijava', Lang::get('auth.failed'));
+			return redirect()->back()->withErrors([
+				'message' => Lang::get('auth.failed')
+			]);
 		}
 
 		$user = Auth::user();
 
 		// Check if user exists.
 		if ($user === NULL)
-			return view('login')->withErrors([
-				'message' => 'Napaka pri prijavi. Prosimo, poizkusite znova.'
-			]);
+			return $this->redirectTo('prijava',
+				'Napaka pri prijavi. Prosimo, poizkusite znova.'
+			);
 
-		/*/ Check if user has been activated.
-		if (!$user->active)
-			return view('login')->withErrors([
-				'message' => 'Prosimo, aktivirajte račun.'
-			]);*/
+		// Retrieve user's last login.
+		$lastLogin = $this->lastLogin($user);
 
 		// Redirect to the appropriate page based on user's role.
 		$role = $user->userRole->user_role_title;
 
 		switch ($role) {
-			case 'admin':
-				return $this->redirectTo('administrator/profil');
+			case 'Admin':
+				return $this->redirectTo('/registracija/zaposleni')
+							->with([
+								'name' => $user->person->name,
+								'role' => $role,
+								'lastLogin' => $lastLogin
+							]);
 				break;
 			case 'zaposleni':
-				return $this->redirectTo('zaposleni/profil');
+				return $this->redirectTo('zaposleni/profil')
+							->with([
+									   'name' => $user->person->name,
+									   'role' => $role,
+									   'lastLogin' => $lastLogin
+								   ]);
 				break;
 			case 'pacient':
-				return $this->redirectTo('pacient/profil');
+				return $this->redirectTo('pacient/profil')
+							->with([
+									   'name' => $user->person->name,
+									   'role' => $role,
+									   'lastLogin' => $lastLogin
+								   ]);
 				break;
 			default:
 				// Something went wrong.
@@ -95,9 +119,9 @@ class LoginController extends Controller {
 				$request->session()->flush();
 				$request->session()->regenerate();
 
-				return view('login')->withErrors([
-					'message' => 'Napaka pri prijavi. Prosimo, poizkusite znova.'
-				]);
+				return $this->redirectTo('prijava',
+					'Napaka pri prijavi. Prosimo, poizkusite znova.'
+				);
 		}
 	}
 
@@ -109,6 +133,10 @@ class LoginController extends Controller {
 	 * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
 	 */
 	public function destroy(Request $request) {
+		// Set new last login to current timestamp.
+		request()->user()->last_login = Carbon::now()->toDateTimeString();
+		request()->user()->save();
+
 		auth()->logout();
 
 		$request->session()->flush();
@@ -143,7 +171,7 @@ class LoginController extends Controller {
 	protected function validateLogin (Request $request) {
 		$this->validate($request, [
 			$this->username()	=> 'required',
-			'password'			=> 'required'
+			'password'			=> 'required|min:8|max:64'
 		]);
 	}
 
@@ -167,8 +195,7 @@ class LoginController extends Controller {
 	protected function login (Request $request) {
 		return auth()->attempt([
 				$this->username()	=> $request[$this->username()],
-				'password'			=> $request['password'],
-				'active'			=> 1
+				'password'			=> $request['password']
 			],
 			$request->has('remember')
 		);

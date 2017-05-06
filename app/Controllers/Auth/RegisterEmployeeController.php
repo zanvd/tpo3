@@ -1,21 +1,26 @@
 <?php
 
-namespace app\Controllers\Auth;
+namespace App\Controllers\Auth;
 
 use App\Controllers\Controller;
 
-use App\Models\Uporabnik as User;
-use App\Models\DelavecZd as Employee;
+use App\Models\Institution;
+use App\Models\Person;
+use App\Models\Post;
+use App\Models\Region;
+use App\Models\User;
+use App\Models\Employee;
+use App\Models\UserRole;
+use Carbon\Carbon;
 
 class RegisterEmployeeController extends Controller {
-
 	/**
 	 * Create a new controller instance
 	 *
 	 */
 	public function __construct() {
-		// Only guest users can access register page.
-		$this->middleware('guest');
+		// Only administrator can access register page.
+		$this->middleware('admin');
 	}
 
 	/**
@@ -23,47 +28,81 @@ class RegisterEmployeeController extends Controller {
 	 *
 	 */
 	public function index() {
-		return view('registerEmployee');
+		return view('adminAddUser')
+			->with([
+				'name'			=> auth()->user()->person->name . ' ' .auth()->user()->person->surname,
+			   'role'			=> auth()->user()->userRole->user_role_title,
+			   'lastLogin'		=> $this->lastLogin(auth()->user()),
+			   'roles'			=> UserRole::all()->mapWithKeys(function ($role) {
+				   return [$role['user_role_id'] => $role['user_role_title']];
+			   }),
+			   'posts'			=> Post::all()->mapWithKeys(function ($post) {
+				   return [$post['post_number'] => $post['post_title']];
+			   }),
+			   'institutions'	=> Institution::all()->mapWithKeys(function ($inst) {
+				   return [$inst['institution_id'] => $inst['institution_title']];
+			   }),
+			   'regions'		=> Region::all()->mapWithKeys(function ($region) {
+				   return [$region['region_id'] => $region['region_title']];
+			   })
+		]);
 	}
 
+	/**
+	 * Create new employee.
+	 *
+	 * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+	 */
 	public function store() {
 		// Validate given data.
 		$this->validate(request(), [
 			'email'			=> 'required|email',
-			'password'		=> 'required|confirmed|min:6|max:64',
-			'name'			=> 'required|string',
-			'surname'		=> 'required|string',
-			'phoneNumber'	=> 'required|digits:9',
+			'password'		=> 'required|confirmed|min:8|max:64',
+			'name'			=> 'required|alpha',
+			'surname'		=> 'required|alpha',
+			'phoneNumber'	=> 'required|between:8,15',
 			'function'		=> 'required',
 			'institution'	=> 'required',
-			'areaNumber'	=> 'required',
+			'address'		=> 'required',
+			'postNumber'	=> 'required'
+		], [
+			'alpha'			=> 'Dovoljene so zgolj črke.',
+			'confirmed'		=> 'Gesli se ne ujemata.',
+			'required'		=> 'Polje je zahtevano.'
+		]);
+
+		// Create new person and populate attributes.
+		$person = Person::create([
+			'name'			=> request('name'),
+			'surname'		=> request('surname'),
+			'phone_num'		=> request('phoneNumber'),
+			'address'		=> request('address'),
+			'post_number'	=> request('postNumber'),
+			'region_id'		=> array_key_exists('region', request()) ?
+				request('region') : null,
+		]);
+
+		do
+			$employeeId = intval(rand(0,9) . rand(0,9) . rand(0,9) . rand(0,9) . rand(0,9));
+		while (Employee::find($employeeId) !== null);
+
+		// Create new employee and populate attributes.
+		Employee::create([
+			'employee_id'		=> $employeeId,
+			'person_id'			=> $person->person_id,
+			'institution_id'	=> request('institution')
 		]);
 
 		// Create new user and populate attributes.
-		$user = new User;
+		User::create([
+			'email'			=> request('email'),
+			'password'		=> bcrypt(request('password')),
+			'created_at'	=> Carbon::now()->toDateTimeString(),
+			'user_role_id'	=> request('function'),
+			'person_id'		=> $person->person_id
+		]);
 
-		$user->email = request('email');
-		$user->password = request('password');
-		$user->vloga = 'usluzbenec';
-
-		$user->save();
-
-		// Create new employee and populate attributes.
-		$employee = new Employee;
-
-		$employee->priimek = request('surname');
-		$employee->ime = request('name');
-		$employee->telefon = request('phoneNumber');
-		$employee->funkcija = request('function');
-		$employee->uporabnik = $user->uporabnik_id;
-		$employee->izvajalec = request('institution');
-		$employee->okolis = request('areaNumber');
-
-		$employee->save();
-
-		// Login user and redirect to home page.
-		auth()->login($user);
-
-		return redirect('/');
+		return redirect('/registracija/zaposleni')
+			->with(['status' => 'Nov zaposleni uspešno registriran.']);
 	}
 }

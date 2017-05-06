@@ -51,8 +51,6 @@ Route::post('/ponastavi-geslo',
 			$namespacePrefix['auth'].'ResetPasswordController@store');
 
 
-
-
 // Register routes for patients.
 Route::get('/registracija/pacient',
 	$namespacePrefix['auth'].'RegisterPatientController@index');
