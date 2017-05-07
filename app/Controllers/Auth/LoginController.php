@@ -15,22 +15,22 @@ class LoginController extends Controller {
 	use RedirectsUsers, ThrottlesLogins;
 
 	/**
-     * Create a new controller instance.
+	 * Create a new controller instance.
 	 *
-     */
+	 */
 	public function __construct() {
 		// Allow access only to non-authenticated users.
 		// With the exception of destroy method (logout call).
-    	$this->middleware('guest', ['except' => 'destroy']);
+		$this->middleware('guest', ['except' => 'destroy']);
 	}
 
-    /**
-     * Display login page.
+	/**
+	 * Display login page.
 	 *
-     * @return \Illuminate\Http\Response
-     */
-    public function index() {
-    	return view('login');
+	 * @return \Illuminate\Http\Response
+	 */
+	public function index() {
+		return view('login');
 	}
 
 	/**
@@ -40,11 +40,11 @@ class LoginController extends Controller {
 	 *
 	 * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
 	 */
-    public function store(Request $request) {
-    	// Check if both email and password are provided.
+	public function store(Request $request) {
+		// Check if both email and password are provided.
 		$this->validateLogin($request);
 
-    	// Check for too many login attempts.
+		// Check for too many login attempts.
 		if ($this->hasTooManyLoginAttempts($request)) {
 			// Fire lockout event.
 			$this->fireLockoutEvent($request);
