@@ -8,7 +8,6 @@ use Carbon\Carbon;
 use Illuminate\Foundation\Auth\RedirectsUsers;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Lang;
 
 class LoginController extends Controller {
@@ -72,13 +71,13 @@ class LoginController extends Controller {
 			]);
 		}
 
-		$user = Auth::user();
+		$user = auth()->user();
 
 		// Check if user exists.
 		if ($user === NULL)
-			return $this->redirectTo('prijava',
-				'Napaka pri prijavi. Prosimo, poizkusite znova.'
-			);
+			return $this->back()->withErrors([
+				 'message' => 'Napaka pri prijavi. Prosimo, poskusite znova.'
+			 ]);
 
 		// Retrieve user's last login.
 		$lastLogin = $this->lastLogin($user);
@@ -119,9 +118,9 @@ class LoginController extends Controller {
 				$request->session()->flush();
 				$request->session()->regenerate();
 
-				return $this->redirectTo('prijava',
-					'Napaka pri prijavi. Prosimo, poizkusite znova.'
-				);
+				return $this->back()->withErrors([
+					'message' => 'Napaka pri prijavi. Prosimo, poskusite znova.'
+				]);
 		}
 	}
 

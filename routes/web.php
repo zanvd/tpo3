@@ -64,11 +64,11 @@ Route::post('/pozabljeno-geslo',
 
 /*
 |--------------------------------------------------------------------------
-| Password change
+| Password reset
 |--------------------------------------------------------------------------
 |
-| Get:		display the change password page.	guest
-| Post:		perform password change.			guest
+| Get:		display the reset password page.	guest
+| Post:		perform password reset.				guest
 |
 */
 Route::get('/ponastavi-geslo/{email}/{token}', [
@@ -78,6 +78,21 @@ Route::get('/ponastavi-geslo/{email}/{token}', [
 
 Route::post('/ponastavi-geslo',
 			$namespacePrefix['auth'].'ResetPasswordController@store');
+
+/*
+|--------------------------------------------------------------------------
+| Password change
+|--------------------------------------------------------------------------
+|
+| Get:		display the change password page.	auth
+| Post:		perform password change.			auth
+|
+*/
+Route::get('/spremeni-geslo',
+			$namespacePrefix['auth'].'ChangePasswordController@index');
+
+Route::post('/spremeni-geslo',
+			$namespacePrefix['auth'].'ChangePasswordController@store');
 
 
 /*

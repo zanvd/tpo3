@@ -41,7 +41,7 @@
 			<h3 class="panel-title">Sprememba gesla</h3>
 		</div>
 		<div class="panel-body">
-			<form class="article-comment" method="POST" action="/ponastavi-geslo">
+			<form class="article-comment" method="POST" action="/spremeni-geslo">
 				{{ csrf_field() }}
 				<div class="form-group">
 					<label>Staro geslo</label>
@@ -49,7 +49,7 @@
 				</div>
 				<div class="form-group">
 					<label>Novo geslo</label>
-					<input class="form-control" type="password" placeholder="Vnesite novo geslo..." name="password_confirmation" pattern="(?=.*[A-Ža-ž])(?=.*\d)[A-Ža-ž\d]{8,64}" required>
+					<input class="form-control" type="password" placeholder="Vnesite novo geslo..." name="password" pattern="(?=.*[A-Ža-ž])(?=.*\d)[A-Ža-ž\d]{8,64}" required>
 				</div>
 				<div class="form-group">
 					<label>Ponovitev novega gesla</label>
