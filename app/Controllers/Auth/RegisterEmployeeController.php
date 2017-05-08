@@ -26,6 +26,8 @@ class RegisterEmployeeController extends Controller {
 	/**
 	 * Display registration page.
 	 *
+	 * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+	 *
 	 */
 	public function index() {
 		return view('adminAddUser')
