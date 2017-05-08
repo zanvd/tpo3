@@ -40,7 +40,7 @@ class RegisterPatientController extends Controller {
 			'name'					=> 'required|string',
 			'surname'				=> 'required|string',
 			'sex'					=> 'required',
-			'birthDate'				=> 'required|date_format:d.m.Y|before:today',
+			'birthDate'				=> 'required|before:today',
 			'phoneNumber'			=> 'required|digits:9',
 			'address'				=> 'required',
 			'areaNumber'			=> 'required',

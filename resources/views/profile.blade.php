@@ -36,26 +36,30 @@
 			<div class="alert alert-danger">{{ $error }}</div>
 		@endforeach					
 	@endif
-		<div class="panel panel-default">
-			  <div class="panel-heading main-color-bg">
-				<h3 class="panel-title">Sprememba gesla</h3>
-			  </div>
-			  <div class="panel-body">
-				<form class="article-comment" method="POST" action="/registracija/zaposleni">
+	<div class="panel panel-default">
+		<div class="panel-heading main-color-bg">
+			<h3 class="panel-title">Sprememba gesla</h3>
+		</div>
+		<div class="panel-body">
+			<form class="article-comment" method="POST" action="/ponastavi-geslo">
 				{{ csrf_field() }}
 				<div class="form-group">
-				  <label>Staro geslo</label>
-					<input class="form-control" type="password" placeholder="Vnesite novo geslo..." name="password" pattern="(?=.*[A-Ža-ž])(?=.*\d)[A-Ža-ž\d]{8,64}" required>
+					<label>Staro geslo</label>
+					<input class="form-control" type="password" placeholder="Vnesite staro geslo..." name="oldPassword" pattern="(?=.*[A-Ža-ž])(?=.*\d)[A-Ža-ž\d]{8,64}" required>
 				</div>
 				<div class="form-group">
-				  <label>Novo geslo</label>
+					<label>Novo geslo</label>
+					<input class="form-control" type="password" placeholder="Vnesite novo geslo..." name="password_confirmation" pattern="(?=.*[A-Ža-ž])(?=.*\d)[A-Ža-ž\d]{8,64}" required>
+				</div>
+				<div class="form-group">
+					<label>Ponovitev novega gesla</label>
 					<input class="form-control" type="password" placeholder="Ponovno vnesite novo geslo..." name="password_confirmation" pattern="(?=.*[A-Ža-ž])(?=.*\d)[A-Ža-ž\d]{8,64}" required>
 				</div>
 				@if ($errors->first('password'))
 					<div class="alert alert-danger" role="alert">{{ $errors->first('password') }}</div>
 				@endif
 				<button class="btn btn-primary" type="submit">Potrdi</button>
-				</form>
-			  </div>
-			</div>
+			</form>
+		</div>
+	</div>
 @endsection
