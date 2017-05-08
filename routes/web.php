@@ -9,6 +9,9 @@
 | routes are loaded by the RouteServiceProvider within a group which
 | contains the "web" middleware group. Now create something great!
 |
+| Documentation is in form of:
+| Method:	Description.	can be accessed by
+|
 */
 
 
@@ -27,7 +30,16 @@ Route::get('/', function () {
 		return view('landing');
 });
 
-// Register routes for login.
+/*
+|--------------------------------------------------------------------------
+| Login and Logout
+|--------------------------------------------------------------------------
+|
+| Get:		display the login page.	guest
+| Post:		perform login.			guest
+| Destroy:	perform logout.			authenticated
+|
+*/
 Route::get('/prijava', $namespacePrefix['auth'].'LoginController@index');
 
 Route::post('/prijava', $namespacePrefix['auth'].'LoginController@store');
@@ -35,13 +47,30 @@ Route::post('/prijava', $namespacePrefix['auth'].'LoginController@store');
 Route::get('/odjava', $namespacePrefix['auth'].'LoginController@destroy');
 
 
-// Register routes for password reset.
+/*
+|--------------------------------------------------------------------------
+| Forgotten password
+|--------------------------------------------------------------------------
+|
+| Get:		display the send link page.	guest
+| Post:		send link to mail.			guest
+|
+*/
 Route::get('/pozabljeno-geslo',
 		   $namespacePrefix['auth'].'ForgotPasswordController@index');
 
 Route::post('/pozabljeno-geslo',
 			$namespacePrefix['auth'].'ForgotPasswordController@store');
 
+/*
+|--------------------------------------------------------------------------
+| Password reset
+|--------------------------------------------------------------------------
+|
+| Get:		display the reset password page.	guest
+| Post:		perform password reset.				guest
+|
+*/
 Route::get('/ponastavi-geslo/{email}/{token}', [
 	'as' => 'password.reset',
 	'uses'=> $namespacePrefix['auth'].'ResetPasswordController@index'
@@ -50,8 +79,31 @@ Route::get('/ponastavi-geslo/{email}/{token}', [
 Route::post('/ponastavi-geslo',
 			$namespacePrefix['auth'].'ResetPasswordController@store');
 
+/*
+|--------------------------------------------------------------------------
+| Password change
+|--------------------------------------------------------------------------
+|
+| Get:		display the change password page.	auth
+| Post:		perform password change.			auth
+|
+*/
+Route::get('/spremeni-geslo',
+			$namespacePrefix['auth'].'ChangePasswordController@index');
 
-// Register routes for patients.
+Route::post('/spremeni-geslo',
+			$namespacePrefix['auth'].'ChangePasswordController@store');
+
+
+/*
+|--------------------------------------------------------------------------
+| Patient registration
+|--------------------------------------------------------------------------
+|
+| Get:		display the registration page.	guest
+| Post:		perform registration.			guest
+|
+*/
 Route::get('/registracija/pacient',
 	$namespacePrefix['auth'].'RegisterPatientController@index');
 
@@ -61,7 +113,15 @@ Route::post('/registracija/pacient',
 
 
 
-// Register routes for workers.
+/*
+|--------------------------------------------------------------------------
+| Employee registration
+|--------------------------------------------------------------------------
+|
+| Get:		display the registration page.	admin
+| Post:		perform registration.			admin
+|
+*/
 Route::get('/registracija/zaposleni',
 	$namespacePrefix['auth'].'RegisterEmployeeController@index');
 
@@ -71,7 +131,15 @@ Route::post('/registracija/zaposleni',
 
 
 
-// Register routes for work order.
+/*
+|--------------------------------------------------------------------------
+| Work order creation
+|--------------------------------------------------------------------------
+|
+| Get:		display the work order page.	doctor, chief nurse
+| Post:		create new work order.			doctor, chief nurse
+|
+*/
 Route::get('delovni-nalog', function() {
 	return view('workOrder');
 });

@@ -8,29 +8,28 @@ use Carbon\Carbon;
 use Illuminate\Foundation\Auth\RedirectsUsers;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Lang;
 
 class LoginController extends Controller {
 	use RedirectsUsers, ThrottlesLogins;
 
 	/**
-     * Create a new controller instance.
+	 * Create a new controller instance.
 	 *
-     */
+	 */
 	public function __construct() {
 		// Allow access only to non-authenticated users.
 		// With the exception of destroy method (logout call).
-    	$this->middleware('guest', ['except' => 'destroy']);
+		$this->middleware('guest', ['except' => 'destroy']);
 	}
 
-    /**
-     * Display login page.
+	/**
+	 * Display login page.
 	 *
-     * @return \Illuminate\Http\Response
-     */
-    public function index() {
-    	return view('login');
+	 * @return \Illuminate\Http\Response
+	 */
+	public function index() {
+		return view('login');
 	}
 
 	/**
@@ -40,11 +39,11 @@ class LoginController extends Controller {
 	 *
 	 * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
 	 */
-    public function store(Request $request) {
-    	// Check if both email and password are provided.
+	public function store(Request $request) {
+		// Check if both email and password are provided.
 		$this->validateLogin($request);
 
-    	// Check for too many login attempts.
+		// Check for too many login attempts.
 		if ($this->hasTooManyLoginAttempts($request)) {
 			// Fire lockout event.
 			$this->fireLockoutEvent($request);
@@ -72,13 +71,13 @@ class LoginController extends Controller {
 			]);
 		}
 
-		$user = Auth::user();
+		$user = auth()->user();
 
 		// Check if user exists.
 		if ($user === NULL)
-			return $this->redirectTo('prijava',
-				'Napaka pri prijavi. Prosimo, poizkusite znova.'
-			);
+			return $this->back()->withErrors([
+				 'message' => 'Napaka pri prijavi. Prosimo, poskusite znova.'
+			 ]);
 
 		// Retrieve user's last login.
 		$lastLogin = $this->lastLogin($user);
@@ -119,9 +118,9 @@ class LoginController extends Controller {
 				$request->session()->flush();
 				$request->session()->regenerate();
 
-				return $this->redirectTo('prijava',
-					'Napaka pri prijavi. Prosimo, poizkusite znova.'
-				);
+				return $this->back()->withErrors([
+					'message' => 'Napaka pri prijavi. Prosimo, poskusite znova.'
+				]);
 		}
 	}
 
