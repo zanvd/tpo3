@@ -26,24 +26,26 @@ class RegisterEmployeeController extends Controller {
 	/**
 	 * Display registration page.
 	 *
+	 * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+	 *
 	 */
 	public function index() {
 		return view('adminAddUser')
 			->with([
 				'name'			=> auth()->user()->person->name . ' ' .auth()->user()->person->surname,
-			   'role'			=> auth()->user()->userRole->user_role_title,
-			   'lastLogin'		=> $this->lastLogin(auth()->user()),
-			   'roles'			=> UserRole::all()->mapWithKeys(function ($role) {
-				   return [$role['user_role_id'] => $role['user_role_title']];
+				'role'			=> auth()->user()->userRole->user_role_title,
+				'lastLogin'		=> $this->lastLogin(auth()->user()),
+				'roles'			=> UserRole::all()->mapWithKeys(function ($role) {
+					return [$role['user_role_id'] => $role['user_role_title']];
 			   }),
-			   'posts'			=> Post::all()->mapWithKeys(function ($post) {
-				   return [$post['post_number'] => $post['post_title']];
-			   }),
-			   'institutions'	=> Institution::all()->mapWithKeys(function ($inst) {
-				   return [$inst['institution_id'] => $inst['institution_title']];
-			   }),
-			   'regions'		=> Region::all()->mapWithKeys(function ($region) {
-				   return [$region['region_id'] => $region['region_title']];
+				'posts'			=> Post::all()->mapWithKeys(function ($post) {
+					return [$post['post_number'] => $post['post_title']];
+				}),
+				'institutions'	=> Institution::all()->mapWithKeys(function ($inst) {
+					return [$inst['institution_id'] => $inst['institution_title']];
+				}),
+				'regions'		=> Region::all()->mapWithKeys(function ($region) {
+					return [$region['region_id'] => $region['region_title']];
 			   })
 		]);
 	}
