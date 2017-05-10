@@ -32,7 +32,8 @@ class RegisterEmployeeController extends Controller {
 	public function index() {
 		return view('adminAddUser')
 			->with([
-				'name'			=> auth()->user()->person->name . ' ' .auth()->user()->person->surname,
+				'name'			=> auth()->user()->person->name . ' ' .
+									 auth()->user()->person->surname,
 				'role'			=> auth()->user()->userRole->user_role_title,
 				'lastLogin'		=> $this->lastLogin(auth()->user()),
 				'roles'			=> UserRole::all()->mapWithKeys(function ($role) {

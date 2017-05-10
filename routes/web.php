@@ -172,7 +172,18 @@ Route::post('/delovni-nalog',
 |
 */
 Route::get('/oskrbovani-pacient',
-	$namespacePrefix['patient'].'DependantPatientController@index');
+	$namespacePrefix['patient'].'DependentPatientController@index');
 
 Route::post('/oskrbovani-pacient',
-	$namespacePrefix['patient'].'DependantPatientController@store');
+	$namespacePrefix['patient'].'DependentPatientController@store');
+
+/*
+|--------------------------------------------------------------------------
+| Patient profile
+|--------------------------------------------------------------------------
+|
+| Get:		display patient profile page.	patient
+|
+*/
+Route::get('/profil',
+	$namespacePrefix['patient'].'PatientProfileController@index');

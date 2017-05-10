@@ -5,7 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Support\Facades\Auth;
 
-class AdministratorMiddleware {
+class PatientMiddleware {
 	/**
 	 * Handle an incoming request.
 	 *
@@ -16,9 +16,8 @@ class AdministratorMiddleware {
 	 * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|mixed
 	 */
 	public function handle ($request, Closure $next, $guard = null) {
-		// Check if user is authenticated and has a role of Admin.
 		$user = Auth::guard($guard)->authenticate();
-		if (!is_null($user) && $user->userRole->user_role_title !== 'Admin')
+		if (!is_null($user) && $user->userRole->user_role_title !== 'Pacient')
 			return redirect('/');
 
 		return $next($request);
