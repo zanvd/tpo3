@@ -41,11 +41,25 @@ function toggleContactField(){
 
 	disabled = !disabled;
 }
-
+/*
 function addDependantField(){
 	document.getElementsByClassName("dependantArea")[0].appendChild(dependantArea.cloneNode(true));
 	$('#dependant').collapse();
 	document.getElementById('dependant').id = id;
+	var newField= $('#' + id).find("input");
+	var newField2= $('#' + id).find("select");
+	id +=1;
+	 $("#registrationForm").bootstrapValidator('addField', newField);
+	 $("#registrationForm").bootstrapValidator('addField', newField2);
+}*/
+
+function addDependantField(){
+	$(".cloneDefault").clone(true).insertBefore(".dependantArea > div:last-child");
+    $(".dependantArea > .cloneDefault").removeClass("hidden");
+    $(".dependantArea > .cloneDefault").removeClass("cloneDefault");
+    $('#dependant').collapse();
+    document.getElementById('dependant').id = id;
+    $('#dependant').addClass("hidden cloneDefault")
 	var newField= $('#' + id).find("input");
 	var newField2= $('#' + id).find("select");
 	id +=1;
@@ -353,10 +367,12 @@ var dependantArea;
 var validator;
 body.onload = function(){
 
-    
+ 	
+    /*
     dependantArea = document.createElement('div');
 	dependantArea.innerHTML = document.getElementsByClassName("dependantArea")[0].innerHTML;
 	document.getElementsByClassName("dependantArea")[0].innerHTML ="";
+	*/
 };
 
 

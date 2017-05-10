@@ -176,7 +176,7 @@
 		</div>
 	</div>
 	<div class="dependantArea" id="dependantArea">
-	<div class="row collapse" id="dependant">
+	<div class="row collapse cloneDefault hidden" id="dependant">
 		<div class="col-md-12">
 			<div class="panel panel-default">
 				<div class="panel-heading main-color-bg">
