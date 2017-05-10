@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\DB;
 class RegisterPatientController extends Controller {
 
     /**
-     * Create a new controller instance.
+     * Create a new register patient controller instance.
      *
      */
 	public function __construct() {
@@ -68,18 +68,29 @@ class RegisterPatientController extends Controller {
 			'insurance'			=> 'required|digits:9',
 			'birthDate'			=> 'required|date|before:tomorrow',
 			'sex'				=> 'required|string|size:1',
-			'contactName'		=> 'string',
-			'contactSurname'	=> 'string',
-			'contactPhone'		=> 'digits|digits_between:8,9',
-			'contactAddress'	=> 'string',
-			'contactPost'		=> 'digits:4',
-			'relationship'		=> 'digits'
+			'contactName'		=> 'required_with_all:contactSurname,
+									contactPhone, contactAddress, contactPost,
+									relationship|string',
+			'contactSurname'	=> 'required_with_all:contactName,
+									contactPhone, contactAddress, contactPost,
+									relationship|string',
+			'contactPhone'		=> 'required_with_all:contactName,
+									contactSurname, contactAddress, contactPost,
+									relationship|digits|digits_between:8,9',
+			'contactAddress'	=> 'required_with_all:contactName,
+									contactSurname, contactPhone, contactPost,
+									relationship|string',
+			'contactPost'		=> 'required_with_all:contactName,
+									contactSurname, contactPhone, contactAddress,
+									relationship|digits:4',
+			'relationship'		=> 'required_with_all:contactName,
+									contactSurname, contactPhone, contactAddress,
+									contactPost|digits'
 		]);
 
-		// Create new Contact if all information is provided.
-		if (isset($request['contactName'], $request['contactSurname'],
-			$request['contactPhone'], $request['contactPost'],
-			$request['relationship'])) {
+		// Create new Contact if information is provided.
+		// Check only one field as validator takes care of checking everything.
+		if (isset($request['contactName'])) {
 			$contact = new Contact([
 				'contact_name'		=> request('contactName'),
 				'contact_surname'	=> request('contactSurname'),
@@ -89,15 +100,7 @@ class RegisterPatientController extends Controller {
 				'relationship_id'	=> request('relationship')
 			]);
 
-		} else if (isset($request['contactName']) ||
-				   isset($request['contactSurname']) ||
-				   isset($request['contactPhone']) ||
-				   isset($request['contactPost']) ||
-				   isset($request['relationship']))
-			// Warn the user about filling in all of the Contact information.
-			return redirect()->back()->withErrors([
-				'message' => 'Če želite dodati kontakt, morate izpolniti vsa polja.'
-			]);
+		}
 
 		// Start Transaction.
 		DB::beginTransaction();
@@ -137,11 +140,17 @@ class RegisterPatientController extends Controller {
 				'password'		=> bcrypt(request('password')),
 				'created_at'	=> Carbon::now()->toDateTimeString(),
 				'user_role_id'	=> UserRole::where('user_role_title', 'Pacient')
-									->user_role_id,
+									->value('user_role_id'),
 				'person_id'		=> $person->person_id
 			]);
 
 			$user->save();
+
+			// Create new Verification.
+			$verifController = new VerificationController();
+			$verification = $verifController->store($user->user_id);
+
+			$verification->save();
 
 		} catch (\Exception $e) {
 			// Log exception.
@@ -151,7 +160,7 @@ class RegisterPatientController extends Controller {
 			// Rollback everything.
 			DB::rollback();
 
-			// Let the user know about failure and ask to try again.
+			// Let the user know about the failure and ask to try again.
 			return redirect()->back()->withErrors([
 				'message' => 'Napaka pri ustvarjanju novega uporabniškega ' .
 							 'računa. Prosimo, poskusite znova.'
@@ -161,11 +170,13 @@ class RegisterPatientController extends Controller {
 		// Everything is fine. Commit changes to database.
 		DB::commit();
 
-		//TODO: email verification
+		// Send verification token.
+		$verifController->sendVerificationMail($user, $verification);
 
-		return redirect('/')->with([
+		return redirect('/prijava')->with([
 			'status'	=> 'Registracija uspela. Preverite vaš e-mail predal za '
-						   . 'aktivacijsko povezavo.'
+						   . 'aktivacijsko povezavo.',
+			'email'		=> $user->email
 		]);
 	}
 }

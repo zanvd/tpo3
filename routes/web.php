@@ -110,8 +110,24 @@ Route::get('/registracija/pacient',
 Route::post('/registracija/pacient',
 	$namespacePrefix['auth'].'RegisterPatientController@store');
 
+/*
+|--------------------------------------------------------------------------
+| Email verification
+|--------------------------------------------------------------------------
+|
+| Get:		show verification message page.				guest
+| Post:		perform verification with given token.		guest
+| Put:		resend verification token to given email.	guest
+|
+*/
+Route::get('/verifikacija',
+	$namespacePrefix['auth'].'VerificationController@index');
 
+Route::post('/verifikacija/{token}',
+	$namespacePrefix['auth'].'VerificationController@verify');
 
+Route::put('/verifikacija',
+	$namespacePrefix['auth'].'RegisterPatientController@update');
 
 /*
 |--------------------------------------------------------------------------
