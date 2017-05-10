@@ -92,12 +92,11 @@
 														<?php
 														$actionColor = 'button--blue';
 														?>
-														<a href="{{ url('/registracija/verifikacija/'.$verification->verification_token) }}"
-														   style="{{ $fontFamily }} {{ $style['button'] }} {{ $style[$actionColor] }}"
-														   class="button"
-														   target="_blank">
-															Potrdi
-														</a>
+														<form method="POST" action="{{ url('/verifikacija/'.$verification->verification_token) }}">
+															<button type="submit" style="{{ $fontFamily }} {{ $style['button'] }} {{ $style[$actionColor] }}" class="button">
+																Potrdi
+															</button>
+														</form>
 													</td>
 												</tr>
 											</table>
