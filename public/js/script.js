@@ -15,12 +15,16 @@ function toggleContactField(){
 	buttonText2 = temp;
 	var inputs= $('#contactField').find("input");
 	var selects= $('#contactField').find("select");
+	var buttons= $('#contactField').find("button");
 	if(!disabled) {
 		for(var i = 0;i < inputs.length; i++) {
 		    inputs[i].disabled = true;
 		}
 		for(var i = 0;i < selects.length; i++) {
 		    selects[i].disabled = true;
+		}
+		for(var i = 0;i < buttons.length; i++) {
+		    buttons[i].disabled = true;
 		}
 	}
 	else {
@@ -29,6 +33,9 @@ function toggleContactField(){
 		}
 		for(var i = 0;i < selects.length; i++) {
 		    selects[i].disabled = false;
+		}
+		for(var i = 0;i < buttons.length; i++) {
+		    buttons[i].disabled = false;
 		}
 	}
 
