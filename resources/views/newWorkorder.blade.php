@@ -4,6 +4,11 @@
 <title>Nov delovni nalog</title>
 @endsection
 
+@section('css')
+<link rel="stylesheet" type="text/css" href="{{ URL::asset('css/bootstrapValidator.min.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ URL::asset('css/bootstrap-datepicker.min.css') }}">
+@endsection
+
 @section('header')
 <header id="header">
 	  <div class="container">
@@ -20,88 +25,143 @@
 
 @section('menu')
 			<div class="list-group">
+			<a href="#" class="list-group-item"> <span class="glyphicon glyphicon-user" aria-hidden="true"></span>Moj profil</a>
 			  <a href="#" class="list-group-item active main-color-bg">
 			   <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> Nov delovni nalog
 			  </a>
 			  <a href="#" class="list-group-item"> <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span> Seznam delovnih nalogov</a>
-			  <a href="#" class="list-group-item"> <span class="glyphicon glyphicon-user" aria-hidden="true"></span>Moj profil</a>
+			  <a href="/spremeni-geslo" class="list-group-item "> <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> Sprememba gesla</a>
 			</div>
 @endsection
 
 @section('content')
 	<div class="row">
-		<div class="col-md-6">
-			<div class="panel panel-default">
-				<div class="panel-heading main-color-bg">
-					<h3 class="panel-title">Izvajalec</h3>
-				</div>
-				<div class="panel-body">
-					<div class="form-group">
-						<label>Šifra izvajalca</label>
-						<select id="relationship" data-live-search="true" class="form-control selectpicker" name="institution" id="institution" title="Izberite..." required>
-						  @if( ! empty($institutions) )
-								  @foreach($institutions as $key => $value)
-									<option value="{{ $key}}">{{ $value }}</option>
-						  @endforeach
-							@endif
-						</select>
-					</div>
-					<div class="form-group">
-						<label>Šifra zdravniške dejavnosti</label>
-						<select id="relationship" data-live-search="true" class="form-control selectpicker" name="task" id="task" title="Izberite..." required>
-						  @if( ! empty($tasks) )
-								  @foreach($tasks as $key => $value)
-									<option value="{{ $key}}">{{ $value }}</option>
-								  @endforeach
-							@endif
-						</select>
-					</div>
-				</div>
+		<div class="panel panel-default">
+			<div class="panel-heading main-color-bg">
+				<h3 class="panel-title">Delovni nalog</h3>
 			</div>
-		</div>
-		<div class="col-md-6">
-			<div class="panel panel-default">
-				<div class="panel-heading main-color-bg">
-					<h3 class="panel-title">Zdravnik</h3>
-				</div>
-				<div class="panel-body">
-					<div class="form-group">
-								<div class="form-control">
-								<label class="radio-inline"><input type="radio" name="employeeType"> Osebni</label>
-								<label class="radio-inline"><input type="radio" name="employeeType">Napotni</label>
-								<label class="radio-inline"><input type="radio" name="employeeType">NMP</label>
-								<label class="radio-inline"><input type="radio" name="employeeType">Nadomestni</label>
-								</div>
-					</div>
-					<div class="form-group">
-						<label>Številka zdravnika</label>
-							<input class="form-control" type="text" placeholder="Vnesite številko zdravnika..." name="doctorId" id="doctorId" required>
-					</div>
+			<div class="panel-body">
+					<div class="row">
+						<div class="col-md-12">
+						<div class="form-group">
+		                <label>Tip obiska</label>
+		                <select data-live-search="true" class="form-control selectpicker" name="vistiType" id="vistiType" title="Izberite..." required>
+		                  @if( ! empty($vistiTypes) )
+		                      @foreach($visitTypes as $key => $value)
+		                      <option value="{{ $key}}">{{ $value }}</option>
+		                      @endforeach
+		                  @else
+		                  	<option value="1">Obisk nosečnice</option>
+		                  	<option value="2">Obisk nosečnice in otroka</option>
+		                  	<option value="3">Preventiva starostnika</option>
+		                  	<option value="4">Aplikacija inekcij</option>
+		                  	<option value="5">Odvzem krvi</option>
+		                  	<option value="6">Kontrola zdravstvenega stanja</option>
+		                  @endif
 
+		                </select>
+		              </div>		
+
+						<div class="form-group">
+		                <label>Pacient</label>
+		                <select data-live-search="true" class="form-control selectpicker" name="patient" id="patient" title="Izberite..." required>
+		                  @if( ! empty($patients) )
+		                      @foreach($patients as $key => $value)
+		                      <option value="{{ $key}}">{{ $value }}</option> <!-- POPRAVI IMENA SPREMENLJIVK -->
+		                      @endforeach
+		                  @endif
+		                </select>
+		              </div>		
+
+
+						<div class="form-group">
+		                <label>Novorojenček</label>
+		                <select data-live-search="true" class="form-control selectpicker" name="newborn" id="newborn" title="Izberite..." required>
+		                  @if( ! empty($patients) )
+		                      @foreach($patients as $key => $value)
+		                      <option value="{{ $key}}">{{ $value }}</option> <!-- POPRAVI IMENA SPREMENLJIVK -->
+		                      @endforeach
+		                  @endif
+		                </select>
+		              </div>
+		              </div>
+		        </div>
+		        <div class="row">
+	             	<div class="col-md-6">
+						<div class="form-group">
+		                	<label>Datum prvega obiska</label>
+							<input type="text" placeholder="Vnesite datum..." class="form-control datepicker">
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="form-group">
+		                	<label>Obveznost</label>
+							<select class="form-control selectpicker" name="mandatory" id="mandatory" title="Izberite..." required>
+								<option value="yes">Obvezen</option>
+								<option value="no">Okviren</option>
+							</select>
+						</div>
+					</div>
 				</div>
-			</div>
+				<div class="row">
+					<div class="col-md-6">
+						<div class="form-group">
+		                	<label>Število obiskov</label>
+							<input type="text" placeholder="Število obiskov..." name="visits" name="visits" class="form-control">
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12 flex-parent">
+					<input class="flex-child2" type="radio" name="schedule" value="1">
+						<div class="form-group flex-child">
+		                	<label>Časovni interval med dvema obiskoma</label>
+							<input type="text" name="interval" placeholder="Število dni..." name="interval" class="form-control">
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12 flex-parent">
+					<input class="flex-child2" type="radio" name="schedule" value="1">
+						<div class="form-group flex-child">
+		                	<label>Obiski naj bodo opravljeni do</label>
+							<input type="text" placeholder="Vnesite datum..." class="form-control datepicker">
+						</div>
+					</div>
+				</div>
+              	<div class="row">
+              		<div class="col-md-12">
+              			<div class="form-group">
+		                	<label>Zdravila</label>
+							<select data-live-search="true" class="form-control selectpicker" name="medicine" id="medicine" title="Izberite..." medicine required>
+			                  @if( ! empty($medicine) )
+			                      @foreach($medicine as $key => $value)
+			                      <option value="{{ $key}}">{{ $value }}</option> <!-- POPRAVI IMENA SPREMENLJIVK -->
+			                      @endforeach
+			                  @endif
+			                </select>
+						</div>
+              		</div>
+              	</div>
+              	<div class="row">
+              		<div class="col-md-6">
+              			<div class="form-group">
+		                	<label>Odvzem krvi</label>
+							<label> Rdeča eproveta<input type="text" placeholder="Vnesite datum..." class="form-control datepicker"></label>
+						</div>
+              		</div>
+              	</div>
+
+
+            </div>
 		</div>
 	</div>
-	<div class="row">
-		<div class="col-md-6">
-			<div class="panel panel-default">
-				<div class="panel-heading main-color-bg">
-					<h3 class="panel-title">Zavarovana oseba</h3>
-				</div>
-				<div class="panel-body">
+	
+@endsection
 
-				</div>
-			</div>
-		</div>
-		<div class="col-md-6">
-			<div class="panel panel-default">
-				<div class="panel-heading main-color-bg">
-					<h3 class="panel-title">Napotnica</h3>
-				</div>
-				<div class="panel-body">
-
-				</div>
-			</div>
-		</div>
-	</div>
+@section('script')
+<script src="{{ URL::asset('js/bootstrapValidator.js') }}"></script>
+<script src="{{ URL::asset('js/bootstrap-datepicker.min.js') }}"></script>
+<script src="{{ URL::asset('js/bootstrap-datepicker.sl.min.js') }}"></script>
+<script src="{{ URL::asset('js/workorderValidate.js') }}"></script>
 @endsection

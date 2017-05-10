@@ -82,12 +82,27 @@ body {
 
 .flex-parent {
   display: flex;
+  align-items: center;
 }
 
 .flex-child {
   flex: 1;
 }
 
+.flex-child2 {
+  width: 25px;
+}
+
+.Aligner1 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height:100%;
+}
+
+.Aligner-item1 {
+  flex: 1;
+}
 
 @media (max-width: 767px) {
   .navbar-default .navbar-nav .open .dropdown-menu > li > a {
