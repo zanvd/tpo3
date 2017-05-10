@@ -45,4 +45,17 @@ class Person extends Model {
             'person_id'
         );
     }
+
+	/**
+	 * One Person has one Patient.
+	 *
+	 * @return \Illuminate\Database\Eloquent\Relations\HasOne
+	 */
+	public function patient() {
+		return $this->hasOne(
+			'App\Models\Patient',
+			'person_id',
+			'person_id'
+		);
+	}
 }

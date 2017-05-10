@@ -50,7 +50,7 @@ class RegisterPatientController extends Controller {
 
 	/**
 	 * Perform validations on received data and create new user.
-	 * After successful registration log the user in.
+	 * Send verification email with token.
 	 *
 	 * @param Request $request
 	 *
