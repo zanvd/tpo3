@@ -13,6 +13,24 @@ function toggleContactField(){
 	var temp = buttonText;
 	buttonText = buttonText2;
 	buttonText2 = temp;
+	var inputs= $('#contactField').find("input");
+	var selects= $('#contactField').find("select");
+	if(disabled) {
+		for(var i = 0;i < inputs.length; i++) {
+		    inputs[i].disabled = true;
+		}
+		for(var i = 0;i < selects.length; i++) {
+		    selects[i].disabled = true;
+		}
+	}
+	else {
+		for(var i = 0;i < inputs.length; i++) {
+		    inputs[i].disabled = false;
+		}
+		for(var i = 0;i < selects.length; i++) {
+		    selects[i].disabled = false;
+		}
+	}
 }
 
 function addDependantField(){
@@ -317,6 +335,7 @@ function validate() {
 var id = 0;
 var buttonText = "Odstrani kontaktno osebo";
 var buttonText2 = "Dodaj kontaktno osebo";
+var disabled= true;
 $('#addContactPerson')[0].addEventListener("click", toggleContactField, false);
 $('#addDependantPerson')[0].addEventListener("click", addDependantField, false);
 var body = document.getElementsByTagName("BODY")[0];
