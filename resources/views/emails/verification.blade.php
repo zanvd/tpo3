@@ -82,7 +82,7 @@
 											<!-- Intro -->
 											<p style="{{ $style['paragraph'] }}">
 												Aktivirajte svoj račun s klikom na spodnji gumb. Povezava je veljavna do:
-												{{ \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $verification->verification_expiry)->format('H:i d.m.Y') }}
+												<b>{{ \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $verification->verification_expiry)->format('H:i d.m.Y') }}</b>
 											</p>
 											<!-- Action Button -->
 											<table style="{{ $style['body_action'] }}" align="center" width="100%" cellpadding="0" cellspacing="0">
