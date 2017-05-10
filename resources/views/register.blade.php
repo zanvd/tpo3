@@ -132,7 +132,7 @@
 				    	<div class="col-md-6">
 				    		<div class="form-group">
 								<label>Sorodstveno razmerje</label>
-								<select id="relationship" data-live-search="true" class="form-control selectpicker" name="relationship" title="Izberite..." required>
+								<select id="relationship" data-live-search="true" class="form-control selectpicker" disabled="true" name="relationship" title="Izberite..." required>
 								  @if( ! empty($relationships) )
 										  @foreach($relationships as $key => $value)
 											<option value="{{ $key}}">{{ $value }}</option>
@@ -142,21 +142,21 @@
 							</div>
 					 		<div class="form-group">
 								<label>Ime</label>
-									<input class="form-control" type="text" placeholder="Vnesite ime..." name="contactName" id="name" pattern="[A-Ž][a-ž]+" required>
+									<input class="form-control" type="text" placeholder="Vnesite ime..." disabled="true" name="contactName" id="name" pattern="[A-Ž][a-ž]+" required>
 							</div>
 							<div class="form-group">
 								<label>Priimek</label>
-									<input class="form-control" type="text" placeholder="Vnesite ime..." name="contactSurname" id="surname" pattern="[A-Ž][a-ž]+" required>
+									<input class="form-control" type="text" placeholder="Vnesite ime..." disabled="true" name="contactSurname" id="surname" pattern="[A-Ž][a-ž]+" required>
 							</div>
 				    	</div>
 				    	<div class="col-md-6">
 				    		<div class="form-group">
 							  <label>Naslov</label>
-								<input class="form-control" type="text" placeholder="Vnesite naslov..." name="contactAddress" id="address" required>
+								<input class="form-control" type="text" placeholder="Vnesite naslov..." disabled="true" name="contactAddress" id="address" required>
 							</div>
 							<div class="form-group">
 							  <label>Poštna številka</label>
-								<select  data-live-search="true" class="form-control selectpicker" name="contactPost" id="postNumber" title="Izberite..." required>
+								<select  data-live-search="true" class="form-control selectpicker" disabled="true" name="contactPost" id="postNumber" title="Izberite..." required>
 								  @if( ! empty($posts) )
 										  @foreach($posts as $key => $value)
 											<option value="{{ $key }}">{{ $key . ' ' . $value }}</option>
@@ -166,7 +166,7 @@
 							</div>
 							<div class="form-group">
 							  <label>Telefon</label>
-								<input class="form-control" type="text" placeholder="Vnesite telefonsko številko..." name="contactPhone" id="phoneNumber" pattern="[0-9]{8,9}" required>
+								<input class="form-control" type="text" placeholder="Vnesite telefonsko številko..." disabled="true" name="contactPhone" id="phoneNumber" pattern="[0-9]{8,9}" required>
 							</div>
 				    	</div>
 				    </div>

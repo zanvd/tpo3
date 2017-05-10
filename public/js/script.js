@@ -15,7 +15,7 @@ function toggleContactField(){
 	buttonText2 = temp;
 	var inputs= $('#contactField').find("input");
 	var selects= $('#contactField').find("select");
-	if(disabled) {
+	if(!disabled) {
 		for(var i = 0;i < inputs.length; i++) {
 		    inputs[i].disabled = true;
 		}
@@ -31,6 +31,7 @@ function toggleContactField(){
 		    selects[i].disabled = false;
 		}
 	}
+
 	disabled = !disabled;
 }
 
