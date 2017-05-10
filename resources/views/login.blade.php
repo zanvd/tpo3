@@ -26,7 +26,10 @@
                     @foreach($errors->all() as $error)
                       <div class="alert alert-danger" role="alert">{{ $error }}</div>
                     @endforeach
-            @endif    
+            @endif
+            @if( $status = Session::get('status'))
+              <div class="alert alert-success" role="alert">{{ $status }}</div>
+            @endif 
             <div class="panel panel-default">
               <div class="panel-body">
 				  <form class="article-comment" method="POST" action="/prijava">
