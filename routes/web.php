@@ -104,10 +104,10 @@ Route::post('/spremeni-geslo',
 | Post:		perform registration.			guest
 |
 */
-Route::get('/registracija/pacient',
+Route::get('/registracija',
 	$namespacePrefix['auth'].'RegisterPatientController@index');
 
-Route::post('/registracija/pacient',
+Route::post('/registracija',
 	$namespacePrefix['auth'].'RegisterPatientController@store');
 
 /*

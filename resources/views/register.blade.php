@@ -33,8 +33,9 @@
 		@endforeach					
 	@endif
 <div class="container">
-	<form class="article-comment" id="registrationForm" data-toggle="validator" method="POST" name="registrationForm" action="/register">
-	<div class="row">
+	<form class="article-comment" id="registrationForm" data-toggle="validator" method="POST" name="registrationForm" action="/registracija">
+		{{ csrf_field() }}
+		<div class="row">
 		<div class="col-md-12">
 			<div class="panel panel-default">
 			  <div class="panel-heading main-color-bg">

@@ -17,10 +17,10 @@ use Illuminate\Support\Facades\DB;
 
 class RegisterPatientController extends Controller {
 
-    /**
-     * Create a new register patient controller instance.
-     *
-     */
+	/**
+	 * Create a new register patient controller instance.
+	 *
+	 */
 	public function __construct() {
 		// Only guest users can access register page.
 		$this->middleware('guest');
@@ -32,14 +32,14 @@ class RegisterPatientController extends Controller {
 	 * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
 	 */
 	public function index() {
-		return view('registerUser')->with([
+		return view('register')->with([
 			'posts'			=> Post::all()->mapWithKeys(function ($post) {
 				return [$post['post_number'] => $post['post_title']];
 			}),
 			'regions'		=> Region::all()->mapWithKeys(function ($region) {
 				return [$region['region_id'] => $region['region_title']];
 			}),
-			'relationships' => Relationship::all(function ($relationship) {
+			'relationships' => Relationship::all()->mapWithKeys(function ($relationship) {
 				return [
 					$relationship['relationship_id']
 						=> $relationship['relationship_type']
@@ -52,19 +52,22 @@ class RegisterPatientController extends Controller {
 	 * Perform validations on received data and create new user.
 	 * After successful registration log the user in.
 	 *
+	 * @param Request $request
+	 *
 	 * @return \Illuminate\Http\RedirectResponse
 	 */
 	public function store(Request $request) {
+		dd($request);
 		// Validate given data.
 		$this->validate(request(), [
 			'email'				=> 'required|email',
 			'password'			=> 'required|confirmed|min:8|max:64',
-			'name'				=> 'required|string',
+			'firstname'			=> 'required|string',
 			'surname'			=> 'required|string',
-			'phoneNumber'		=> 'required|digits|digits_between:8,9',
+			'phoneNumber'		=> 'required|digits_between:8,9',
 			'address'			=> 'required',
 			'postNumber'		=> 'required|digits:4',
-			'region'			=> 'required|digits',
+			'region'			=> 'required|numeric',
 			'insurance'			=> 'required|digits:9',
 			'birthDate'			=> 'required|date|before:tomorrow',
 			'sex'				=> 'required|string|size:1',
@@ -76,7 +79,7 @@ class RegisterPatientController extends Controller {
 									relationship|string',
 			'contactPhone'		=> 'required_with_all:contactName,
 									contactSurname, contactAddress, contactPost,
-									relationship|digits|digits_between:8,9',
+									relationship|digits_between:8,9',
 			'contactAddress'	=> 'required_with_all:contactName,
 									contactSurname, contactPhone, contactPost,
 									relationship|string',
@@ -85,7 +88,7 @@ class RegisterPatientController extends Controller {
 									relationship|digits:4',
 			'relationship'		=> 'required_with_all:contactName,
 									contactSurname, contactPhone, contactAddress,
-									contactPost|digits'
+									contactPost|numeric'
 		]);
 
 		// Create new Contact if information is provided.
