@@ -24,7 +24,8 @@ function toggleContactField(){
 		    selects[i].disabled = true;
 		}
 		for(var i = 0;i < buttons.length; i++) {
-		    buttons[i].disabled = true;
+			$(buttons[i]).addClass('disabled');
+			$(buttons[i]).parent().addClass('disabled');
 		}
 	}
 	else {
@@ -35,7 +36,8 @@ function toggleContactField(){
 		    selects[i].disabled = false;
 		}
 		for(var i = 0;i < buttons.length; i++) {
-		    buttons[i].disabled = false;
+			$(buttons[i]).removeClass('disabled');
+			$(buttons[i]).parent().removeClass('disabled');
 		}
 	}
 

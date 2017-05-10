@@ -175,99 +175,10 @@
 			</div>
 		</div>
 	</div>
-	<div class="dependantArea" id="dependantArea">
-	<div class="row collapse cloneDefault hidden" id="dependant">
-		<div class="col-md-12">
-			<div class="panel panel-default">
-				<div class="panel-heading main-color-bg">
-					<h3 class="panel-title">Oseba za katero skrbim</h3>
-				</div>
-				<div class="panel-body">
-					<div class="row">
-						<div class="col-md-6">
-							<div class="form-group">
-								<label>Sorodstveno razmerje</label>
-								<select id="relationship" data-live-search="true" class="form-control selectpicker" name="dependantRelationship[]" id="relationship" title="Izberite..." required>
-								  @if( ! empty($relationships) )
-										  @foreach($relationships as $key => $value)
-											<option value="{{ $key}}">{{ $value }}</option>
-										  @endforeach
-									@endif
-								</select>
-							</div>
-							<div class="form-group">
-								<label>Ime</label>
-									<input class="form-control" type="text" placeholder="Vnesite ime..." name="dependantName[]" id="name" pattern="[A-Ž][a-ž]+" required>
-							</div>
-							<div class="form-group">
-								<label>Priimek</label>
-									<input class="form-control" type="text" placeholder="Vnesite ime..." name="dependantSurname[]" id="surname" pattern="[A-Ž][a-ž]+" required>
-							</div>
-							<div class="form-group">
-							  <label>Spol</label>
-								<div class="form-control flex-parent">
-									<input class="flex-child" type="radio" name="dependantGender[]" value="m">
-									<div class="flex-child">Moški</div>
-									<input class="flex-child" type="radio" name="dependantGender[]" value="f">
-									<div class="flex-child">Ženska</div>
-								</div>
-							</div>
-							<div class="form-group">
-							  <label>Datum rojstva </label>
-							  	<div class='input-group date'>
-				                    <input type='text' name="dependantBirthDate[]" placeholder="Vnesite datum oblike dd.mm.yyyy" id="birthDate" class="form-control" />
-				                    <span class="input-group-addon">
-				                        <span class="glyphicon glyphicon-calendar"></span>
-				                    </span>
-				                </div>
-							</div>
-						</div>
-						<div class="col-md-6">
-							<div class="form-group">
-							  <label>Naslov</label>
-								<input class="form-control" type="text" placeholder="Vnesite naslov..." name="dependantAddress[]" id="address" required>
-							</div>
-							<div class="form-group">
-							  <label>Poštna številka</label>
-								<select  data-live-search="true" class="form-control selectpicker" name="dependantPostNumber[]" id="postNumber" title="Izberite..." required>
-								  @if( ! empty($posts) )
-										  @foreach($posts as $key => $value)
-											<option value="{{ $key }}">{{ $key . ' ' . $value }}</option>
-										  @endforeach
-								  @endif
-								</select>
-							</div>
-							<div class="form-group">
-							  <label>Šifra okoliša</label>
-								<select id="region" data-live-search="true" class="form-control selectpicker" name="dependantRegion[]" id="region" title="Izberite..." required>
-								  @if( ! empty($regions) )
-										  @foreach($regions as $key => $value)
-											<option value="{{ $key}}">{{ $value }}</option>
-										  @endforeach
-									@endif
-								</select>
-							</div>
-							<div class="form-group">
-							  <label>Številka zdravstvene kartice</label>
-								<input class="form-control" type="text" placeholder="Vnesite ZZZS številko..." name="dependantInsurance[]" id="insurance" pattern="[0-9]{9}" required>
-							</div>
-						</div>
-					</div>
-					<div class="row">
-					    <div class="col-md-6">
-					    	<button class="btn btn-danger" onclick="removeSelf(event.target)" type="button">Odstrani</button>
-					    </div>
-				    </div>
-				</div>
-			</div>
-		</div>
-	</div>
-	</div>
 
 	<div class="row">
 		<div class="col-md-12">
 			<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#contactField" id="addContactPerson">Dodaj kontaktno osebo</button>
-			<button class="btn btn-primary" type="button" id="addDependantPerson">Dodaj oskrbovano osebo</button>
 			<button class="btn btn-primary" type="submit">Registracija</button>
 		</div>
 	</div>

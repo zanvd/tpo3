@@ -57,7 +57,7 @@ class RegisterPatientController extends Controller {
 	 * @return \Illuminate\Http\RedirectResponse
 	 */
 	public function store(Request $request) {
-		dd($request);
+		return dd($request);
 		// Validate given data.
 		$this->validate(request(), [
 			'email'				=> 'required|email',
