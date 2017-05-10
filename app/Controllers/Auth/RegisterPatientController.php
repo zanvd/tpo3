@@ -57,7 +57,6 @@ class RegisterPatientController extends Controller {
 	 * @return \Illuminate\Http\RedirectResponse
 	 */
 	public function store(Request $request) {
-		dd($request);
 		// Validate given data.
 		$this->validate(request(), [
 			'email'				=> 'required|email',
@@ -110,26 +109,27 @@ class RegisterPatientController extends Controller {
 
 		// Try saving everything to the database.
 		try {
-			// Save the Contact.
-			$contact->save();
+			// Save the Contact if created.
+			if (isset($contact))
+				$contact->save();
 
 			// Create new Person.
 			$person = new Person([
-				'name'			=> request('name'),
+				'name'			=> request('firstname'),
 				'surname'		=> request('surname'),
-				'phoneNumber'	=> request('phoneNumber'),
+				'phone_num'		=> request('phoneNumber'),
 				'address'		=> request('address'),
-				'postNumber'	=> request('postNumber'),
-				'region'		=> request('region')
+				'post_number'	=> request('postNumber'),
+				'region_id'		=> request('region')
 			]);
 
 			$person->save();
 
 			// Create new Patient.
 			$patient = new Patient([
-				'insurance'		=> request('insurance'),
-				'birthDate'		=> Carbon::createFromFormat('d.m.YYYY',
-									request('birtDate'))->toDateString(),
+				'insurance_num'	=> request('insurance'),
+				'birth_date'	=> Carbon::createFromFormat('d.m.Y',
+									request('birthDate'))->toDateString(),
 				'sex'			=> request('sex'),
 				'person_id'		=> $person->person_id,
 				'contact_id'	=> isset($contact) ? $contact->contact_id : NULL
@@ -176,9 +176,7 @@ class RegisterPatientController extends Controller {
 		// Send verification token.
 		$verifController->sendVerificationMail($user, $verification);
 
-		return redirect('/prijava')->with([
-			'status'	=> 'Registracija uspela. Preverite vaš e-mail predal za '
-						   . 'aktivacijsko povezavo.',
+		return redirect('/verifikacija')->with([
 			'email'		=> $user->email
 		]);
 	}
