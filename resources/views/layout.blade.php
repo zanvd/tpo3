@@ -8,9 +8,10 @@
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <link rel="icon" href="{{ URL::asset('favicon.ico') }}">
     @yield('title')
-
+    <link rel="stylesheet" type="text/css" href="{{ URL::asset('css/bootstrap-select.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ URL::asset('css/bootstrap.min.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ URL::asset('css/style.css') }}">
+    @yield('css')
   </head>
 
   <body>
@@ -45,5 +46,8 @@
     </section>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="{{ URL::asset('js/bootstrap.min.js') }}"></script>
+    <script src="{{ URL::asset('js/bootstrap-select.js') }}"></script>
+    @yield('script')
+    <script src="{{ URL::asset('js/script.js') }}"></script>
   </body>
 </html>

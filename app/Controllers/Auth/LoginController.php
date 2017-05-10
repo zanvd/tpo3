@@ -26,7 +26,7 @@ class LoginController extends Controller {
 	/**
 	 * Display login page.
 	 *
-	 * @return \Illuminate\Http\Response
+	 * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
 	 */
 	public function index() {
 		return view('login');
