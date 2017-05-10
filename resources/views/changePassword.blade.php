@@ -9,7 +9,7 @@
 	  <div class="container">
 		<div class="row">
 		  <div class="col-md-10">
-			<h1><span class="glyphicon glyphicon-user" aria-hidden="true"></span> Moj profil </h1>
+			<h1><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>Sprememba gesla </h1>
 		  </div>
 		  <div class="col-md-2">
 		  </div>
@@ -20,10 +20,11 @@
 
 @section('menu')
 			<div class="list-group">
-			  <a href="#" class="list-group-item active main-color-bg">
+			  <a href="/profil" class="list-group-item">
 			   <span class="glyphicon glyphicon-user" aria-hidden="true"></span> Moj profil
 			  </a>
-			  <a href="#" class="list-group-item"> <span class="glyphicon glyphicon-key" aria-hidden="true"></span> Sprememba gesla</a>
+			  <a href="/spremeni-geslo" class="list-group-item active main-color-bg"> <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> Sprememba gesla</a>
+			  <a href="/oskrbovani-pacient" class="list-group-item"> <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> Dodaj oskrbovanega pacienta</a>
 			</div>
 @endsection
 
@@ -42,6 +43,7 @@
 		</div>
 		<div class="panel-body">
 			<form class="article-comment" method="POST" action="/spremeni-geslo">
+			<input type="hidden" name="_method" value="put"> 
 				{{ csrf_field() }}
 				<div class="form-group">
 					<label>Staro geslo</label>

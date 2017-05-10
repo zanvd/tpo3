@@ -1,12 +1,3 @@
-function disableField() {
-	document.getElementById("region").setAttribute("disabled","");
-	$('.selectpicker').selectpicker('refresh');
-}
-
-function enableField() {
-	document.getElementById("region").removeAttribute("disabled");
-	$('.selectpicker').selectpicker('refresh');
-}
 
 function toggleContactField(){
 	document.getElementById("addContactPerson").innerHTML = buttonText;
@@ -41,6 +32,7 @@ function toggleContactField(){
 
 	disabled = !disabled;
 }
+
 /*
 function addDependantField(){
 	document.getElementsByClassName("dependantArea")[0].appendChild(dependantArea.cloneNode(true));
@@ -52,7 +44,7 @@ function addDependantField(){
 	 $("#registrationForm").bootstrapValidator('addField', newField);
 	 $("#registrationForm").bootstrapValidator('addField', newField2);
 }*/
-
+/*
 function addDependantField(){
 	$(".cloneDefault").clone(true).insertBefore(".dependantArea > div:last-child");
     $(".dependantArea > .cloneDefault").removeClass("hidden");
@@ -72,7 +64,7 @@ function removeSelf(node){
 	var element = $('#' + child.id);
 	element.collapse('hide');
 }
-
+*/
 function validate() {
 	validator = $("#registrationForm").bootstrapValidator({
 				fields: {
