@@ -32,4 +32,17 @@ class Person extends Model {
 			'region_id'
 		);
 	}
+
+    /**
+     * One Person has one User.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+	public function user() {
+	    return $this->hasOne(
+	        'App\Models\User',
+            'person_id',
+            'person_id'
+        );
+    }
 }

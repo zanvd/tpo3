@@ -22,7 +22,8 @@
  * @var array
  */
 $namespacePrefix = [
-	'auth' => 'Auth\\'
+	'auth' => 'Auth\\',
+    'employee' => 'Employee\\'
 ];
 
 // Landing page.
@@ -112,7 +113,6 @@ Route::post('/registracija/pacient',
 
 
 
-
 /*
 |--------------------------------------------------------------------------
 | Employee registration
@@ -129,8 +129,6 @@ Route::post('/registracija/zaposleni',
 	$namespacePrefix['auth'].'RegisterEmployeeController@store');
 
 
-
-
 /*
 |--------------------------------------------------------------------------
 | Work order creation
@@ -140,10 +138,8 @@ Route::post('/registracija/zaposleni',
 | Post:		create new work order.			doctor, chief nurse
 |
 */
-Route::get('delovni-nalog', function() {
-	return view('workOrder');
-});
+Route::get('/delovni-nalog',
+    $namespacePrefix['employee'].'WorkOrderController@index');
 
-Route::post('delovni-nalog', function () {
-	return view('workOrder');
-});
+Route::post('/delovni-nalog',
+    $namespacePrefix['employee'].'WorkOrderController@store');
