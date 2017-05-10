@@ -14,6 +14,7 @@ class CreateWorkOrderBloodTubeTable extends Migration {
 		Schema::create('WorkOrder_BloodTubes', function (Blueprint $table) {
 			$table->unsignedInteger('blood_tube_id');
 			$table->unsignedInteger('work_order_id');
+			$table->unsignedInteger('num_of_tubes');
 
 			$table->foreign('blood_tube_id')->references('blood_tube_id')->on('BloodTube');
 			$table->foreign('work_order_id')->references('work_order_id')->on('WorkOrder');

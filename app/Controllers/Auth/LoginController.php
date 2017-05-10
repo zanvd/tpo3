@@ -94,15 +94,18 @@ class LoginController extends Controller {
 								'lastLogin' => $lastLogin
 							]);
 				break;
-			case 'zaposleni':
-				return $this->redirectTo('zaposleni/profil')
-							->with([
-									   'name' => $user->person->name,
-									   'role' => $role,
-									   'lastLogin' => $lastLogin
-								   ]);
-				break;
-			case 'pacient':
+            case 'Zdravnik':
+            case 'Vodja PS':
+            case 'Patronažna sestra':
+            case 'Uslužbenec ZD':
+                return $this->redirectTo('/registracija/zaposleni')
+                    ->with([
+                        'name' => $user->person->name,
+                        'role' => $role,
+                        'lastLogin' => $lastLogin
+                    ]);
+                break;
+			case 'Pacient':
 				return $this->redirectTo('pacient/profil')
 							->with([
 									   'name' => $user->person->name,
