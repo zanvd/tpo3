@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\Verification;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Mail;
 
 class VerificationController extends Controller {
 
@@ -93,7 +94,8 @@ class VerificationController extends Controller {
 		// Check if user is already active.
 		if ($user->active)
 			return redirect('prijava')->withErrors([
-				'message' => 'Uporabniški račun je že aktiven.'
+				'message' => 'Uporabniški račun je že aktiven.',
+				'email'		=> $email
 			]);
 
 		// Retrieve current verification token.
@@ -113,7 +115,8 @@ class VerificationController extends Controller {
 
 		return redirect('/verification')->with([
 			'status'	=> 'Na vaš e-mail naslov smo poslali novo aktivacijsko '
-							.'povezavo.'
+							.'povezavo.',
+			'email'		=> $email
 		]);
 	}
 
@@ -127,7 +130,7 @@ class VerificationController extends Controller {
 	 */
 	public function store ($userId) {
 		return new Verification([
-			'verification_token'	=> Str::random(64),
+			'verification_token'	=> Str::random(45),
 			'verification_expiry'	=> Carbon::now()
 										->addHour(1)->toDateTimeString(),
 			'user_id'				=> $userId
