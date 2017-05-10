@@ -28,7 +28,7 @@ $namespacePrefix = [
 
 // Landing page.
 Route::get('/', function () {
-		return view('register');
+		return view('landing');
 });
 
 /*

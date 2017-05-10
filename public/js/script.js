@@ -43,7 +43,8 @@ function toggleContactField(){
 }
 
 function addDependantField(){
-	document.getElementsByClassName("dependantArea")[0].appendChild(dependantArea.cloneNode(true));
+	//document.getElementsByClassName("dependantArea")[0].appendChild(dependantArea.cloneNode(true));
+	document.getElementsByClassName("dependantArea")[0].innerHTML += dependantArea;
 	$('#dependant').collapse();
 	document.getElementById('dependant').id = id;
 	var newField= $('#' + id).find("input");
@@ -353,9 +354,11 @@ var dependantArea;
 var validator;
 body.onload = function(){
 
-    
+    /*
     dependantArea = document.createElement('div');
 	dependantArea.innerHTML = document.getElementsByClassName("dependantArea")[0].innerHTML;
+	*/
+	dependantArea = document.getElementsByClassName("dependantArea")[0].innerHTML;
 	document.getElementsByClassName("dependantArea")[0].innerHTML ="";
 };
 
