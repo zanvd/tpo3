@@ -48,6 +48,5 @@
     <script src="{{ URL::asset('js/bootstrap.min.js') }}"></script>
     <script src="{{ URL::asset('js/bootstrap-select.js') }}"></script>
     @yield('script')
-    <script src="{{ URL::asset('js/script.js') }}"></script>
   </body>
 </html>

@@ -4,6 +4,10 @@
 <title>Ustvari profil</title>
 @endsection
 
+@section('css')
+<link rel="stylesheet" type="text/css" href="{{ URL::asset('css/bootstrapValidator.min.css') }}">
+@endsection
+
 @section('header')
 <header id="header">
 	  <div class="container">
@@ -36,7 +40,7 @@
 				<h3 class="panel-title">Nov uporabnik</h3>
 			  </div>
 			  <div class="panel-body">
-				<form class="article-comment" method="POST" action="/registracija/zaposleni">
+				<form class="article-comment" id="registrationForm" method="POST" data-toggle="validator" action="/registracija/zaposleni">
 				{{ csrf_field() }}
 				<div class="form-group">
 					<label for="function">Funkcija: </label>
@@ -133,4 +137,9 @@
 				</form>
 			  </div>
 			</div>
+@endsection
+
+@section('script')
+<script src="{{ URL::asset('js/bootstrapValidator.js') }}"></script>
+<script src="{{ URL::asset('js/registerValidate.js') }}"></script>
 @endsection

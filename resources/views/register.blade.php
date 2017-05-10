@@ -279,6 +279,7 @@
 <script src="{{ URL::asset('js/bootstrap-datepicker.min.js') }}"></script>
 <script src="{{ URL::asset('js/bootstrap-datepicker.sl.min.js') }}"></script>
 <script src="{{ URL::asset('js/bootstrapValidator.js') }}"></script>
+<script src="{{ URL::asset('js/script.js') }}"></script>
 <script type="text/javascript">
 
 	$(document).ready(function (){

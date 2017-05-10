@@ -11,6 +11,7 @@
     <link rel="stylesheet" type="text/css" href="{{ URL::asset('css/bootstrap-select.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ URL::asset('css/bootstrap.min.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ URL::asset('css/style.css') }}">
+    @yield('css')
   </head>
 
   <body>
@@ -74,6 +75,6 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="{{ URL::asset('js/bootstrap.min.js') }}"></script>
     <script src="{{ URL::asset('js/bootstrap-select.js') }}"></script>
-    <script src="{{ URL::asset('js/script.js') }}"></script>
+    @yield('script')
   </body>
 </html>
