@@ -21,7 +21,7 @@
 
 @section('menu')
       <div class="list-group">
-        <a href="/profile" class="list-group-item active main-color-bg">
+        <a href="/profil" class="list-group-item active main-color-bg">
          <span class="glyphicon glyphicon-user" aria-hidden="true"></span> Moj profil
         </a>
         <a href="/spremeni-geslo" class="list-group-item "> <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> Sprememba gesla</a>
@@ -30,6 +30,9 @@
 @endsection
 
 @section('content')
+@if( $status = Session::get('status'))
+	<div class="alert alert-success" role="alert">{{ $status }}</div>
+@endif
   <div class="panel panel-default">
     <div class="panel-heading main-color-bg">
       <h3 class="panel-title">Oskrbovani pacienti</h3>
@@ -51,9 +54,15 @@
         <tbody>
           @foreach($patients as $patient)
             <tr>
-            @foreach($patient as $value)
-              <td>{{ $value}}</td>
-            @endforeach
+				<td>{{$patient->name}}</td>
+				<td>{{$patient->surname}}</td>
+			@if($patient->sex == 'm')
+				<td>Moški</td>
+			@else
+				<td>Ženska</td>
+			@endif
+				<td>{{$patient->birthDate}}</td>
+				<td>{{$patient->insurance}}</td>
             </tr>
           @endforeach
         </tbody>

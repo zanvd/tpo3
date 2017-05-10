@@ -21,7 +21,8 @@ class ChangePasswordController extends Controller {
 	 */
 	public function index () {
 		return view('changePassword')->with([
-			'name' => auth()->user()->person->name,
+			'name' => auth()->user()->person->name . ' ' .
+					  	auth()->user()->person->surname,
 			'role' => auth()->user()->userRole->user_role_title,
 			'lastLogin' => $this->lastLogin(auth()->user())
 		]);
