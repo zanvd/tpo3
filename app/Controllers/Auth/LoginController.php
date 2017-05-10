@@ -106,7 +106,7 @@ class LoginController extends Controller {
                     ]);
                 break;
 			case 'Pacient':
-				return $this->redirectTo('pacient/profil')
+				return $this->redirectTo('profil')
 							->with([
 									   'name' => $user->person->name,
 									   'role' => $role,
@@ -150,8 +150,8 @@ class LoginController extends Controller {
 	/**
 	 * Redirect to the provided link.
 	 *
-	 * @param string $link | /
-	 * @param string $message | null
+	 * @param string $link|/
+	 * @param string $message|null
 	 *
 	 * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
 	 */

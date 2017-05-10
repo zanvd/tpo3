@@ -10,7 +10,7 @@
 | contains the "web" middleware group. Now create something great!
 |
 | Documentation is in form of:
-| Method:	Description.	can be accessed by
+| Method:	description.	can be accessed by
 |
 */
 
@@ -22,8 +22,9 @@
  * @var array
  */
 $namespacePrefix = [
-	'auth' => 'Auth\\',
-    'employee' => 'Employee\\'
+	'auth'		=> 'Auth\\',
+    'employee'	=> 'Employee\\',
+	'patient'	=> 'Patient\\'
 ];
 
 // Landing page.
@@ -86,14 +87,14 @@ Route::post('/ponastavi-geslo',
 |--------------------------------------------------------------------------
 |
 | Get:		display the change password page.	auth
-| Post:		perform password change.			auth
+| Put:		perform password change.			auth
 |
 */
 Route::get('/spremeni-geslo',
 			$namespacePrefix['auth'].'ChangePasswordController@index');
 
-Route::post('/spremeni-geslo',
-			$namespacePrefix['auth'].'ChangePasswordController@store');
+Route::put('/spremeni-geslo',
+			$namespacePrefix['auth'].'ChangePasswordController@update');
 
 
 /*
@@ -160,3 +161,29 @@ Route::get('/delovni-nalog',
 
 Route::post('/delovni-nalog',
     $namespacePrefix['employee'].'WorkOrderController@store');
+
+/*
+|--------------------------------------------------------------------------
+| Dependant patient
+|--------------------------------------------------------------------------
+|
+| Get:		display the dependant patient page.	patient
+| Post:		create new dependant patient.		patient
+|
+*/
+Route::get('/oskrbovani-pacient',
+	$namespacePrefix['patient'].'DependentPatientController@index');
+
+Route::post('/oskrbovani-pacient',
+	$namespacePrefix['patient'].'DependentPatientController@store');
+
+/*
+|--------------------------------------------------------------------------
+| Patient profile
+|--------------------------------------------------------------------------
+|
+| Get:		display patient profile page.	patient
+|
+*/
+Route::get('/profil',
+	$namespacePrefix['patient'].'PatientProfileController@index');
