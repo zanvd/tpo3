@@ -5,7 +5,8 @@
 @endsection
 
 @section('css')
-<link rel="stylesheet" type="text/css" href="{{ URL::asset('css/bootstrap-datetimepicker.min.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ URL::asset('css/bootstrap-datepicker.min.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ URL::asset('css/bootstrapValidator.min.css') }}">
 @endsection
 
 @section('header')
@@ -24,7 +25,7 @@
 
 @section('content')
 <div class="container">
-	<form class="article-comment" method="POST" action="/register">
+	<form class="article-comment" id="registrationForm" data-toggle="validator" method="POST" name="registrationForm" action="/register">
 	<div class="row">
 		<div class="col-md-12">
 			<div class="panel panel-default">
@@ -36,23 +37,23 @@
 			    	<div class="col-md-6">
 			    		<div class="form-group">
 						  <label>Email </label>
-						  <input class="form-control" type="email" placeholder="Vnestie e-naslov..." name="email" required>
+						  <input class="form-control" type="email" placeholder="Vnestie e-naslov..." name="email" id="email" required>
 						</div>
 						<div class="form-group">
 						  <label>Geslo</label>
-							<input class="form-control" type="password" placeholder="Vnestie geslo..." name="password" pattern="(?=.*[A-Ža-ž])(?=.*\d)[A-Ža-ž\d]{8,64}" required>
+							<input class="form-control" type="password" placeholder="Vnestie geslo..." name="password" id="password" pattern="(?=.*[A-Ža-ž])(?=.*\d)[A-Ža-ž\d]" required>
 						</div>
 						<div class="form-group">
 						  <label>Ponovite geslo</label>
-							<input class="form-control" type="password" placeholder="Ponovno vnesite geslo..." name="password_confirmation" pattern="(?=.*[A-Ža-ž])(?=.*\d)[A-Ža-ž\d]{8,64}" required>
+							<input class="form-control" type="password" placeholder="Ponovno vnesite geslo..." name="password_confirmation" id="password_confirmation" required>
 						</div>
 						<div class="form-group">
 						  <label>Ime</label>
-							<input class="form-control" type="text" placeholder="Vnesite ime..." name="name" pattern="[A-Ž][a-ž]+" required>
+							<input class="form-control" type="text" placeholder="Vnesite ime..." name="firstname" id="firstname" pattern="[A-Ž][a-ž]+" required>
 						</div>
 						<div class="form-group">
 						  <label>Priimek</label>
-							<input class="form-control" type="text" placeholder="Vnesite ime..." name="surname" pattern="[A-Ž][a-ž]+" required>
+							<input class="form-control" type="text" placeholder="Vnesite ime..." name="surname" id="surname" pattern="[A-Ž][a-ž]+" required>
 						</div>
 						<div class="form-group">
 						  <label>Spol</label>
@@ -67,8 +68,8 @@
 			    	<div class="col-md-6">
 			    		<div class="form-group">
 						  <label>Datum rojstva </label>
-						  	<div class='input-group date' id='datetimepicker2'>
-			                    <input type='text' name="birthDate" class="form-control" />
+						  	<div class='input-group date'>
+			                    <input type='text' name="birthDate" id="birthDate" placeholder="Vnesite datum oblike dd.mm.yyyy" class="form-control datepicker" />
 			                    <span class="input-group-addon">
 			                        <span class="glyphicon glyphicon-calendar"></span>
 			                    </span>
@@ -76,11 +77,11 @@
 						</div>
 						<div class="form-group">
 						  <label>Naslov</label>
-							<input class="form-control" type="text" placeholder="Vnesite naslov..." name="address" required>
+							<input class="form-control" type="text" placeholder="Vnesite naslov..." name="address" id ="address" required>
 						</div>
 						<div class="form-group">
 						  <label>Poštna številka</label>
-							<select  data-live-search="true" class="form-control selectpicker" name="postNumber" title="Izberite..." required>
+							<select  data-live-search="true" class="form-control selectpicker" name="postNumber" id="postNumber" title="Izberite..." required>
 							  @if( ! empty($posts) )
 									  @foreach($posts as $key => $value)
 										<option value="{{ $key }}">{{ $key . ' ' . $value }}</option>
@@ -90,7 +91,7 @@
 						</div>
 						<div class="form-group">
 						  <label>Šifra okoliša</label>
-							<select id="region" data-live-search="true" class="form-control selectpicker" name="region" title="Izberite..." required>
+							<select id="region" data-live-search="true" class="form-control selectpicker" name="region" id="region" title="Izberite..." required>
 							  @if( ! empty($regions) )
 									  @foreach($regions as $key => $value)
 										<option value="{{ $key}}">{{ $value }}</option>
@@ -100,11 +101,11 @@
 						</div>
 						<div class="form-group">
 						  <label>Telefon</label>
-							<input class="form-control" type="text" placeholder="Vnesite vašo telefonsko številko..." name="phoneNumber" pattern="[0-9]{8,9}" required>
+							<input class="form-control" type="text" placeholder="Vnesite vašo telefonsko številko..." name="phoneNumber" id="phoneNumber" pattern="[0-9]{8,9}" required>
 						</div>
 						<div class="form-group">
 						  <label>Številka zdravstvene kartice</label>
-							<input class="form-control" type="text" placeholder="Vnesite ZZZS številko..." name="insurance" pattern="[0-9]{9}" required>
+							<input class="form-control" type="text" placeholder="Vnesite ZZZS številko..." name="insurance" id="insurance" pattern="[0-9]{9}" required>
 						</div>
 			    	</div>
 			    </div>
@@ -133,21 +134,21 @@
 							</div>
 					 		<div class="form-group">
 								<label>Ime</label>
-									<input class="form-control" type="text" placeholder="Vnesite ime..." name="contactName" pattern="[A-Ž][a-ž]+" required>
+									<input class="form-control" type="text" placeholder="Vnesite ime..." name="contactName" id="name" pattern="[A-Ž][a-ž]+" required>
 							</div>
 							<div class="form-group">
 								<label>Priimek</label>
-									<input class="form-control" type="text" placeholder="Vnesite ime..." name="contactSurname" pattern="[A-Ž][a-ž]+" required>
+									<input class="form-control" type="text" placeholder="Vnesite ime..." name="contactSurname" id="surname" pattern="[A-Ž][a-ž]+" required>
 							</div>
 				    	</div>
 				    	<div class="col-md-6">
 				    		<div class="form-group">
 							  <label>Naslov</label>
-								<input class="form-control" type="text" placeholder="Vnesite naslov..." name="contactAddress" required>
+								<input class="form-control" type="text" placeholder="Vnesite naslov..." name="contactAddress" id="address" required>
 							</div>
 							<div class="form-group">
 							  <label>Poštna številka</label>
-								<select  data-live-search="true" class="form-control selectpicker" name="contactPost" title="Izberite..." required>
+								<select  data-live-search="true" class="form-control selectpicker" name="contactPost" id="postNumber" title="Izberite..." required>
 								  @if( ! empty($posts) )
 										  @foreach($posts as $key => $value)
 											<option value="{{ $key }}">{{ $key . ' ' . $value }}</option>
@@ -157,7 +158,7 @@
 							</div>
 							<div class="form-group">
 							  <label>Telefon</label>
-								<input class="form-control" type="text" placeholder="Vnesite telefonsko številko..." name="contactPhone" pattern="[0-9]{8,9}" required>
+								<input class="form-control" type="text" placeholder="Vnesite telefonsko številko..." name="contactPhone" id="phoneNumber" pattern="[0-9]{8,9}" required>
 							</div>
 				    	</div>
 				    </div>
@@ -177,7 +178,7 @@
 						<div class="col-md-6">
 							<div class="form-group">
 								<label>Sorodstveno razmerje</label>
-								<select id="relationship" data-live-search="true" class="form-control selectpicker" name="dependantRelationship[]" title="Izberite..." required>
+								<select id="relationship" data-live-search="true" class="form-control selectpicker" name="dependantRelationship[]" id="relationship" title="Izberite..." required>
 								  @if( ! empty($relationships) )
 										  @foreach($relationships as $key => $value)
 											<option value="{{ $key}}">{{ $value }}</option>
@@ -187,25 +188,25 @@
 							</div>
 							<div class="form-group">
 								<label>Ime</label>
-									<input class="form-control" type="text" placeholder="Vnesite ime..." name="dependantName[]" pattern="[A-Ž][a-ž]+" required>
+									<input class="form-control" type="text" placeholder="Vnesite ime..." name="dependantName[]" id="name" pattern="[A-Ž][a-ž]+" required>
 							</div>
 							<div class="form-group">
 								<label>Priimek</label>
-									<input class="form-control" type="text" placeholder="Vnesite ime..." name="dependantSurname[]" pattern="[A-Ž][a-ž]+" required>
+									<input class="form-control" type="text" placeholder="Vnesite ime..." name="dependantSurname[]" id="surname" pattern="[A-Ž][a-ž]+" required>
 							</div>
 							<div class="form-group">
 							  <label>Spol</label>
 								<div class="form-control flex-parent">
-									<input class="flex-child" type="radio" name="dependantGender[]" value="m">
+									<input class="flex-child" type="radio" name="dependantGender[]" id="gender" value="m">
 									<div class="flex-child">Moški</div>
-									<input class="flex-child" type="radio" name="dependantGender[]" value="f">
+									<input class="flex-child" type="radio" name="dependantGender[]" value="f" id="gender">
 									<div class="flex-child">Ženska</div>
 								</div>
 							</div>
 							<div class="form-group">
 							  <label>Datum rojstva </label>
-							  	<div class='input-group date' id='datetimepicker2'>
-				                    <input type='text' name="dependantBirthDate[]" class="form-control" />
+							  	<div class='input-group date'>
+				                    <input type='text' name="dependantBirthDate[]" placeholder="Vnesite datum oblike dd.mm.yyyy" id="birthDate" class="form-control datepicker" />
 				                    <span class="input-group-addon">
 				                        <span class="glyphicon glyphicon-calendar"></span>
 				                    </span>
@@ -215,11 +216,11 @@
 						<div class="col-md-6">
 							<div class="form-group">
 							  <label>Naslov</label>
-								<input class="form-control" type="text" placeholder="Vnesite naslov..." name="dependantAddress[]" required>
+								<input class="form-control" type="text" placeholder="Vnesite naslov..." name="dependantAddress[]" id="address" required>
 							</div>
 							<div class="form-group">
 							  <label>Poštna številka</label>
-								<select  data-live-search="true" class="form-control selectpicker" name="dependantPostNumber[]" title="Izberite..." required>
+								<select  data-live-search="true" class="form-control selectpicker" name="dependantPostNumber[]" id="postNumber" title="Izberite..." required>
 								  @if( ! empty($posts) )
 										  @foreach($posts as $key => $value)
 											<option value="{{ $key }}">{{ $key . ' ' . $value }}</option>
@@ -229,7 +230,7 @@
 							</div>
 							<div class="form-group">
 							  <label>Šifra okoliša</label>
-								<select id="region" data-live-search="true" class="form-control selectpicker" name="dependantRegion[]" title="Izberite..." required>
+								<select id="region" data-live-search="true" class="form-control selectpicker" name="dependantRegion[]" id="region" title="Izberite..." required>
 								  @if( ! empty($regions) )
 										  @foreach($regions as $key => $value)
 											<option value="{{ $key}}">{{ $value }}</option>
@@ -239,7 +240,7 @@
 							</div>
 							<div class="form-group">
 							  <label>Številka zdravstvene kartice</label>
-								<input class="form-control" type="text" placeholder="Vnesite ZZZS številko..." name="dependantzzzs[]" pattern="[0-9]{9}" required>
+								<input class="form-control" type="text" placeholder="Vnesite ZZZS številko..." name="dependantInsurance[]" id="insurance" pattern="[0-9]{9}" required>
 							</div>
 						</div>
 					</div>
@@ -266,5 +267,19 @@
 
 @section('script')
 <script src="{{ URL::asset('js/moment-with-locales.js') }}"></script>
-<script src="{{ URL::asset('js/bootstrap-datetimepicker.min.js') }}"></script>
+<script src="{{ URL::asset('js/bootstrap-datepicker.min.js') }}"></script>
+<script src="{{ URL::asset('js/bootstrap-datepicker.sl.min.js') }}"></script>
+<script src="{{ URL::asset('js/bootstrapValidator.js') }}"></script>
+<script type="text/javascript">
+
+	$(document).ready(function (){
+		$('.datepicker').datepicker({
+		    format: "mm.dd.yyyy",
+		    language: "sl"
+		});
+
+		validate();
+
+	});
+</script>
 @endsection
