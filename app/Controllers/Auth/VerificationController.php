@@ -40,14 +40,14 @@ class VerificationController extends Controller {
 	public function verify ($token) {
 		// Check if token exists.
 		$verification = Verification::where('verification_token', $token)->first();
-		if (isEmpty($verification))
+		if (!isset($verification))
 			return redirect('/verification')->withErrors([
 				'message' => 'Nepravilna aktivacija koda.'
 			]);
 
 		// Check if user exists.
 		$user = User::find($verification->user_id);
-		if (isEmpty($user))
+		if (!isset($user))
 			return redirect('/verification')->withErrors([
 				'message' => 'Uporabnik s to aktivacijsko kodo ni bil najden.'
 			]);
@@ -67,7 +67,7 @@ class VerificationController extends Controller {
 
 		// Send user to login page.
 		return redirect('/prijava')->with([
-			'status' => 'Račun uspešno aktiviran.'
+			'status' => 'Račun je sedaj aktiviran.'
 		]);
 	}
 
@@ -79,13 +79,13 @@ class VerificationController extends Controller {
 	 * @return \Illuminate\Http\RedirectResponse
 	 */
 	public function update ($email = null) {
-		$email = isNull($email) ? request('email') : $email;
+		$email = is_null($email) ? request('email') : $email;
 
 		// Retrieve user with provided email address.
 		$user = User::where('email', $email)->first();
 
 		// Check if user has been found.
-		if (isEmpty($user))
+		if (!isset($user))
 			return redirect()->back()->withErrors([
 				'message'	=> 'Uporabnik s tem naslovom ni bil najden.',
 				'email'		=> $email
@@ -102,7 +102,7 @@ class VerificationController extends Controller {
 		$verification = Verification::where('user_id', $user->user_id)->first();
 
 		// Check if user does not have a verification token.
-		if (isEmpty($verification)) {
+		if (!isset($verification)) {
 			// Create new verification token.
 			$verification = $this->store($user->user_id);
 		} else {
@@ -113,7 +113,7 @@ class VerificationController extends Controller {
 		// Send new token.
 		$this->sendVerificationMail($user, $verification);
 
-		return redirect('/verification')->with([
+		return redirect('/verifikacija')->with([
 			'status'	=> 'Na vaš e-mail naslov smo poslali novo aktivacijsko '
 							.'povezavo.',
 			'email'		=> $email
