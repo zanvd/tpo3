@@ -24,7 +24,7 @@
 
 @section('menu')
       <div class="list-group">
-        <a href="/profile" class="list-group-item">
+        <a href="/profil" class="list-group-item">
          <span class="glyphicon glyphicon-user" aria-hidden="true"></span> Moj profil
         </a>
         <a href="/spremeni-geslo" class="list-group-item "> <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> Sprememba gesla</a>
@@ -41,7 +41,7 @@
       <div class="alert alert-danger">{{ $error }}</div>
     @endforeach         
   @endif
-  <form class="article-comment" id="registrationForm" method="POST" data-toggle="validator" action="/dodaj-uporabnika">
+  <form class="article-comment" id="registrationForm" method="POST" data-toggle="validator" action="/oskrbovani-pacient">
         {{ csrf_field() }}
  <div class="panel panel-default">
         <div class="panel-heading main-color-bg">

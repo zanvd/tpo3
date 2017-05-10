@@ -125,7 +125,7 @@ Route::post('/registracija',
 Route::get('/verifikacija',
 	$namespacePrefix['auth'].'VerificationController@index');
 
-Route::post('/verifikacija/{token}',
+Route::get('/verifikacija/{token}',
 	$namespacePrefix['auth'].'VerificationController@verify');
 
 Route::put('/verifikacija',

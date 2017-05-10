@@ -6,6 +6,11 @@ use App\Controllers\Controller;
 use App\Models\DependentPatient;
 use App\Models\Patient;
 use App\Models\Person;
+use App\Models\Post;
+use App\Models\Region;
+use App\Models\Relationship;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class DependentPatientController extends Controller {
 	/**
@@ -63,7 +68,7 @@ class DependentPatientController extends Controller {
 		]);
 
 		// Start Transaction.
-		DB::beginTransactin();
+		DB::beginTransaction();
 
 		// Try saving new patient to the database.
 		try {
@@ -71,7 +76,7 @@ class DependentPatientController extends Controller {
 			$person = new Person([
 				'name'			=> request('name'),
 				'surname'		=> request('surname'),
-				'phone_num'		=> auth()->user()->phone_num,
+				'phone_num'		=> auth()->user()->person->phone_num,
 				'address'		=> request('address'),
 				'post_number'	=> request('postNumber'),
 				'region_id'		=> request('region'),
@@ -94,7 +99,7 @@ class DependentPatientController extends Controller {
 			// Create new relationship between guardian and dependent patient.
 			$dependent = new DependentPatient([
 				'dependent_patient_id'	=> $patient->patient_id,
-				'guardian_patient_id'	=> auth()->user()->user_id,
+				'guardian_patient_id'	=> auth()->user()->person->patient->patient_id,
 				'relationship_id'		=> request('relationship')
 			]);
 

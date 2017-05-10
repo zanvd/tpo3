@@ -81,9 +81,8 @@
 											</h1>
 											<!-- Intro -->
 											<p style="{{ $style['paragraph'] }}">
-												Aktivirajte svoj račun s klikom na spodnji gumb. Povezava je veljavna do: <?php
-													\Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $verification->verification_expiry)->format('H:i d.m.Y');
-												?>
+												Aktivirajte svoj račun s klikom na spodnji gumb. Povezava je veljavna do:
+												<b>{{ \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $verification->verification_expiry)->format('H:i d.m.Y') }}</b>
 											</p>
 											<!-- Action Button -->
 											<table style="{{ $style['body_action'] }}" align="center" width="100%" cellpadding="0" cellspacing="0">
@@ -92,12 +91,12 @@
 														<?php
 														$actionColor = 'button--blue';
 														?>
-														<form method="POST" action="{{ url('/verifikacija/'.$verification->verification_token) }}">
-															{{ csrf_field() }}
-															<button type="submit" style="{{ $fontFamily }} {{ $style['button'] }} {{ $style[$actionColor] }}" class="button">
-																Potrdi
-															</button>
-														</form>
+														<a href="{{ url('/verifikacija/'.$verification->verification_token) }}"
+														   style="{{ $fontFamily }} {{ $style['button'] }} {{ $style[$actionColor] }}"
+														   class="button"
+														   target="_blank">
+															Potrdi
+														</a>
 													</td>
 												</tr>
 											</table>
