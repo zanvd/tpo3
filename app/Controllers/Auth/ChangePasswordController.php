@@ -20,7 +20,7 @@ class ChangePasswordController extends Controller {
 	 * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
 	 */
 	public function index () {
-		return view('profile')->with([
+		return view('changePassword')->with([
 			'name' => auth()->user()->person->name,
 			'role' => auth()->user()->userRole->user_role_title,
 			'lastLogin' => $this->lastLogin(auth()->user())
@@ -34,7 +34,7 @@ class ChangePasswordController extends Controller {
 	 *
 	 * @return \Illuminate\Http\RedirectResponse
 	 */
-	public function store (Request $request) {
+	public function update (Request $request) {
 		$this->validate($request, [
 			'oldPassword'	=> 'required',
 			'password'		=> 'required|confirmed|min:8|max:64'
