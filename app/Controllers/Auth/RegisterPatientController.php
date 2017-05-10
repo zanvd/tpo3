@@ -3,7 +3,6 @@
 namespace App\Controllers\Auth;
 
 use App\Controllers\Controller;
-use App\Mail\EmailVerification;
 use App\Models\Contact;
 use App\Models\Patient;
 use App\Models\Person;
@@ -12,16 +11,14 @@ use App\Models\Region;
 use App\Models\Relationship;
 use App\Models\User;
 use App\Models\UserRole;
-use App\Models\Verification;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Mail;
 
 class RegisterPatientController extends Controller {
 
     /**
-     * Create a new controller instance.
+     * Create a new register patient controller instance.
      *
      */
 	public function __construct() {
@@ -150,7 +147,8 @@ class RegisterPatientController extends Controller {
 			$user->save();
 
 			// Create new Verification.
-			$verification = $this->createVerification($user->user_id);
+			$verifController = new VerificationController();
+			$verification = $verifController->store($user->user_id);
 
 			$verification->save();
 
@@ -173,96 +171,12 @@ class RegisterPatientController extends Controller {
 		DB::commit();
 
 		// Send verification token.
-		$email = new EmailVerification($user, $verification);
+		$verifController->sendVerificationMail($user, $verification);
 
-		Mail::to($user->email)->send($email);
-
-		return redirect('/')->with([
+		return redirect('/prijava')->with([
 			'status'	=> 'Registracija uspela. Preverite vaš e-mail predal za '
-						   . 'aktivacijsko povezavo.'
-		]);
-	}
-
-	/**
-	 * Verify user if provided token is valid.
-	 *
-	 * @param $token
-	 *
-	 * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
-	 */
-	public function verify ($token) {
-		// Check if token exists.
-		$verification = Verification::where('verification_token', $token)->first();
-		if (isEmpty($verification))
-			redirect()->back()->withErrors([
-				'message' => 'Nepravilna aktivacija koda.'
-			]);
-
-		// Check if user exists.
-		$user = User::find($verification->user_id);
-		if (isEmpty($user))
-			redirect()->back()->withErrors([
-				'message' => 'Uporabnik s to aktivacijsko kodo ni bil najden.'
-			]);
-
-		// Check if token is still valid.
-		if ($verification->value('verification_expiry') < Carbon::now()) {
-			// Change token and resend it.
-			return $this->resendVerification($user->email);
-		}
-
-		// Verify user with provided token.
-		$user->active = 1;
-		$user->save();
-
-		// Remove verification token from database.
-		$verification->delete();
-
-		// Send user to login page.
-		return redirect('prijava');
-	}
-
-	/**
-	 * Create new verification token and send it.
-	 *
-	 * @param $emailAddress
-	 *
-	 * @return \Illuminate\Http\RedirectResponse
-	 */
-	public function resendVerification ($emailAddress) {
-		// Retrieve user with provided email address.
-		$user = User::where('email', $emailAddress)->first();
-
-		// Retrieve current verification token.
-		$verification = Verification::where('user_id', $user->user_id)->first();
-
-		// Change current token.
-		$verification->update($this->createVerification($user->user_id)->attributesToArray());
-
-		// Send new token.
-		$email = new EmailVerification($user, $verification);
-
-		Mail::to($emailAddress)->send($email);
-		return redirect()->back()->with([
-			'status'	=> 'Na vaš e-mail naslov smo poslali novo aktivacijsko '
-						   .'povezavo.'
-		]);
-	}
-
-	/**
-	 * Create new verification token.
-	 * Verification token is valid for one hour.
-	 *
-	 * @param $userId
-	 *
-	 * @return Verification
-	 */
-	protected function createVerification ($userId) {
-		return new Verification([
-			'verification_token'	=> Str::random(64),
-			'verification_expiry'	=> Carbon::now()
-											  ->addHour(1)->toDateTimeString(),
-			'user_id'				=> $userId
+						   . 'aktivacijsko povezavo.',
+			'email'		=> $user->email
 		]);
 	}
 }

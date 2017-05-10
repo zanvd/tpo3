@@ -115,16 +115,19 @@ Route::post('/registracija/pacient',
 | Email verification
 |--------------------------------------------------------------------------
 |
-| Get:		verify user with received token.	guest
+| Get:		show verification message page.				guest
+| Post:		perform verification with given token.		guest
+| Put:		resend verification token to given email.	guest
 |
 */
-Route::get('/verifikacija/{token}',
-	$namespacePrefix['auth'].'RegisterPatientController@verify');
+Route::get('/verifikacija',
+	$namespacePrefix['auth'].'VerificationController@index');
 
-Route::get('/nova-povezava',
-	$namespacePrefix['auth'].'RegisterPatientController@newToken');
-Route::post('/nova-povezava/{email}',
-	$namespacePrefix['auth'].'RegisterPatientController@resendVerification');
+Route::post('/verifikacija/{token}',
+	$namespacePrefix['auth'].'VerificationController@verify');
+
+Route::put('/verifikacija',
+	$namespacePrefix['auth'].'RegisterPatientController@update');
 
 /*
 |--------------------------------------------------------------------------
