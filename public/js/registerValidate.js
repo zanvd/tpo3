@@ -11,6 +11,41 @@ function enableField() {
 function validate() {
 	validator = $("#registrationForm").bootstrapValidator({
 				fields: {
+					visitType: {
+						validators: {
+							notEmpty: {
+								message: "Izberite tip obiska"
+							}
+						}
+					},
+					pacient: {
+						validators: {
+							notEmpty: {
+								message: "Izberite pacienta"
+							}
+						}
+					},
+					newborn: {
+						validators: {
+							notEmpty: {
+								message: "Izberite novorojenčka"
+							}
+						}
+					},
+					firstVisit: {
+						validators: {
+							notEmpty: {
+								message: "Izberite datum prvega obiska"
+							}
+						}
+					},
+					mandatory: {
+						validators: {
+							notEmpty: {
+								message: "Izberite obveznost datuma"
+							}
+						}
+					}
 					email : {
 						message: "Potreben je email naslov",
 						validators : {
