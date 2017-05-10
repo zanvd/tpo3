@@ -31,6 +31,7 @@ function toggleContactField(){
 		    selects[i].disabled = false;
 		}
 	}
+	disabled = !disabled;
 }
 
 function addDependantField(){
