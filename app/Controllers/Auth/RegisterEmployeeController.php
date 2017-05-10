@@ -102,7 +102,8 @@ class RegisterEmployeeController extends Controller {
 			'password'		=> bcrypt(request('password')),
 			'created_at'	=> Carbon::now()->toDateTimeString(),
 			'user_role_id'	=> request('function'),
-			'person_id'		=> $person->person_id
+			'person_id'		=> $person->person_id,
+			'active'		=> 1
 		]);
 
 		return redirect('/registracija/zaposleni')
