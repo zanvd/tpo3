@@ -69,7 +69,7 @@
 			    		<div class="form-group">
 						  <label>Datum rojstva </label>
 						  	<div class='input-group date'>
-			                    <input type='text' name="birthDate" id="birthDate" placeholder="Vnesite datum oblike dd.mm.yyyy" class="form-control datepicker" />
+			                    <input type='text' name="birthDate" id="birthDate" placeholder="Vnesite datum oblike dd.mm.yyyy" class="form-control" />
 			                    <span class="input-group-addon">
 			                        <span class="glyphicon glyphicon-calendar"></span>
 			                    </span>
@@ -166,7 +166,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="dependantArea">
+	<div class="dependantArea" id="dependantArea">
 	<div class="row collapse" id="dependant">
 		<div class="col-md-12">
 			<div class="panel panel-default">
@@ -197,16 +197,16 @@
 							<div class="form-group">
 							  <label>Spol</label>
 								<div class="form-control flex-parent">
-									<input class="flex-child" type="radio" name="dependantGender[]" id="gender" value="m">
+									<input class="flex-child" type="radio" name="dependantGender[]" value="m">
 									<div class="flex-child">Moški</div>
-									<input class="flex-child" type="radio" name="dependantGender[]" value="f" id="gender">
+									<input class="flex-child" type="radio" name="dependantGender[]" value="f">
 									<div class="flex-child">Ženska</div>
 								</div>
 							</div>
 							<div class="form-group">
 							  <label>Datum rojstva </label>
 							  	<div class='input-group date'>
-				                    <input type='text' name="dependantBirthDate[]" placeholder="Vnesite datum oblike dd.mm.yyyy" id="birthDate" class="form-control datepicker" />
+				                    <input type='text' name="dependantBirthDate[]" placeholder="Vnesite datum oblike dd.mm.yyyy" id="birthDate" class="form-control" />
 				                    <span class="input-group-addon">
 				                        <span class="glyphicon glyphicon-calendar"></span>
 				                    </span>
@@ -273,11 +273,11 @@
 <script type="text/javascript">
 
 	$(document).ready(function (){
+		/*
 		$('.datepicker').datepicker({
-		    format: "mm.dd.yyyy",
-		    language: "sl"
-		});
-
+		    format: 'dd.mm.yyyy',
+		    locale: 'sl'
+		});*/
 		validate();
 
 	});

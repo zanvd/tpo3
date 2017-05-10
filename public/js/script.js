@@ -16,13 +16,12 @@ function toggleContactField(){
 }
 
 function addDependantField(){
-	document.getElementsByClassName("dependantArea")[0].innerHTML += dependantArea;
+	document.getElementsByClassName("dependantArea")[0].appendChild(dependantArea.cloneNode(true));
 	$('#dependant').collapse();
 	document.getElementById('dependant').id = id;
 	var newField= $('#' + id).find("input");
 	var newField2= $('#' + id).find("select");
 	id +=1;
-	initializeDatePicker();
 	 $("#registrationForm").bootstrapValidator('addField', newField);
 	 $("#registrationForm").bootstrapValidator('addField', newField2);
 }
@@ -31,13 +30,6 @@ function removeSelf(node){
 	var child = node.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode;
 	var element = $('#' + child.id);
 	element.collapse('hide');
-}
-
-function initializeDatePicker(){
-	$('.datepicker').datepicker({
-		    format: "mm.dd.yyyy",
-		    language: "sl"
-		});
 }
 
 function validate() {
@@ -151,17 +143,12 @@ function validate() {
 						validators: {
 							notEmpty: {
 								message: "Vnesite datum"
-							},
-							callback: {
+							}/*
+							date: {
 								message: "Datum mora biti veljaven",
-								callback: function(value, validator, $field) {
-		                            if (value === '') {
-		                                return true;
-		                            }
-
-		                            return moment(value, 'DD.MM.YYYY', true).isValid();
-		                        }
-							}
+								format: "DD-MM-YYYY"
+								//max: moment().format("DD.MM.YYYY")
+							}*/
 						}
 					},
 					postNumber: {
@@ -276,7 +263,8 @@ function validate() {
 						validators: {
 							notEmpty: {
 								message: "Vnesite datum"
-							},
+							}
+							/*
 							callback: {
 								message: "Datum mora biti veljaven",
 								callback: function(value, validator, $field) {
@@ -284,9 +272,9 @@ function validate() {
 		                                return true;
 		                            }
 
-		                            return moment(value, 'DD.MM.YYYY', true).isValid();
+		                            return moment(value, 'DD.MM.YYYY', true).isValid() && moment.format("dd.mm.yyyy").isBefore(value);
 		                        }
-							}
+							}*/
 						}
 					},
 					"dependantAddress[]": {
@@ -337,12 +325,9 @@ var dependantArea;
 var validator;
 body.onload = function(){
 
-    $('.datepicker').datepicker({
-	    locale: 'sl',
-        format: 'DD.MM.YYYY'
-	});
-
-	dependantArea = document.getElementsByClassName("dependantArea")[0].innerHTML;
+    
+    dependantArea = document.createElement('div');
+	dependantArea.innerHTML = document.getElementsByClassName("dependantArea")[0].innerHTML;
 	document.getElementsByClassName("dependantArea")[0].innerHTML ="";
 };
 
