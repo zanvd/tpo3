@@ -128,7 +128,7 @@ Route::post('/verifikacija/{token}',
 	$namespacePrefix['auth'].'VerificationController@verify');
 
 Route::put('/verifikacija',
-	$namespacePrefix['auth'].'RegisterPatientController@update');
+	$namespacePrefix['auth'].'VerificationController@update');
 
 /*
 |--------------------------------------------------------------------------

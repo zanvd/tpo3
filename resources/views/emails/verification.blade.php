@@ -93,6 +93,7 @@
 														$actionColor = 'button--blue';
 														?>
 														<form method="POST" action="{{ url('/verifikacija/'.$verification->verification_token) }}">
+															{{ csrf_field() }}
 															<button type="submit" style="{{ $fontFamily }} {{ $style['button'] }} {{ $style[$actionColor] }}" class="button">
 																Potrdi
 															</button>

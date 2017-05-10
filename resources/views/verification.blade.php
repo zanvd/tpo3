@@ -19,7 +19,8 @@
         <div class="jumbotron">
 
         <form class="article-comment" id="registrationForm" method="POST" name="registrationForm" action="/verifikacija">
-          <h2>Registracija uspešna!</h2>
+          {{ csrf_field() }}
+			<h2>Registracija uspešna!</h2>
           <p>Na vaš e-poštni naslov smo vam poslali povezavo za aktivacijo vašega računa. Če sporočila niste prejeli, ga pošljite ponovno s spodnjim obrazcem. </p>
           <div class="col-md-3">
           <input class="form-control" @if(!empty($email)) value ="{{$email}}" @endif type="email" placeholder="Vnestie e-naslov..." name="email" id="email" required>
