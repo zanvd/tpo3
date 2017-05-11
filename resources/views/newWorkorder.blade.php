@@ -47,7 +47,7 @@
 						<div class="col-md-12">
 						<div class="form-group">
 		                <label>Tip obiska</label>
-		                <select data-live-search="true" class="form-control selectpicker" name="vistType" id="vistType" title="Izberite..." required>
+		                <select data-live-search="true" class="form-control selectpicker" name="visitType" id="visitType" title="Izberite..." required>
 		                  @if( ! empty($vistiTypes) )
 		                      @foreach($visitTypes as $key => $value)
 		                      <option value="{{ $key}}">{{ $value }}</option>
@@ -78,7 +78,7 @@
 
 						<div class="form-group hidden" id="newbornForm">
 		                <label>Novorojenček</label>
-		                <select data-live-search="true" class="form-control selectpicker" name="newborn" id="newborn" title="Izberite..." disable required>
+		                <select data-live-search="true" class="form-control selectpicker" name="newborn" id="newborn" title="Izberite..." disable>
 		                  @if( ! empty($patients) )
 		                      @foreach($patients as $key => $value)
 		                      <option value="{{ $key}}">{{ $value }}</option> <!-- POPRAVI IMENA SPREMENLJIVK -->
@@ -109,7 +109,7 @@
 					<div class="col-md-6">
 						<div class="form-group">
 		                	<label>Število obiskov</label>
-							<input type="text" placeholder="Število obiskov..." name="visits" name="visits" class="form-control">
+							<input type="text" placeholder="Število obiskov..." name="visits" id="visits" class="form-control">
 						</div>
 					</div>
 				</div>
@@ -135,7 +135,7 @@
               		<div class="col-md-12">
               			<div class="form-group">
 		                	<label>Zdravila</label>
-							<select data-live-search="true" class="form-control selectpicker" name="medicine" id="medicine" title="Izberite..." medicine disable required>
+							<select data-live-search="true" class="form-control selectpicker" name="medicine" id="medicine" title="Izberite..." multiple medicine disable>
 			                  @if( ! empty($medicine) )
 			                      @foreach($medicine as $key => $value)
 			                      <option value="{{ $key}}">{{ $value }}</option> <!-- POPRAVI IMENA SPREMENLJIVK -->
@@ -149,31 +149,36 @@
               		<div class="col-md-3">
               			<div class="form-group">
 							<label style="color:#ff5050">Rdečih epruvet</label>
-							<input type="text" placeholder="Vnesite število..." disable class="form-control">
+							<input type="number" placeholder="Vnesite število..." min="0" max="50" name="red" id="red" value="1" disable class="form-control">
 						</div>
               		</div>
               		<div class="col-md-3">
               			<div class="form-group">
 							<label style="color:#0099ff">Modrih epruvet</label>
-							<input type="text" placeholder="Vnesite število..." disable class="form-control">
+							<input type="number" placeholder="Vnesite število..." min="0" max="50" name="blue" id="blue" value="1" disable class="form-control">
 						</div>
               		</div>
               		<div class="col-md-3">
               			<div class="form-group">
 							<label style="color:#cccc00">Rumenih epruvet</label>
-							<input type="text" placeholder="Vnesite število..." disable class="form-control">
+							<input type="number" placeholder="Vnesite število..." min="0" max="50" name="yellow" id="yellow" value="1" disable class="form-control">
 						</div>
               		</div>
               		<div class="col-md-3">
               			<div class="form-group">
-							<label style="color:#66ff66">Zelenih epruvet</label>
-							<input type="text" placeholder="Vnesite število..." disable class="form-control">
+							<label style="color:#009933">Zelenih epruvet</label>
+							<input type="number" placeholder="Vnesite število..." min="0" max="50" name="green" id="green" value="1" disable class="form-control">
 						</div>
               		</div>
               	</div>
               	<div class="row">
               		<div class="col-md-12">
-              			<button class="btn btn-primary" type="submit">Ustvari</button>
+              			<input type="hidden" name="sum" id="sum" value="0">
+              		</div>
+              	</div>
+              	<div class="row">
+              		<div class="col-md-12">
+              			<button class="btn btn-primary" style="margin-top:15px;" type="submit">Ustvari</button>
               		</div>
               	</div>
 
