@@ -101,7 +101,7 @@
 					<div class="col-md-6">
 						<div class="form-group">
 		                	<label>Število obiskov</label>
-								<input type="text" placeholder="Število obiskov..." name="visits" class="form-control">
+							<input type="number" placeholder="Število obiskov..." name="visits" id="visits" class="form-control">
 						</div>
 					</div>
 				</div>
@@ -127,7 +127,7 @@
               		<div class="col-md-12">
               			<div class="form-group">
 		                	<label>Zdravila</label>
-							<select data-live-search="true" class="form-control selectpicker" name="medicine" id="medicine" title="Izberite..." medicine disable>
+							<select data-live-search="true" class="form-control selectpicker" name="medicine" id="medicine" title="Izberite..." multiple medicine disable>
 			                  @if( ! empty($medicine) )
 			                      @foreach($medicine as $key => $value)
 			                      <option value="{{ $key}}">{{ $value }}</option> <!-- POPRAVI IMENA SPREMENLJIVK -->
@@ -141,31 +141,36 @@
               		<div class="col-md-3">
               			<div class="form-group">
 							<label style="color:#ff5050">Rdečih epruvet</label>
-							<input type="number" placeholder="Vnesite število..." name="red" disable class="form-control">
+							<input type="number" placeholder="Vnesite število..." min="0" max="50" name="red" id="red" value="0" disable class="form-control">
 						</div>
               		</div>
               		<div class="col-md-3">
               			<div class="form-group">
 							<label style="color:#0099ff">Modrih epruvet</label>
-							<input type="number" placeholder="Vnesite število..." name="blue" disable class="form-control">
+							<input type="number" placeholder="Vnesite število..." min="0" max="50" name="blue" id="blue" value="0" disable class="form-control">
 						</div>
               		</div>
               		<div class="col-md-3">
               			<div class="form-group">
 							<label style="color:#cccc00">Rumenih epruvet</label>
-							<input type="number" placeholder="Vnesite število..." name="yellow" disable class="form-control">
+							<input type="number" placeholder="Vnesite število..." min="0" max="50" name="yellow" id="yellow" value="0" disable class="form-control">
 						</div>
               		</div>
               		<div class="col-md-3">
               			<div class="form-group">
-							<label style="color:#66ff66">Zelenih epruvet</label>
-							<input type="number" placeholder="Vnesite število..." name="green" disable class="form-control">
+							<label style="color:#009933">Zelenih epruvet</label>
+							<input type="number" placeholder="Vnesite število..." min="0" max="50" name="green" id="green" value="0" disable class="form-control">
 						</div>
               		</div>
               	</div>
               	<div class="row">
               		<div class="col-md-12">
-              			<button class="btn btn-primary" type="submit">Ustvari</button>
+              			<input type="hidden" name="sum" id="sum" value="0">
+              		</div>
+              	</div>
+              	<div class="row">
+              		<div class="col-md-12">
+              			<button class="btn btn-primary" style="margin-top:15px;" type="submit">Ustvari</button>
               		</div>
               	</div>
 

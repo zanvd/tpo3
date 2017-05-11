@@ -75,7 +75,7 @@
 				</div>
 				<div class="form-group">
 				  <label>Ponovite geslo</label>
-					<input class="form-control" type="password" placeholder="Ponovno vnesite geslo..." name="password_confirmation" pattern="(?=.*[A-Ža-ž])(?=.*\d)[A-Ža-ž\d]{8,64}" required>
+					<input class="form-control" type="password" placeholder="Ponovno vnesite geslo..." name="password_confirmation" required>
 				</div>
 				@if ($errors->first('password'))
 					<div class="alert alert-danger" role="alert">{{ $errors->first('password') }}</div>

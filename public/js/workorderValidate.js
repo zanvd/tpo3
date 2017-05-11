@@ -8,7 +8,7 @@ function validate() {
 							}
 						}
 					},
-					pacient: {
+					patient: {
 						validators: {
 							notEmpty: {
 								message: "Izberite pacienta"
@@ -36,112 +36,72 @@ function validate() {
 							}
 						}
 					},
-					email : {
-						message: "Potreben je email naslov",
-						validators : {
-							notEmpty : {
-								message: "Vnesite email naslov"
-							},
-							emailAddress: {
-								message: "Email naslov naslov ni pravilne oblike"
-							}
-						}
-					},
-					password : {
+					visits: {
 						validators: {
 							notEmpty: {
-								message: "Vnesite geslo"
-							},
-							stringLength: {
-								min: 8,
-								max: 64,
-								message: "Geslo mora biti dolgo vsaj 8 znakov"
-							},
-							regexp: {
-								message: "Geslo mora vsebovati črke in številke"
+								message: "Vnesite število obiskov"
 							}
 						}
 					},
-					password_confirmation: {
+					intervalDays: {
 						validators: {
 							notEmpty: {
-								message: "Ponovno vnesite geslo"
-							},
-							identical: {
-								field: "password",
-								message: "Gesli se morata ujemati"
+								message: "Vnesite število dni med obiski"
 							}
 						}
 					},
-					name: {
+					finalDate: {
 						validators: {
 							notEmpty: {
-								message: "Vnesite ime"
-							},
-							regexp: {
-								message: "Ime lahko vsebuje le črke"
-							},
-							stringLength: {
-								min: 2,
-								max: 20,
-								message: "Priimek je lahko dolg najmanj 2 in največ 20 znakov."
+								message: "Vnesite datum zadnjega obiska"
 							}
 						}
 					},
-					surname:{
+					medicine: {
 						validators: {
 							notEmpty: {
-								message: "Vnesite priimek"
-							},
-							regexp: {
-								message: "Priimek lahko vsebuje le črke"
-							},
-							stringLength: {
-								min: 2,
-								max: 20,
-								message: "Priimek je lahko dolg najmanj 2 in največ 20 znakov."
+								message: "Izberite zdravila"
 							}
 						}
 					},
-					postNumber: {
+					red: {
 						validators: {
 							notEmpty: {
-								message: "Izberite poštno številko"
+								message: "Vnesite število epruvet"
 							}
 						}
 					},
-					region: {
-						validators: {
-							notEmpty:  {
-								message: "Izberite šifro okoliša"
-							}
-						}
-					},
-					phoneNumber: {
+					green: {
 						validators: {
 							notEmpty: {
-								message: "Vnesite telefonsko številko"
-							}
-						},
-						regexp: {
-							message: "Telefonska številka je lahko dolga 7 ali 8 znakov"
-						}
-					},
-					address: {
-						validators: {
-							notEmpty: {
-								message: "Vnesite naslov"
+								message: "Vnesite število epruvet"
 							}
 						}
 					},
-					function: {
+					blue:  {
 						validators: {
 							notEmpty: {
-								message: "Izberite funkcijo"
+								message: "Vnesite število epruvet"
+							}
+						}
+					},
+					yellow:  {
+						validators: {
+							notEmpty: {
+								message: "Vnesite število epruvet"
+							}
+						}
+					},
+					sum: {
+						excluded: false,
+						validators: {
+							between: {
+								min: 1,
+								max: 200,
+								message: "Izbrana mora biti vsaj ena epruveta"
 							}
 						}
 					}
-
 
 				}
 			});
@@ -149,11 +109,9 @@ function validate() {
 
 function toggleField (form, hidden) {
 	if(hidden){
-		console.log("test1");
 		form.removeClass('hidden');
 	}
 	else{
-		console.log("test2");
 		form.addClass('hidden');
 	}
 
@@ -193,7 +151,7 @@ $('.datepicker').datepicker({
     language: 'sl'
  });
 
-$("#vistType").on("change", function() {
+$("#visitType").on("change", function() {
 	console.log(newbornHidden);
 
 	if(!newbornHidden){
@@ -253,6 +211,30 @@ $("#radio2").on("change", function() {
 	
 });
 
+$("#red").on("change", function() {
+	var summation = parseInt($("#red").val()) + parseInt($("#blue").val()) + parseInt($("#green").val()) + parseInt($("#yellow").val());
+	sum.val(summation);
+	$("#workorderForm").bootstrapValidator("revalidateField", "sum");
+});
+
+$("#blue").on("change", function() {
+	var summation = parseInt($("#red").val()) + parseInt($("#blue").val()) + parseInt($("#green").val()) + parseInt($("#yellow").val());
+	sum.val(summation);
+	$("#workorderForm").bootstrapValidator("revalidateField", "sum");
+});
+
+$("#green").on("change", function() {
+	var summation = parseInt($("#red").val()) + parseInt($("#blue").val()) + parseInt($("#green").val()) + parseInt($("#yellow").val());
+	sum.val(summation);
+	$("#workorderForm").bootstrapValidator("revalidateField", "sum");
+});
+
+$("#yellow").on("change", function() {
+	var summation = parseInt($("#red").val()) + parseInt($("#blue").val()) + parseInt($("#green").val()) + parseInt($("#yellow").val());
+	sum.val(summation);
+	$("#workorderForm").bootstrapValidator("revalidateField", "sum");
+});
+
 var newbornForm= $('#newbornForm');
 var medicineForm= $('#medicineForm');
 var bloodForm= $('#bloodForm');
@@ -262,9 +244,10 @@ var newbornHidden = true;
 var medicineHidden = true;
 var bloodHidden = true;
 var radio = false;
+var sum=$('#sum');;
 
 var body = document.getElementsByTagName("BODY")[0];
 body.onload = function(){
-	//validate();
+	validate();
 	
 };
