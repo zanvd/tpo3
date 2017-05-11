@@ -58,17 +58,17 @@
 		                <select data-live-search="true" class="form-control selectpicker" name="visitTypeId" id="visitType" title="Izberite..." required>
 
 			                  @if( ! empty($visitTypes) )
-			                  		if($role == "Zdravnik")
+			                  		@if($role == "Zdravnik")
 				                      @foreach($visitTypes as $key => $value)
 				                      <option value="{{ $key}}">{{ $value }}</option>
 				                      @endforeach
 				                    @else
 					                    @foreach($visitTypes as $key => $value)
 					                      <option value="{{ $key}}">{{ $value }}</option>
-					                     @endforeach
-					                     @if (($loop->iteration) == 3 )
-					                     	@break
-					                     @endif
+											 @if (($loop->iteration) == 3 )
+												@break
+											 @endif
+										@endforeach
 				                    @endif
 
 			                  @endif
