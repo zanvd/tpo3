@@ -29,7 +29,7 @@
 			  <a href="/delovni-nalog" class="list-group-item active main-color-bg">
 			   <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> Nov delovni nalog
 			  </a>
-			  <a href="/#" class="list-group-item"> <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span> Seznam delovnih nalogov</a>
+			  <a href="#" class="list-group-item"> <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span> Seznam delovnih nalogov</a>
 			  <a href="/spremeni-geslo" class="list-group-item "> <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> Sprememba gesla</a>
 			</div>
 @endsection
