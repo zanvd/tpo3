@@ -128,7 +128,7 @@ class LoginController extends Controller {
 				$request->session()->flush();
 				$request->session()->regenerate();
 
-				return $this->back()->withErrors([
+				return redirect()->back()->withErrors([
 					'message' => 'Napaka pri prijavi. Prosimo, poskusite znova.'
 				]);
 		}
