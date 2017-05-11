@@ -176,16 +176,31 @@ function validate() {
 							}
 						}
 					},
-					birthDate: {
-						validators: {
+					birthDate: {validators: {
 							notEmpty: {
-								message: "Vnesite datum"
-							}/*
-							date: {
-								message: "Datum mora biti veljaven",
-								format: "DD-MM-YYYY"
-								//max: moment().format("DD.MM.YYYY")
-							}*/
+								message: "Izberite datum prvega obiska"
+							},
+							callback: {
+								message: "Datum mora biti starejši od današnjega",
+								callback: function (value, validator, $field) {
+									moment.locale('sl');
+									var n = moment().format('L');
+									var ne = moment(n,'L');
+									moment.locale('sl');
+									visitDate = value;
+									var k = moment(value,'L');
+									if(!k.isValid()){
+										return false;
+									}
+
+									if(k.diff(ne) < 0) {
+										return true;
+									}
+									return false;
+
+								}
+
+							}
 						}
 					},
 					postNumber: {
@@ -272,6 +287,14 @@ $('#addContactPerson')[0].addEventListener("click", toggleContactField, false);
 var body = document.getElementsByTagName("BODY")[0];
 var contactField;
 var validator;
+
+$('.datepicker').datepicker({
+    format: 'dd.mm.yyyy',
+    language: 'sl'
+ }).on('changeDate', function(e) {
+            $('#registrationForm').bootstrapValidator('revalidateField', 'birthDate');
+        });
+
 body.onload = function(){
 
  	

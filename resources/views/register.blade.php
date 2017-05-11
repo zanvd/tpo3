@@ -78,7 +78,7 @@
 			    		<div class="form-group">
 						  <label>Datum rojstva </label>
 						  	<div class='input-group date'>
-			                    <input type='text' name="birthDate" id="birthDate" placeholder="Vnesite datum oblike dd.mm.yyyy" class="form-control" />
+			                    <input type='text' name="birthDate" id="birthDate" placeholder="Vnesite datum oblike dd.mm.yyyy" class="form-control date datepicker" />
 			                    <span class="input-group-addon">
 			                        <span class="glyphicon glyphicon-calendar"></span>
 			                    </span>
