@@ -60,7 +60,7 @@ class WorkOrderController extends Controller {
 			'finalDate'             => 'nullable|date|after:yesterday,firstVisit',
 			'interval'              => 'nullable|numeric',
 			'patientId'             => 'required',
-			'newbornId'             => 'nullable',
+			'newborn[]'             => 'array|in_array:integer',
 			'red'                   => 'nullable|numeric',
 			'blue'                  => 'nullable|numeric',
 			'yellow'                => 'nullable|numeric',
@@ -183,13 +183,6 @@ class WorkOrderController extends Controller {
 		$workOrderPatient->work_order_id = $workOrder->work_order_id;
 		$workOrderPatient->save();
 
-		if (request('newbornId') != null) {
-			$workOrderPatient = new WorkOrder_Patient();
-			$workOrderPatient->patient_id = request('newbornId');
-			$workOrderPatient->work_order_id = $workOrder->work_order_id;
-			$workOrderPatient->save();
-		}
-
 		switch ($visitSubtype) {
 			case '1':   // Obisk nosecnice
 				$this->defaultMeasurements($workOrder->work_order_id);
@@ -200,6 +193,13 @@ class WorkOrderController extends Controller {
 				$this->setMeasurements(15, $workOrder->work_order_id);  //Telesna teza novorojencka
 				$this->setMeasurements(18, $workOrder->work_order_id);  //Telesna visina novorojencka
 				$this->setMeasurements(22, $workOrder->work_order_id);  //Meritev bilirubina
+                $newborn = request('newborn');
+                for ($i = 0; $i < count($newborn); $i++) {
+                    $workOrderPatient = new WorkOrder_Patient();
+                    $workOrderPatient->patient_id = $newborn[$i];
+                    $workOrderPatient->work_order_id = $workOrder->work_order_id;
+                    $workOrderPatient->save();
+                }
 				break;
 			case '3':   // Preventiva starostnika
 				$this->defaultMeasurements($workOrder->work_order_id);

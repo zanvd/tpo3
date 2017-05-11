@@ -88,13 +88,11 @@
 
 						<div class="form-group hidden" id="newbornForm">
 		                <label>Novorojenček</label>
-		                <select data-live-search="true" class="form-control selectpicker" name="newbornId" id="newborn" title="Izberite..." disable>
+		                <select data-live-search="true" class="form-control selectpicker" name="newborn[]" id="newborn" title="Izberite..." disable multiple>
 		                  @if( ! empty($patients) )
 		                      @foreach($patients as $key => $value)
 		                      <option value="{{ $key}}">{{ $value }}</option> <!-- POPRAVI IMENA SPREMENLJIVK -->
 		                      @endforeach
-		                  @else
-		                  	<option value="1">test</option>
 		                  @endif
 		                </select>
 		              </div>
@@ -149,15 +147,11 @@
               		<div class="col-md-12">
               			<div class="form-group">
 		                	<label>Zdravila</label>
-							<select data-live-search="true" class="form-control selectpicker" name="medicine[]" id="medicine" title="Izberite..." multiple medicine disable>
+							<select data-live-search="true" class="form-control selectpicker" name="medicine[]" id="medicine" title="Izberite..." multiple disable>
 			                  @if( ! empty($medicine) )
 			                      @foreach($medicine as $key => $value)
 			                      <option value="{{ $key}}">{{ $value }}</option> <!-- POPRAVI IMENA SPREMENLJIVK -->
 			                      @endforeach
-			                  @else
-			                  	<option value="1">test</option>
-			                  	<option value="2">test2</option>
-			                  	<option value="3">test3</option>
 			                  @endif
 			                </select>
 						</div>
