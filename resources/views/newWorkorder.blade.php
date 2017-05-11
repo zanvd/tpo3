@@ -35,6 +35,14 @@
 @endsection
 
 @section('content')
+	@if( $status = Session::get('status'))
+		<div class="alert alert-success" role="alert">{{ $status }}</div>
+	@endif
+	@if (count($errors))
+		@foreach($errors->all() as $error)
+			<div class="alert alert-danger">{{ $error }}</div>
+		@endforeach					
+	@endif
 	<div class="row">
 		<div class="panel panel-default">
 			<div class="panel-heading main-color-bg">
