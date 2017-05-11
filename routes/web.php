@@ -152,8 +152,8 @@ Route::post('/registracija/zaposleni',
 | Work order creation
 |--------------------------------------------------------------------------
 |
-| Get:		display the work order page.	doctor, chief nurse
-| Post:		create new work order.			doctor, chief nurse
+| Get:		display the work order creation page.	doctor, chief nurse
+| Post:		create new work order.					doctor, chief nurse
 |
 */
 Route::get('/delovni-nalog',
@@ -161,6 +161,17 @@ Route::get('/delovni-nalog',
 
 Route::post('/delovni-nalog',
     $namespacePrefix['employee'].'WorkOrderController@store');
+
+/*
+|--------------------------------------------------------------------------
+| Work order display
+|--------------------------------------------------------------------------
+|
+| Get:		display the work order details page.	doctor, chief nurse, nurse
+|
+*/
+Route::get('/delovni-nalog/{id}',
+		   $namespacePrefix['employee'].'WorkOrderController@detail');
 
 /*
 |--------------------------------------------------------------------------
