@@ -41,19 +41,19 @@ class VerificationController extends Controller {
 		// Check if token exists.
 		$verification = Verification::where('verification_token', $token)->first();
 		if (!isset($verification))
-			return redirect('/verification')->withErrors([
+			return redirect('/verifikacija')->withErrors([
 				'message' => 'Nepravilna aktivacija koda.'
 			]);
 
 		// Check if user exists.
 		$user = User::find($verification->user_id);
 		if (!isset($user))
-			return redirect('/verification')->withErrors([
+			return redirect('/verifikacija')->withErrors([
 				'message' => 'Uporabnik s to aktivacijsko kodo ni bil najden.'
 			]);
 
 		// Check if token is still valid.
-		if ($verification->value('verification_expiry') < Carbon::now()) {
+		if (Carbon::now() > $verification->verification_expiry) {
 			// Change token and resend it.
 			return $this->update($user->email);
 		}

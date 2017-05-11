@@ -245,7 +245,9 @@ class WorkOrderController extends Controller {
 			}
 			$this->createVisit($vDate, false, $isFixed == 1, $visitSubtype, $workOrder->work_order_id);
 		}
-		return redirect('/delovni-nalog');
+		return redirect('/delovni-nalog')->with([
+			'status' => 'Delovni nalog uspešno kreiran'
+		]);
 	}
 
 	protected function defaultMeasurements($workOrderId) {
