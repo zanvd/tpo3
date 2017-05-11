@@ -70,12 +70,32 @@ function validate() {
 							}
 						}
 					},
-					birthDate: {
-						validators: {
-							notEmpty: {
-								message: "Vnesite datum rojstva"
+					birthDate: {validators: {
+						notEmpty: {
+							message: "Izberite datum prvega obiska"
+						},
+						callback: {
+							message: "Datum mora biti manjši ali enak današnjemu",
+							callback: function (value, validator, $field) {
+								moment.locale('sl');
+								var n = moment().format('L');
+								var ne = moment(n,'L');
+								moment.locale('sl');
+								visitDate = value;
+								var k = moment(value,'L');
+								if(!k.isValid()){
+									return false;
+								}
+
+								if(k.diff(ne) <= 0) {
+									return true;
+								}
+								return false;
+
 							}
+
 						}
+					}
 					},
 					sex: {
 						validators: {

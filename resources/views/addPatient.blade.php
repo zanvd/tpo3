@@ -5,7 +5,8 @@
 @endsection
 
 @section('css')
-<link rel="stylesheet" type="text/css" href="{{ URL::asset('css/bootstrapValidator.min.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ URL::asset('css/bootstrap-datepicker.min.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ URL::asset('css/bootstrapValidator.min.css') }}">
 @endsection
 
 @section('header')
@@ -79,12 +80,12 @@
               </div>
               <div class="form-group">
                 <label>Datum rojstva </label>
-                  <div class='input-group date'>
-                            <input type='text' name="birthDate" placeholder="Vnesite datum oblike dd.mm.yyyy" id="birthDate" class="form-control" />
-                            <span class="input-group-addon">
-                                <span class="glyphicon glyphicon-calendar"></span>
-                            </span>
-                        </div>
+				  <div class='input-group date'>
+					  <input type='text' name="birthDate" id="birthDate" placeholder="Vnesite datum oblike dd.mm.yyyy" class="form-control date datepicker" />
+					  <span class="input-group-addon">
+			                        <span class="glyphicon glyphicon-calendar"></span>
+			                    </span>
+				  </div>
               </div>
             </div>
             <div class="col-md-6">
@@ -129,6 +130,17 @@
 @endsection
 
 @section('script')
+	<script src="{{ URL::asset('js/moment-with-locales.js') }}"></script>
+	<script src="{{ URL::asset('js/bootstrap-datepicker.min.js') }}"></script>
+	<script src="{{ URL::asset('js/bootstrap-datepicker.sl.min.js') }}"></script>
 <script src="{{ URL::asset('js/bootstrapValidator.js') }}"></script>
 <script src="{{ URL::asset('js/patientValidate.js') }}"></script>
+	<script type="text/javascript">
+		$('.datepicker').datepicker({
+			format: 'dd.mm.yyyy',
+			language: 'sl'
+		}).on('changeDate', function(e) {
+			$('#registrationForm').bootstrapValidator('revalidateField', 'birthDate');
+		});
+	</script>
 @endsection
