@@ -4,6 +4,10 @@
 <title>Ustvari profil</title>
 @endsection
 
+@section('css')
+<link rel="stylesheet" type="text/css" href="{{ URL::asset('css/bootstrapValidator.min.css') }}">
+@endsection
+
 @section('header')
 <header id="header">
 	  <div class="container">
@@ -42,7 +46,7 @@
 			<h3 class="panel-title">Sprememba gesla</h3>
 		</div>
 		<div class="panel-body">
-			<form class="article-comment" method="POST" action="/spremeni-geslo">
+			<form class="article-comment" id="passwordForm" method="POST" action="/spremeni-geslo">
 			<input type="hidden" name="_method" value="put"> 
 				{{ csrf_field() }}
 				<div class="form-group">
@@ -55,7 +59,7 @@
 				</div>
 				<div class="form-group">
 					<label>Ponovitev novega gesla</label>
-					<input class="form-control" type="password" placeholder="Ponovno vnesite novo geslo..." name="password_confirmation" pattern="(?=.*[A-Ža-ž])(?=.*\d)[A-Ža-ž\d]{8,64}" required>
+					<input class="form-control" type="password" placeholder="Ponovno vnesite novo geslo..." name="password_confirmation" required>
 				</div>
 				@if ($errors->first('password'))
 					<div class="alert alert-danger" role="alert">{{ $errors->first('password') }}</div>
@@ -64,4 +68,62 @@
 			</form>
 		</div>
 	</div>
+@endsection
+
+@section('script')
+<script src="{{ URL::asset('js/bootstrapValidator.js') }}"></script>
+<script type="text/javascript">
+function validate() {
+	validator = $("#passwordForm").bootstrapValidator({
+				fields: {
+					oldPassword : {
+						validators: {
+							notEmpty: {
+								message: "Vnesite geslo"
+							},
+							stringLength: {
+								min: 8,
+								max: 64,
+								message: "Geslo mora biti dolgo vsaj 8 znakov"
+							},
+							regexp: {
+								message: "Geslo mora vsebovati črke in številke"
+							}
+						}
+					},
+					password : {
+						validators: {
+							notEmpty: {
+								message: "Vnesite geslo"
+							},
+							stringLength: {
+								min: 8,
+								max: 64,
+								message: "Geslo mora biti dolgo vsaj 8 znakov"
+							},
+							regexp: {
+								message: "Geslo mora vsebovati črke in številke"
+							}
+						}
+					},
+					password_confirmation: {
+						validators: {
+							notEmpty: {
+								message: "Ponovno vnesite geslo"
+							},
+							identical: {
+								field: "password",
+								message: "Gesli se morata ujemati"
+							}
+						}
+					}
+
+				}
+			});
+}
+var body = document.getElementsByTagName("BODY")[0];
+body.onload = function(){
+	validate();
+};
+</script>
 @endsection
