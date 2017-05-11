@@ -127,7 +127,7 @@
               		<div class="col-md-12">
               			<div class="form-group">
 		                	<label>Zdravila</label>
-							<select data-live-search="true" class="form-control selectpicker" name="medicine" id="medicine" title="Izberite..." multiple medicine disable>
+							<select data-live-search="true" class="form-control selectpicker" name="medicine[]" id="medicine" title="Izberite..." multiple medicine disable>
 			                  @if( ! empty($medicine) )
 			                      @foreach($medicine as $key => $value)
 			                      <option value="{{ $key}}">{{ $value }}</option> <!-- POPRAVI IMENA SPREMENLJIVK -->

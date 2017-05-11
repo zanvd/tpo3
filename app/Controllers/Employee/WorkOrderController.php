@@ -202,23 +202,24 @@ class WorkOrderController extends Controller {
 				$this->defaultMeasurements($workOrder->work_order_id);
 				break;
 			case '4':   // Aplikacija injekcij
-                dd(request('medicine'));
-                $medicine[] = request('medicine[]');
-                //$this->setMedicine($medicineId, $numOfUnits, $workOrderId);
+				$medicine = request('medicine');
+			    for ($i = 0; $i < count($medicine); $i++) {
+                    $this->setMedicine($medicine[$i], $workOrder->work_order_id);
+                }
 				break;
 			case '5':   // Odvzem krvi
-                if (request('red') != null) {
-                    $this->setNumOfBloodTubes(996, request('red'), $workOrder->work_order_id);
-                }
-                if (request('blue') != null) {
-                    $this->setNumOfBloodTubes(997, request('blue'), $workOrder->work_order_id);
-                }
-                if (request('yellow') != null) {
-                    $this->setNumOfBloodTubes(998, request('yellow'), $workOrder->work_order_id);
-                }
-                if (request('green') != null) {
-                    $this->setNumOfBloodTubes(999, request('green'), $workOrder->work_order_id);
-                };
+				if (request('red') != null) {
+					$this->setNumOfBloodTubes(996, request('red'), $workOrder->work_order_id);
+				}
+				if (request('blue') != null) {
+					$this->setNumOfBloodTubes(997, request('blue'), $workOrder->work_order_id);
+				}
+				if (request('yellow') != null) {
+					$this->setNumOfBloodTubes(998, request('yellow'), $workOrder->work_order_id);
+				}
+				if (request('green') != null) {
+					$this->setNumOfBloodTubes(999, request('green'), $workOrder->work_order_id);
+				};
 				break;
 			case '6':   // Kontrola zdravstvenega stanja
 				$this->defaultMeasurements($workOrder->work_order_id);
@@ -253,10 +254,9 @@ class WorkOrderController extends Controller {
 		$this->setMeasurements(19, $workOrderId);  //Telesna temperatura
 	}
 
-	protected function setMedicine($medicineId, $numOfUnits, $workOrderId) {
+	protected function setMedicine($medicineId, $workOrderId) {
 		$medicine = new WorkOrder_Medicine();
 		$medicine->medicine_id = $medicineId;
-		$medicine->num_of_units = $numOfUnits;
 		$medicine->work_order_id = $workOrderId;
 		$medicine->save();
 	}
