@@ -24,8 +24,7 @@ class WorkOrderController extends Controller {
 
 	public function __construct() {
 		// Only doctor and main nurse can access register page.
-		$this->middleware('auth');
-//        $this->middleware(['doctor', 'chiefNurse']);
+        $this->middleware('doctor');
 	}
 
 	public function index() {
