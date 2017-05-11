@@ -83,6 +83,8 @@
 		                      @foreach($patients as $key => $value)
 		                      <option value="{{ $key}}">{{ $value }}</option> <!-- POPRAVI IMENA SPREMENLJIVK -->
 		                      @endforeach
+		                  @else
+		                  	<option value="1">test</option>
 		                  @endif
 		                </select>
 		              </div>
@@ -92,7 +94,7 @@
 	             	<div class="col-md-6">
 						<div class="form-group">
 		                	<label>Datum prvega obiska</label>
-							<input type="text" placeholder="Vnesite datum..." name="firstVisit" class="form-control datepicker">
+							<input type="text" placeholder="Vnesite datum..." name="firstVisit" class="form-control date datepicker">
 						</div>
 					</div>
 					<div class="col-md-6">
@@ -109,7 +111,7 @@
 					<div class="col-md-6">
 						<div class="form-group">
 		                	<label>Število obiskov</label>
-							<input type="text" placeholder="Število obiskov..." name="visits" id="visits" class="form-control">
+							<input type="number" placeholder="Število obiskov..." min="1" max="10" name="visits" id="visits" class="form-control">
 						</div>
 					</div>
 				</div>
@@ -117,8 +119,8 @@
 					<div class="col-md-12 flex-parent">
 					<input class="flex-child2" type="radio" id="radio1" name="schedule" value="1" checked>
 						<div class="form-group flex-child">
-		                	<label>Časovni interval med dvema obiskoma</label>
-							<input type="text" name="interval" placeholder="Število dni..." name="interval" id="intervalDays" class="form-control">
+		                	<label>Časovni interval med dvema obiskoma (dni)</label>
+							<input type="number" min="0" max="10" placeholder="Število dni..."  name="interval" id="intervalDays" class="form-control">
 						</div>
 					</div>
 				</div>
@@ -127,7 +129,7 @@
 					<input class="flex-child2" type="radio" id="radio2" name="schedule" value="2">
 						<div class="form-group flex-child">
 		                	<label>Obiski naj bodo opravljeni do</label>
-							<input type="text" placeholder="Vnesite datum..." disabled id="finalDate" class="form-control datepicker">
+							<input type="text" placeholder="Vnesite datum..." disabled name = "finalDate" id="finalDate" class="form-control datepicker">
 						</div>
 					</div>
 				</div>
@@ -140,6 +142,10 @@
 			                      @foreach($medicine as $key => $value)
 			                      <option value="{{ $key}}">{{ $value }}</option> <!-- POPRAVI IMENA SPREMENLJIVK -->
 			                      @endforeach
+			                  @else
+			                  	<option value="1">test</option>
+			                  	<option value="2">test2</option>
+			                  	<option value="3">test3</option>
 			                  @endif
 			                </select>
 						</div>
@@ -173,7 +179,7 @@
               	</div>
               	<div class="row">
               		<div class="col-md-12">
-              			<input type="hidden" name="sum" id="sum" value="0">
+              			<input type="hidden" name="sum" id="sum" disabled value="1">
               		</div>
               	</div>
               	<div class="row">
@@ -190,6 +196,7 @@
 @endsection
 
 @section('script')
+<script src="{{ URL::asset('js/moment-with-locales.js') }}"></script>
 <script src="{{ URL::asset('js/bootstrapValidator.js') }}"></script>
 <script src="{{ URL::asset('js/bootstrap-datepicker.min.js') }}"></script>
 <script src="{{ URL::asset('js/bootstrap-datepicker.sl.min.js') }}"></script>
