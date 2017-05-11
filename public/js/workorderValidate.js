@@ -112,7 +112,7 @@ function validate() {
 							}
 						}
 					},
-					medicine: {
+					"medicine[]": {
 						validators: {
 							notEmpty: {
 								message: "Izberite zdravila"

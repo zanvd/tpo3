@@ -88,17 +88,24 @@ class LoginController extends Controller {
 		switch ($role) {
 			case 'Admin':
 				return $this->redirectTo('/registracija/zaposleni')
-							->with([
-								'name' => $user->person->name,
-								'role' => $role,
-								'lastLogin' => $lastLogin
-							]);
+                    ->with([
+                        'name' => $user->person->name,
+                        'role' => $role,
+                        'lastLogin' => $lastLogin
+                    ]);
 				break;
             case 'Zdravnik':
             case 'Vodja PS':
+                return $this->redirectTo('/delovni-nalog')
+                    ->with([
+                        'name' => $user->person->name,
+                        'role' => $role,
+                        'lastLogin' => $lastLogin
+                    ]);
+                break;
             case 'Patronažna sestra':
             case 'Uslužbenec ZD':
-                return $this->redirectTo('/registracija/zaposleni')
+                return $this->redirectTo('/spremeni-geslo')
                     ->with([
                         'name' => $user->person->name,
                         'role' => $role,
@@ -106,12 +113,12 @@ class LoginController extends Controller {
                     ]);
                 break;
 			case 'Pacient':
-				return $this->redirectTo('profil')
-							->with([
-									   'name' => $user->person->name,
-									   'role' => $role,
-									   'lastLogin' => $lastLogin
-								   ]);
+				return $this->redirectTo('/profil')
+                    ->with([
+                        'name' => $user->person->name,
+                        'role' => $role,
+                        'lastLogin' => $lastLogin
+                    ]);
 				break;
 			default:
 				// Something went wrong.

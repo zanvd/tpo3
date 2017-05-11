@@ -41,32 +41,24 @@
 				<h3 class="panel-title">Delovni nalog</h3>
 			</div>
 			<div class="panel-body">
-				<form class="article-comment" id="workorderForm" method="POST" data-toggle="validator" action="/ustvariDN">
+				<form class="article-comment" id="workorderForm" method="POST" data-toggle="validator" action="/delovni-nalog">
        				 {{ csrf_field() }}
 					<div class="row">
 						<div class="col-md-12">
 						<div class="form-group">
 		                <label>Tip obiska</label>
-		                <select data-live-search="true" class="form-control selectpicker" name="visitType" id="visitType" title="Izberite..." required>
-		                  @if( ! empty($vistiTypes) )
+		                <select data-live-search="true" class="form-control selectpicker" name="visitTypeId" id="visitType" title="Izberite..." required>
+		                  @if( ! empty($visitTypes) )
 		                      @foreach($visitTypes as $key => $value)
 		                      <option value="{{ $key}}">{{ $value }}</option>
 		                      @endforeach
-		                  @else
-		                  	<option value="1">Obisk nosečnice</option>
-		                  	<option value="2">Obisk nosečnice in otroka</option>
-		                  	<option value="3">Preventiva starostnika</option>
-		                  	<option value="4">Aplikacija inekcij</option>
-		                  	<option value="5">Odvzem krvi</option>
-		                  	<option value="6">Kontrola zdravstvenega stanja</option>
 		                  @endif
-
 		                </select>
 		              </div>		
 
 						<div class="form-group">
 		                <label>Pacient</label>
-		                <select data-live-search="true" class="form-control selectpicker" name="patient" id="patient" title="Izberite..." required>
+		                <select data-live-search="true" class="form-control selectpicker" name="patientId" id="patient" title="Izberite..." required>
 		                  @if( ! empty($patients) )
 		                      @foreach($patients as $key => $value)
 		                      <option value="{{ $key}}">{{ $value }}</option> <!-- POPRAVI IMENA SPREMENLJIVK -->
@@ -78,7 +70,7 @@
 
 						<div class="form-group hidden" id="newbornForm">
 		                <label>Novorojenček</label>
-		                <select data-live-search="true" class="form-control selectpicker" name="newborn" id="newborn" title="Izberite..." disable>
+		                <select data-live-search="true" class="form-control selectpicker" name="newbornId" id="newborn" title="Izberite..." disable>
 		                  @if( ! empty($patients) )
 		                      @foreach($patients as $key => $value)
 		                      <option value="{{ $key}}">{{ $value }}</option> <!-- POPRAVI IMENA SPREMENLJIVK -->
@@ -101,8 +93,8 @@
 						<div class="form-group">
 		                	<label>Obveznost</label>
 							<select class="form-control selectpicker" name="mandatory" id="mandatory" title="Izberite..." required>
-								<option value="yes">Obvezen</option>
-								<option value="no">Okviren</option>
+								<option value="1">Obvezen</option>
+								<option value="0">Okviren</option>
 							</select>
 						</div>
 					</div>
@@ -137,7 +129,7 @@
               		<div class="col-md-12">
               			<div class="form-group">
 		                	<label>Zdravila</label>
-							<select data-live-search="true" class="form-control selectpicker" name="medicine" id="medicine" title="Izberite..." multiple medicine disable>
+							<select data-live-search="true" class="form-control selectpicker" name="medicine[]" id="medicine" title="Izberite..." multiple medicine disable>
 			                  @if( ! empty($medicine) )
 			                      @foreach($medicine as $key => $value)
 			                      <option value="{{ $key}}">{{ $value }}</option> <!-- POPRAVI IMENA SPREMENLJIVK -->
@@ -155,25 +147,25 @@
               		<div class="col-md-3">
               			<div class="form-group">
 							<label style="color:#ff5050">Rdečih epruvet</label>
-							<input type="number" placeholder="Vnesite število..." min="0" max="50" name="red" id="red" value="1" disable class="form-control">
+							<input type="number" placeholder="Vnesite število..." min="0" max="50" name="red" id="red" value="0" disable class="form-control">
 						</div>
               		</div>
               		<div class="col-md-3">
               			<div class="form-group">
 							<label style="color:#0099ff">Modrih epruvet</label>
-							<input type="number" placeholder="Vnesite število..." min="0" max="50" name="blue" id="blue" value="1" disable class="form-control">
+							<input type="number" placeholder="Vnesite število..." min="0" max="50" name="blue" id="blue" value="0" disable class="form-control">
 						</div>
               		</div>
               		<div class="col-md-3">
               			<div class="form-group">
 							<label style="color:#cccc00">Rumenih epruvet</label>
-							<input type="number" placeholder="Vnesite število..." min="0" max="50" name="yellow" id="yellow" value="1" disable class="form-control">
+							<input type="number" placeholder="Vnesite število..." min="0" max="50" name="yellow" id="yellow" value="0" disable class="form-control">
 						</div>
               		</div>
               		<div class="col-md-3">
               			<div class="form-group">
 							<label style="color:#009933">Zelenih epruvet</label>
-							<input type="number" placeholder="Vnesite število..." min="0" max="50" name="green" id="green" value="1" disable class="form-control">
+							<input type="number" placeholder="Vnesite število..." min="0" max="50" name="green" id="green" value="0" disable class="form-control">
 						</div>
               		</div>
               	</div>
