@@ -56,11 +56,22 @@
 						<div class="form-group">
 		                <label>Tip obiska</label>
 		                <select data-live-search="true" class="form-control selectpicker" name="visitTypeId" id="visitType" title="Izberite..." required>
-		                  @if( ! empty($visitTypes) )
-		                      @foreach($visitTypes as $key => $value)
-		                      <option value="{{ $key}}">{{ $value }}</option>
-		                      @endforeach
-		                  @endif
+
+			                  @if( ! empty($visitTypes) )
+			                  		if($role == "Zdravnik")
+				                      @foreach($visitTypes as $key => $value)
+				                      <option value="{{ $key}}">{{ $value }}</option>
+				                      @endforeach
+				                    @else
+					                    @foreach($visitTypes as $key => $value)
+					                      <option value="{{ $key}}">{{ $value }}</option>
+					                     @endforeach
+					                     @if (($loop->iteration) == 3 )
+					                     	@break
+					                     @endif
+				                    @endif
+
+			                  @endif
 		                </select>
 		              </div>		
 
