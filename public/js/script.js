@@ -181,7 +181,7 @@ function validate() {
 								message: "Izberite datum prvega obiska"
 							},
 							callback: {
-								message: "Datum mora biti starejši od današnjega",
+								message: "Datum mora biti manjši od današnjega",
 								callback: function (value, validator, $field) {
 									moment.locale('sl');
 									var n = moment().format('L');

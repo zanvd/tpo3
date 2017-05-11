@@ -26,14 +26,9 @@ function validate() {
 						validators: {
 							notEmpty: {
 								message: "Izberite datum prvega obiska"
-							},/*
-							date: {
-								format: "DD-MM-YYYY",
-								min: moment().format("DD-MM-YYYY"),
-								message: "Datum mora biti kasnejši od današnjega"
-							}*/
+							},
 							callback: {
-								message: "Datum mora biti kasnejši od današnjega",
+								message: "Datum mora biti večji od današnjega",
 								callback: function (value, validator, $field) {
 									moment.locale('sl');
 									var n = moment().format('L');
@@ -61,7 +56,7 @@ function validate() {
 								message: "Izberite datum zadnjega obiska"
 							},
 							callback: {
-								message: "Datum mora biti kasnejši od današnjega in prvega obiska",
+								message: "Datum mora biti večji od današnjega in prvega obiska",
 								callback: function (value, validator, $field) {
 									/*
 									if(typeof visitDate.val() == 'undefined')
