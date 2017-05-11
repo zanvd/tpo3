@@ -35,6 +35,14 @@
 @endsection
 
 @section('content')
+	@if( $status = Session::get('status'))
+		<div class="alert alert-success" role="alert">{{ $status }}</div>
+	@endif
+	@if (count($errors))
+		@foreach($errors->all() as $error)
+			<div class="alert alert-danger">{{ $error }}</div>
+		@endforeach					
+	@endif
 	<div class="row">
 		<div class="panel panel-default">
 			<div class="panel-heading main-color-bg">
@@ -48,11 +56,22 @@
 						<div class="form-group">
 		                <label>Tip obiska</label>
 		                <select data-live-search="true" class="form-control selectpicker" name="visitTypeId" id="visitType" title="Izberite..." required>
-		                  @if( ! empty($visitTypes) )
-		                      @foreach($visitTypes as $key => $value)
-		                      <option value="{{ $key}}">{{ $value }}</option>
-		                      @endforeach
-		                  @endif
+
+			                  @if( ! empty($visitTypes) )
+			                  		if($role == "Zdravnik")
+				                      @foreach($visitTypes as $key => $value)
+				                      <option value="{{ $key}}">{{ $value }}</option>
+				                      @endforeach
+				                    @else
+					                    @foreach($visitTypes as $key => $value)
+					                      <option value="{{ $key}}">{{ $value }}</option>
+					                     @endforeach
+					                     @if (($loop->iteration) == 3 )
+					                     	@break
+					                     @endif
+				                    @endif
+
+			                  @endif
 		                </select>
 		              </div>		
 
