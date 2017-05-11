@@ -32,8 +32,13 @@
         </div>
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav navbar-right">
+            @if( ! empty($name) )
+            <li><a href="#">{{$name}}</a></li>
+            <li><a href="/odjava">Odjava</a></li>
+            @else
             <li><a href="/prijava">Prijava</a></li>
             <li><a href="/registracija">Registracija</a></li>
+            @endif
           </ul>
         </div><!--/.nav-collapse -->
       </div>
