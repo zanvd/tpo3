@@ -107,21 +107,23 @@
 						</div>
 					</div>
 				</div>
-				<div class="row">
-					<div class="col-md-12 flex-parent">
-					<input class="flex-child2" type="radio" id="radio1" name="schedule" value="1" checked>
-						<div class="form-group flex-child">
-		                	<label>Časovni interval med dvema obiskoma (dni)</label>
-							<input type="number" min="0" max="10" placeholder="Število dni..."  name="interval" id="intervalDays" class="form-control">
+				<div class="hidden" id="visitOptional">
+					<div class="row">
+						<div class="col-md-12 flex-parent">
+						<input class="flex-child2" type="radio" id="radio1" name="schedule" value="1" checked>
+							<div class="form-group flex-child">
+			                	<label>Časovni interval med dvema obiskoma (dni)</label>
+								<input type="number" min="0" max="10" placeholder="Število dni..."  name="interval" id="intervalDays" class="form-control">
+							</div>
 						</div>
 					</div>
-				</div>
-				<div class="row">
-					<div class="col-md-12 flex-parent">
-					<input class="flex-child2" type="radio" id="radio2" name="schedule" value="2">
-						<div class="form-group flex-child">
-		                	<label>Obiski naj bodo opravljeni do</label>
-							<input type="text" placeholder="Vnesite datum..." disabled name = "finalDate" id="finalDate" class="form-control datepicker">
+					<div class="row">
+						<div class="col-md-12 flex-parent">
+						<input class="flex-child2" type="radio" id="radio2" name="schedule" value="2">
+							<div class="form-group flex-child">
+			                	<label>Obiski naj bodo opravljeni do</label>
+								<input type="text" placeholder="Vnesite datum..." disabled name = "finalDate" id="finalDate" class="form-control datepicker">
+							</div>
 						</div>
 					</div>
 				</div>

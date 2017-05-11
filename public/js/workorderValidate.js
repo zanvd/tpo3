@@ -283,6 +283,19 @@ $("#yellow").on("change", function() {
 	$("#workorderForm").bootstrapValidator("revalidateField", "sum");
 });
 
+$("#visits").on("change", function() {
+	if($("#visits").val() == 1) {
+		$("#workorderForm").bootstrapValidator("resetField", "interval");
+		$("#workorderForm").bootstrapValidator("resetField", "finalDate");
+		$("#visitOptional").addClass('hidden');
+		$("#intervalDays").val(undefined);
+		$("#finalDate").val(undefined);
+	}
+	else {
+		$("#visitOptional").removeClass('hidden');
+	}
+});
+
 var newbornForm= $('#newbornForm');
 var medicineForm= $('#medicineForm');
 var bloodForm= $('#bloodForm');
