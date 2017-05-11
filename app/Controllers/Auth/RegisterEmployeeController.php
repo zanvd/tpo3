@@ -12,6 +12,7 @@ use App\Models\User;
 use App\Models\Employee;
 use App\Models\UserRole;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 
 class RegisterEmployeeController extends Controller {
 	/**
@@ -54,9 +55,11 @@ class RegisterEmployeeController extends Controller {
 	/**
 	 * Create new employee.
 	 *
+	 * @param Request $request
+	 *
 	 * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
 	 */
-	public function store() {
+	public function store(Request $request) {
 		// Validate given data.
 		$this->validate(request(), [
 			'email'			=> 'required|email',
@@ -81,7 +84,7 @@ class RegisterEmployeeController extends Controller {
 			'phone_num'		=> request('phoneNumber'),
 			'address'		=> request('address'),
 			'post_number'	=> request('postNumber'),
-			'region_id'		=> array_key_exists('region', request()) ?
+			'region_id'		=> array_key_exists('region', request()->all()) ?
 				request('region') : null,
 		]);
 
