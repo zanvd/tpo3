@@ -8,6 +8,7 @@ function toggleContactField(){
 	var selects= $('#contactField').find("select");
 	var buttons= $('#contactField').find("button");
 	if(!disabled) {
+		$("#registrationForm").data('bootstrapValidator').resetForm();
 		for(var i = 0;i < inputs.length; i++) {
 		    inputs[i].disabled = true;
 		}
@@ -69,6 +70,7 @@ function removeSelf(node){
 */
 function validate() {
 	validator = $("#registrationForm").bootstrapValidator({
+				excluded: [':disabled'],
 				fields: {
 					email : {
 						message: "Potreben je email naslov",
@@ -257,94 +259,7 @@ function validate() {
 								message: "Vnesite naslov"
 							}
 						}
-					},
-					"dependantRelationship[]": {
-						validators: {
-							notEmpty: {
-								message: "Izberite sorodstveno razmerje"
-							}
-						}
-					},
-					"dependantName[]": {
-						validators: {
-							notEmpty: {
-								message: "Vnesite ime"
-							}
-						}
-					},
-					"dependantSurname[]": {
-						validators: {
-							notEmpty: {
-								message: "Vnesite priimek"
-							},
-							regexp: {
-								message: "Priimek lahko vsebuje le črke"
-							},
-							stringLength: {
-								min: 2,
-								max: 20,
-								message: "Priimek je lahko dolg najmanj 2 in največ 20 znakov."
-							}
-						}
-					},
-					"dependantGender[]": {
-						validators: {
-							notEmpty: {
-								message: "Izberite spol"
-							}
-						}
-					},
-					"dependantBirthDate[]": {
-						validators: {
-							notEmpty: {
-								message: "Vnesite datum"
-							}
-							/*
-							callback: {
-								message: "Datum mora biti veljaven",
-								callback: function(value, validator, $field) {
-		                            if (value === '') {
-		                                return true;
-		                            }
-
-		                            return moment(value, 'DD.MM.YYYY', true).isValid() && moment.format("dd.mm.yyyy").isBefore(value);
-		                        }
-							}*/
-						}
-					},
-					"dependantAddress[]": {
-						validators: {
-							notEmpty: {
-								message: "Vnesite naslov"
-							}
-						}
-					},
-					"dependantPostNumber[]": {
-						validators: {
-							notEmpty: {
-								message: "Izberite poštno številko"
-							}
-						}
-					},
-					"dependantRegion[]": {
-						validators: {
-							notEmpty:  {
-								message: "Izberite šifro okoliša"
-							}
-						}
-					},
-					"dependantInsurance[]": {
-						validators: {
-							notEmpty: {
-								message: "Vnesite številko zdravstvene kartice"
-							},
-							regexp: {
-								message: "Številka mora vsebovati 9 števk"
-							}
-						}
 					}
-
-
 				}
 			});
 }
@@ -354,10 +269,8 @@ var buttonText = "Odstrani kontaktno osebo";
 var buttonText2 = "Dodaj kontaktno osebo";
 var disabled= true;
 $('#addContactPerson')[0].addEventListener("click", toggleContactField, false);
-$('#addDependantPerson')[0].addEventListener("click", addDependantField, false);
 var body = document.getElementsByTagName("BODY")[0];
 var contactField;
-var dependantArea;
 var validator;
 body.onload = function(){
 

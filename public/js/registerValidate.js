@@ -109,6 +109,13 @@ function validate() {
 							}
 						}
 					},
+					institution: {
+						validators: {
+							notEmpty: {
+								message: "Izberite izvajalca"
+							}
+						}
+					},
 					function: {
 						validators: {
 							notEmpty: {
