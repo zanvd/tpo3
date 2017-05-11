@@ -194,7 +194,7 @@ $("#visitType").on("change", function() {
 	else if (!medicineHidden){
 		$("#medicine").val('default');
 		$("#medicine").selectpicker("refresh");
-		$("#workorderForm").bootstrapValidator("resetField", "medicine");
+		$("#workorderForm").bootstrapValidator("resetField", "medicine[]");
 		toggleField(medicineForm, medicineHidden);
 		medicineHidden=true;
 	}
@@ -285,11 +285,11 @@ $("#yellow").on("change", function() {
 
 $("#visits").on("change", function() {
 	if($("#visits").val() == 1) {
+        $("#intervalDays").val(undefined);
+        $("#finalDate").val(undefined);
 		$("#workorderForm").bootstrapValidator("resetField", "interval");
 		$("#workorderForm").bootstrapValidator("resetField", "finalDate");
 		$("#visitOptional").addClass('hidden');
-		$("#intervalDays").val(undefined);
-		$("#finalDate").val(undefined);
 	}
 	else {
 		$("#visitOptional").removeClass('hidden');

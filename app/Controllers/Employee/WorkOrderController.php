@@ -30,7 +30,12 @@ class WorkOrderController extends Controller {
 	public function index() {
 		return view('newWorkorder')->with([
 			'visitTypes'    => VisitSubtype::all()->mapWithKeys(function ($visitSubtype) {
-				return [$visitSubtype['visit_subtype_id'] => $visitSubtype['visit_subtype_title']];
+//			    if (auth()->user()->userRole->user_role_title == 'Zdravnik')
+				    return [$visitSubtype['visit_subtype_id'] => $visitSubtype['visit_subtype_title']];
+//			    else {
+//			        $visitSubtype = VisitSubtype::where('visit_type_id', 1)->get();
+//                    return [$visitSubtype['visit_subtype_id'] => $visitSubtype['visit_subtype_title']];
+//                }
 			}),
 			'patients'       => Patient::all()->mapWithKeys(function ($patient) {
 				$person = $patient->person;
@@ -52,7 +57,7 @@ class WorkOrderController extends Controller {
 			'visits'                => 'required|numeric|min:1|max:10',
 			'firstVisit'            => 'required|date|after:yesterday',
 			'mandatory'             => 'required|min:0|max:1',
-			'finalDate'             => 'date|after:yesterday,firstVisit',
+			'finalDate'             => 'nullable|date|after:yesterday,firstVisit',
 			'interval'              => 'nullable|numeric',
 			'patientId'             => 'required',
 			'newbornId'             => 'nullable',
@@ -60,9 +65,7 @@ class WorkOrderController extends Controller {
 			'blue'                  => 'nullable|numeric',
 			'yellow'                => 'nullable|numeric',
 			'green'                 => 'nullable|numeric',
-
-//            'medicine[]'            => 'numericarray'
-//            'medicine[]'            => 'array|in_array:integer'
+            'medicine[]'            => 'array|in_array:integer'
 		],[
 			'required'		    => 'Polje je zahtevano.',
 			'numeric'		    => 'Zahtevano je število.',
@@ -71,6 +74,7 @@ class WorkOrderController extends Controller {
 			'required_without'  => 'Izberi končni datum ali interval',
 			'after'             => 'Datum mora biti večji ali enak današnjemu',
 			'date'              => 'Polje mora vsebovati datum',
+            'array'             => 'Napaka pri izbiri zdravil'
 		]);
 
 //        Validator::extend('numericarray', function($attribute, $value, $parameters) {

@@ -56,7 +56,6 @@
 						<div class="form-group">
 		                <label>Tip obiska</label>
 		                <select data-live-search="true" class="form-control selectpicker" name="visitTypeId" id="visitType" title="Izberite..." required>
-
 			                  @if( ! empty($visitTypes) )
 			                  		@if($role == "Zdravnik")
 				                      @foreach($visitTypes as $key => $value)
@@ -105,7 +104,7 @@
 	             	<div class="col-md-6">
 						<div class="form-group">
 		                	<label>Datum prvega obiska</label>
-							<input type="text" placeholder="Vnesite datum..." name="firstVisit" class="form-control date datepicker">
+							<input type="text" placeholder="Vnesite datum..." name="firstVisit" id="firstVisit" class="form-control date datepicker">
 						</div>
 					</div>
 					<div class="col-md-6">
@@ -132,7 +131,7 @@
 						<input class="flex-child2" type="radio" id="radio1" name="schedule" value="1" checked>
 							<div class="form-group flex-child">
 			                	<label>Časovni interval med dvema obiskoma (dni)</label>
-								<input type="number" min="0" max="10" placeholder="Število dni..."  name="interval" id="intervalDays" class="form-control">
+								<input type="number" min="0" max="365" placeholder="Število dni..."  name="interval" id="intervalDays" class="form-control">
 							</div>
 						</div>
 					</div>
