@@ -3,6 +3,7 @@
 namespace App\Controllers\Employee;
 
 use App\Models\BloodTube;
+use App\Models\DependentPatient;
 use App\Models\FreeDays;
 use App\Models\User;
 use App\Models\Employee;
@@ -29,25 +30,26 @@ class WorkOrderController extends Controller {
 
 	public function index() {
 		return view('newWorkorder')->with([
-			'visitTypes'    => VisitSubtype::all()->mapWithKeys(function ($visitSubtype) {
-//			    if (auth()->user()->userRole->user_role_title == 'Zdravnik')
+			'visitTypes'        => VisitSubtype::all()->mapWithKeys(function ($visitSubtype) {
 				    return [$visitSubtype['visit_subtype_id'] => $visitSubtype['visit_subtype_title']];
-//			    else {
-//			        $visitSubtype = VisitSubtype::where('visit_type_id', 1)->get();
-//                    return [$visitSubtype['visit_subtype_id'] => $visitSubtype['visit_subtype_title']];
-//                }
 			}),
-			'patients'       => Patient::all()->mapWithKeys(function ($patient) {
+			'patients'          => Patient::all()->mapWithKeys(function ($patient) {
 				$person = $patient->person;
 				return [$patient['patient_id'] => $patient['insurance_num'] . ' ' . $person['name'] . ' ' .$person['surname']];
 			}),
-			'medicine'      => Medicine::all()->mapWithKeys(function ($medicine) {
+			'medicine'          => Medicine::all()->mapWithKeys(function ($medicine) {
 				return [$medicine['medicine_id'] => $medicine['medicine_name'] . ' ' . $medicine['medicine_packaging'] . ' ' . $medicine['medicine_type']];
 			}),
-			'name'			=> auth()->user()->person->name . ' ' .
-				auth()->user()->person->surname,
-			'role'			=> auth()->user()->userRole->user_role_title,
-			'lastLogin'		=> $this->lastLogin(auth()->user()),
+			'dependentChildId' => DependentPatient::where(function ($query) {
+                                $query->where('relationship_id', 13)
+                                    ->orWhere('relationship_id', 12);})->get()->mapWithKeys(function ($dependentChildId){
+                $patient = $dependentChildId->patient;
+                $person = $patient->person;
+                return [$dependentChildId['guardian_patient_id'] => $patient['insurance_num'] . ' ' . $person['name'] . ' ' .$person['surname']];
+            }),
+			'name'			    => auth()->user()->person->name . ' ' . auth()->user()->person->surname,
+			'role'			    => auth()->user()->userRole->user_role_title,
+			'lastLogin'		    => $this->lastLogin(auth()->user())
 		]);
 	}
 
@@ -76,18 +78,6 @@ class WorkOrderController extends Controller {
 			'date'              => 'Polje mora vsebovati datum',
             'array'             => 'Napaka pri izbiri zdravil'
 		]);
-
-//        Validator::extend('numericarray', function($attribute, $value, $parameters) {
-//            if(is_array($value)) {
-//                foreach($value as $v) {
-//                    if(!is_int($v)) {
-//                        return false;
-//                    }
-//                }
-//                return true;
-//            }
-//            return is_int($value);
-//        });
 
 		$workOrder = new WorkOrder();
 
@@ -149,7 +139,6 @@ class WorkOrderController extends Controller {
 						$workDays++;
 					}
 					$date->addDay();
-//                    dd($workOrder->start_date);
 				}
 				$workOrder->end_date = $date;
 				(int)$interval = ($workDays / ($numOfVisits - 1));
@@ -168,13 +157,13 @@ class WorkOrderController extends Controller {
 		$patient_id = request('patientId');
 		$patient = Patient::find($patient_id);
 		$person = Person::find($patient->person_id);
-		$region = $person->region_id;
 		$user = new User();
 		$personNurseId = User::where('user_role_id', 23)->get()->filter(function ($person, $region) {
 			return $person->region_id == $region;
 		})[0]->person_id;
 		$workOrder->performer_id = Employee::where('person_id', $personNurseId)->first()->employee_id;
 		$workOrder->substitution = false;
+		$workOrder->visit_subtype_id = $visitSubtype;
 		$workOrder->save();
 
 		//pacient
@@ -233,17 +222,18 @@ class WorkOrderController extends Controller {
 
 		// Create first visit
 		$vDate = $start_date;
-		$this->createVisit($start_date, true, $isFixed == 1, $visitSubtype, $workOrder->work_order_id);
-		if (request('interval') != null) {
-			$isFixed = 1;
-		}
+		$this->createVisit($start_date, true, $isFixed == 1, $workOrder->work_order_id);
+//		if (request('interval') != null) {
+//			$isFixed = 1;
+//		}
 		// Create other visits, if there are more
 		for ($i = 1; $i < $numOfVisits; $i++) {
 			$vDate->addDays($interval);
 			while (!$this->isBusinessDay($vDate)) {
 				$vDate->addDay();
 			}
-			$this->createVisit($vDate, false, $isFixed == 1, $visitSubtype, $workOrder->work_order_id);
+//			$this->createVisit($vDate, false, $isFixed == 1, $workOrder->work_order_id);
+			$this->createVisit($vDate, false, false, $workOrder->work_order_id);
 		}
 		return redirect('/delovni-nalog')->with([
 			'status' => 'Delovni nalog uspešno kreiran'
@@ -281,12 +271,11 @@ class WorkOrderController extends Controller {
 		$measurement->save();
 	}
 
-	protected function createVisit($vDate, $isFirst, $isFixed, $subtypeId, $workOrderId) {
+	protected function createVisit($vDate, $isFirst, $isFixed, $workOrderId) {
 		$visit = new Visit();
 		$visit->visit_date = $vDate;
 		$visit->first_visit = $isFirst;
 		$visit->fixed_visit = $isFixed;
-		$visit->visit_subtype_id = $subtypeId;
 		$visit->work_order_id = $workOrderId;
 		$visit->save();
 	}

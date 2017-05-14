@@ -296,8 +296,14 @@ $("#visits").on("change", function() {
 	}
 });
 
-var newbornForm= $('#newbornForm');
-var medicineForm= $('#medicineForm');
+$("select[name=patientId]").on("change", function() {
+    potentialMother = $("select[name=patientId]").val();
+	console.log(potentialMother);
+});
+
+var potentialMother = $("select[name=patientId]").val();;
+var newbornForm = $('#newbornForm');
+var medicineForm = $('#medicineForm');
 var bloodForm= $('#bloodForm');
 var finalDate = $('#finalDate');
 var intervalDays = $('#intervalDays');
@@ -305,7 +311,7 @@ var newbornHidden = true;
 var medicineHidden = true;
 var bloodHidden = true;
 var radio = false;
-var sum=$('#sum');
+var sum = $('#sum');
 var bootstrapValidatorInstance = $("#workorderForm");
 var visitDate;
 
