@@ -25,7 +25,7 @@ class Person extends Model {
 	 *
 	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
 	 */
-	public function region() {
+	public function region () {
 		return $this->belongsTo(
 			'App\Models\Region',
 			'region_id',
@@ -38,7 +38,7 @@ class Person extends Model {
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-	public function user() {
+	public function user () {
 	    return $this->hasOne(
 	        'App\Models\User',
             'person_id',
@@ -51,7 +51,7 @@ class Person extends Model {
 	 *
 	 * @return \Illuminate\Database\Eloquent\Relations\HasOne
 	 */
-	public function patient() {
+	public function patient () {
 		return $this->hasOne(
 			'App\Models\Patient',
 			'person_id',

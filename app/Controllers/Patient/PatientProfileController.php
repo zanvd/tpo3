@@ -79,9 +79,6 @@ class PatientProfileController extends Controller {
 			// Remove unused values.
 			unset($dependent->insurance_num, $dependent->birth_date,
 				$dependent->person_id);
-
-			// Store new array.
-			$dependents[$index] = $dependent;
 		}
 
 		return $dependents;

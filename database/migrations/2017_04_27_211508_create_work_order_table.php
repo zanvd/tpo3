@@ -16,14 +16,15 @@ class CreateWorkOrderTable extends Migration {
 			$table->dateTime('created_at');
 			$table->date('start_date');
 			$table->date('end_date');
-			$table->boolean('substitution')->default(false);
 			$table->unsignedInteger('visit_subtype_id');
-			$table->integer('performer_id');
-			$table->integer('prescriber_id');
+			$table->unsignedInteger('prescriber_id');
+			$table->unsignedInteger('performer_id');
+			$table->unsignedInteger('substitution_id')->nullable();
 
 			$table->foreign('visit_subtype_id')->references('visit_subtype_id')->on('VisitSubtype');
-			$table->foreign('performer_id')->references('employee_id')->on('Employee');
 			$table->foreign('prescriber_id')->references('employee_id')->on('Employee');
+			$table->foreign('performer_id')->references('employee_id')->on('Employee');
+			$table->foreign('substitution_id')->references('substitution_id')->on('Substitution');
 		});
 	}
 

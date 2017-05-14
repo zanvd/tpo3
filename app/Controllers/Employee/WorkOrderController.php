@@ -23,12 +23,26 @@ use Carbon\Carbon;
 
 class WorkOrderController extends Controller {
 
-	public function __construct() {
-		// Only doctor and main nurse can access register page.
-        $this->middleware('doctor');
+	public function __construct () {
+		// Only doctor and main nurse can access work order creation page.
+        $this->middleware('workOrder');
 	}
 
-	public function index() {
+	/**
+	 * Display page with listed work orders.
+	 *
+	 * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+	 */
+	public function index () {
+		return view('landing');
+	}
+
+	/**
+	 * Display work order creation page.
+	 *
+	 * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+	 */
+	public function create () {
 		return view('newWorkorder')->with([
 			'visitTypes'        => VisitSubtype::all()->mapWithKeys(function ($visitSubtype) {
 				    return [$visitSubtype['visit_subtype_id'] => $visitSubtype['visit_subtype_title']];
@@ -53,7 +67,12 @@ class WorkOrderController extends Controller {
 		]);
 	}
 
-	public function store() {
+	/**
+	 * Store new work order in database.
+	 *
+	 * @return \Illuminate\Http\RedirectResponse
+	 */
+	public function store () {
 		$this->validate(request(), [
 			'visitTypeId'           => 'required',
 			'visits'                => 'required|numeric|min:1|max:10',
@@ -238,6 +257,93 @@ class WorkOrderController extends Controller {
 		return redirect('/delovni-nalog')->with([
 			'status' => 'Delovni nalog uspešno kreiran'
 		]);
+	}
+
+	/**
+	 * Display details about requested work order.
+	 *
+	 * @param WorkOrder $workOrder
+	 *
+	 * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+	 */
+	public function show (WorkOrder $workOrder) {
+		/**
+		 * Zdravnik/vodja PS/patronažna sestra lahko izpiše delovni nalog.
+		 *
+		 * Za vsak DN je treba izpisati:
+		 * njegove podrobnosti in
+		 * podatke o vseh predvidenih obiskih:
+			 * predvideni datum obiska
+			 * dejanski datum obiska (če je bil obisk že opravljen)
+			 * zadolžena medicinska sestra oziroma nadomestna medicinska sestra.
+		 *
+		 * Za že opravljene obiske naj bo možen tudi izpis podrobnosti obiska (povezava na zgodbo #11).
+		 *
+		 * Preveri izpis za vse vrste obiskov (pri aplikaciji injekcij je treba izpisati tudi podatke o zdravilih, pri odvzemu krvi pa podatke o epruvetah).
+		 * Preveri, da se izpišejo tako podatki, ki se zajamejo, kot podatki, ki se avtomatsko določijo ob kreiranju DN.
+		 */
+		// Rename work order variables to meet frontend requirements.
+		$workOrder->createdAt = $workOrder->created_at;
+		$workOrder->startDate = $workOrder->start_date;
+		$workOrder->endDate = $workOrder->end_date;
+
+		// Retrieve all patients.
+		// Set double inner join on WorkOrder_Patient table.
+		// First is on WorkOrder table connecting with given work order.
+		// Second is on Patient table connecting with all patients under this
+		// work order.
+		// Select statement retrieves all patients data.
+		$patients = DB::table('WorkOrder_Patient')
+			->join('WorkOrder AS Wo',
+				'WorkOrder_Patient.work_order_id',
+				'=',
+				'Wo.work_order_id')
+			->join('Patient As Pat',
+				'WorkOrder_Patient.patient_id',
+				'=',
+				'Pat.patient_id')
+			->select('Pat.*')
+			->get();
+
+		// Iterate over patients and retrieve their data from Person table.
+		foreach ($patients as $patient) {
+			$person = $patient->person;
+
+			$patient->name = $person->name;
+			$patient->surname = $person->surname;
+			$patient->phoneNum = $person->phone_num;
+			$patient->address = $person->address;
+			$patient->postNumber = $person->post_number;
+			$patient->region = $person->region;
+
+			// Rename keys to meet frontend requirements.
+			$patient->insurance = $patient->insurance_num;
+			$patient->birthDate = Carbon::createFromFormat('Y-m-d',
+													$patient->birth_date)
+													->format('d.m.Y');
+
+			// Remove unused values.
+			unset($patient->insurance_num, $patient->birth_date,
+				$patient->person_id);
+		}
+
+		// Rename keys for prescriber to meet frontend requirements.
+		$workOrder->prescriber()->employeeId = $workOrder->prescriber()->employee_id;
+
+		// Retrieve nurse
+		// Check if there was a substitution and
+		// today is inside substitution period.
+		if (!is_null($workOrder->substitution())
+			&& Carbon::now() >= $workOrder->substitution()->start_date
+			&& Carbon::now() <= $workOrder->substitution()->end_date) {
+
+		} else {
+			$workOrder->performer()->employeeId = $workOrder->performer()->employee_id;
+		}
+
+		// Retrieve all visits.
+
+		return view('workOrder');
 	}
 
 	protected function defaultMeasurements($workOrderId) {

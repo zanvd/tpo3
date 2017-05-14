@@ -7,6 +7,11 @@ class Patient extends Model {
 
     protected $primaryKey = 'patient_id';
 
+	/**
+	 * One Person belong to one Patient.
+	 *
+	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+	 */
     public function person() {
         return $this->belongsTo(
             'App\Models\Person',
