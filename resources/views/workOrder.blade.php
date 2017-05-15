@@ -1,12 +1,7 @@
 @extends('layoutLog')
 
 @section('title')
-<title>Nov delovni nalog</title>
-@endsection
-
-@section('css')
-<link rel="stylesheet" type="text/css" href="{{ URL::asset('css/bootstrapValidator.min.css') }}">
-<link rel="stylesheet" type="text/css" href="{{ URL::asset('css/bootstrap-datepicker.min.css') }}">
+<title>Preglej delovni nalog</title>
 @endsection
 
 @section('header')
@@ -264,12 +259,4 @@
 		</div>
 	</div>
 	
-@endsection
-
-@section('script')
-<script src="{{ URL::asset('js/moment-with-locales.js') }}"></script>
-<script src="{{ URL::asset('js/bootstrapValidator.js') }}"></script>
-<script src="{{ URL::asset('js/bootstrap-datepicker.min.js') }}"></script>
-<script src="{{ URL::asset('js/bootstrap-datepicker.sl.min.js') }}"></script>
-<script src="{{ URL::asset('js/workorderValidate.js') }}"></script>
 @endsection
