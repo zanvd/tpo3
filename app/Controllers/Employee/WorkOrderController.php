@@ -204,8 +204,8 @@ class WorkOrderController extends Controller {
 
 		switch ($visitSubtype) {
 			case '1':   /** Obisk nosecnice */
-				$this->defaultMeasurements($workOrder->work_order_id);
-				$this->setMeasurements(16, $workOrder->work_order_id);  /** Teza pred nosecnostjo */
+				$this->defaultMeasurements($workOrder->work_order_id, $patient_id);
+				$this->setMeasurements(16, $workOrder->work_order_id, $patient_id);  /** Teza pred nosecnostjo */
 				break;
 			case '2':   /** Obisk otrocnice in novorojencka */
 				$this->defaultMeasurements($workOrder->work_order_id, $patient_id);
