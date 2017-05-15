@@ -96,7 +96,7 @@ class LoginController extends Controller {
 				break;
             case 'Zdravnik':
             case 'Vodja PS':
-                return $this->redirectTo('/delovni-nalog')
+                return $this->redirectTo('/delovni-nalog/ustvari')
                     ->with([
                         'name' => $user->person->name,
                         'role' => $role,
