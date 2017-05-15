@@ -126,7 +126,7 @@ class WorkOrderController extends Controller {
 			$start_date)->format('Y-m-d');
 		$start_date = new Carbon($fDate);
 
-		// If start date is not a business day, set start date to first business day
+		/** If start date is not a business day, set start date to first business day */
 		while (!$this->isBusinessDay($start_date)) {
 			$start_date->addDay();
 		}
@@ -142,13 +142,13 @@ class WorkOrderController extends Controller {
 			$date->addDay();
 		}
 
-		// If there is more then one visit in WO, calculate other visit's dates
+		/** If there is more then one visit in WO, calculate other visit's dates */
 		$num = $numOfVisits;
 		if ($numOfVisits > 1) {
 			$interval = request('interval');
 
-			// If interval is given, calculater date, that is business day, first after interval
-			if ($interval != null) { // obisk na vsakih x dni
+			/** If interval is given, calculater date, that is business day, first after interval */
+			if ($interval != null) { /** obisk na vsakih x dni */
 				while ($num > 1) {
 					$date->addDays($interval);
 					while (!$this->isBusinessDay($date)) {
@@ -159,8 +159,8 @@ class WorkOrderController extends Controller {
 				$workOrder->end_date = $date;
 			}
 
-			// If the interval is not given, calculate interval from number of business days between start and end date
-			else { // zadnji datum in stevilo obiskov -> pogostost obiskov
+			/** If the interval is not given, calculate interval from number of business days between start and end date */
+			else { /** zadnji datum in stevilo obiskov -> pogostost obiskov */
 				$workDays = 0;
 				$end_date = request('finalDate');
 				$feDate = \DateTime::createFromFormat(
@@ -181,16 +181,13 @@ class WorkOrderController extends Controller {
 			$interval = 0;
 		}
 
-		//narocnik
+		/** Narocnik */
 		$user = Auth::user();
 		$prescriber = Employee::where('person_id', $user->person_id)->first();
 		$workOrder->prescriber_id = $prescriber->employee_id;
 
-		// Avtomatsko dodeljevanje MS
+		/** Avtomatsko dodeljevanje MS */
 		$patient_id = request('patientId');
-		$patient = Patient::find($patient_id);
-		$person = Person::find($patient->person_id);
-		$user = new User();
 		$personNurseId = User::where('user_role_id', 23)->get()->filter(function ($person, $region) {
 			return $person->region_id == $region;
 		})[0]->person_id;
@@ -199,40 +196,40 @@ class WorkOrderController extends Controller {
 		$workOrder->visit_subtype_id = $visitSubtype;
 		$workOrder->save();
 
-		//pacient
+		/** Pacient */
 		$workOrderPatient = new WorkOrder_Patient();
 		$workOrderPatient->patient_id = $patient_id;
 		$workOrderPatient->work_order_id = $workOrder->work_order_id;
 		$workOrderPatient->save();
 
 		switch ($visitSubtype) {
-			case '1':   // Obisk nosecnice
+			case '1':   /** Obisk nosecnice */
 				$this->defaultMeasurements($workOrder->work_order_id);
-				$this->setMeasurements(16, $workOrder->work_order_id);  //Teza pred nosecnostjo
+				$this->setMeasurements(16, $workOrder->work_order_id);  /** Teza pred nosecnostjo */
 				break;
-			case '2':   // Obisk otrocnice in novorojencka
-				$this->defaultMeasurements($workOrder->work_order_id);
-				$this->setMeasurements(15, $workOrder->work_order_id);  //Telesna teza novorojencka
-				$this->setMeasurements(18, $workOrder->work_order_id);  //Telesna visina novorojencka
-				$this->setMeasurements(22, $workOrder->work_order_id);  //Meritev bilirubina
+			case '2':   /** Obisk otrocnice in novorojencka */
+				$this->defaultMeasurements($workOrder->work_order_id, $patient_id);
 				$newborn = request('newborn');
 				for ($i = 0; $i < count($newborn); $i++) {
 					$workOrderPatient = new WorkOrder_Patient();
 					$workOrderPatient->patient_id = $newborn[$i];
 					$workOrderPatient->work_order_id = $workOrder->work_order_id;
 					$workOrderPatient->save();
+                    $this->setMeasurements(15, $workOrder->work_order_id, $newborn[$i]);  /** Telesna teza novorojencka*/
+                    $this->setMeasurements(18, $workOrder->work_order_id, $newborn[$i]);  /** Telesna visina novorojencka */
+                    $this->setMeasurements(22, $workOrder->work_order_id, $newborn[$i]);  /** Meritev bilirubina */
 				}
 				break;
-			case '3':   // Preventiva starostnika
-				$this->defaultMeasurements($workOrder->work_order_id);
+			case '3':   /** Preventiva starostnika */
+				$this->defaultMeasurements($workOrder->work_order_id, $patient_id);
 				break;
-			case '4':   // Aplikacija injekcij
+			case '4':   /** Aplikacija injekcij */
 				$medicine = request('medicine');
 				for ($i = 0; $i < count($medicine); $i++) {
 					$this->setMedicine($medicine[$i], $workOrder->work_order_id);
 				}
 				break;
-			case '5':   // Odvzem krvi
+			case '5':   /** Odvzem krvi */
 				if (request('red') != null) {
 					$this->setNumOfBloodTubes(996, request('red'), $workOrder->work_order_id);
 				}
@@ -246,26 +243,22 @@ class WorkOrderController extends Controller {
 					$this->setNumOfBloodTubes(999, request('green'), $workOrder->work_order_id);
 				};
 				break;
-			case '6':   // Kontrola zdravstvenega stanja
-				$this->defaultMeasurements($workOrder->work_order_id);
-				$this->setMeasurements(20, $workOrder->work_order_id);  //Krvni sladkor
-				$this->setMeasurements(21, $workOrder->work_order_id);  //Oksigenacija SpO2
+			case '6':   /** Kontrola zdravstvenega stanja */
+				$this->defaultMeasurements($workOrder->work_order_id, $patient_id);
+				$this->setMeasurements(20, $workOrder->work_order_id, $patient_id);  /** Krvni sladkor */
+				$this->setMeasurements(21, $workOrder->work_order_id, $patient_id);  /** Oksigenacija SpO2 */
 				break;
 		}
 
-		// Create first visit
+        /** Create first visit **/
 		$vDate = $start_date;
 		$this->createVisit($start_date, true, $isFixed == 1, $workOrder->work_order_id);
-//		if (request('interval') != null) {
-//			$isFixed = 1;
-//		}
-		// Create other visits, if there are more
+		/** Create other visits, if there are more **/
 		for ($i = 1; $i < $numOfVisits; $i++) {
 			$vDate->addDays($interval);
 			while (!$this->isBusinessDay($vDate)) {
 				$vDate->addDay();
 			}
-//			$this->createVisit($vDate, false, $isFixed == 1, $workOrder->work_order_id);
 			$this->createVisit($vDate, false, false, $workOrder->work_order_id);
 		}
 		return redirect('/delovni-nalog/ustvari')->with([
@@ -360,13 +353,13 @@ class WorkOrderController extends Controller {
 		return view('workOrder');
 	}
 
-	protected function defaultMeasurements($workOrderId) {
-		$this->setMeasurements(10, $workOrderId);  //Sistolicni
-		$this->setMeasurements(11, $workOrderId);  //Diastolicni
-		$this->setMeasurements(12, $workOrderId);  //Dihanje
-		$this->setMeasurements(13, $workOrderId);  //Srcni utrip
-		$this->setMeasurements(14, $workOrderId);  //Telesna teza
-		$this->setMeasurements(19, $workOrderId);  //Telesna temperatura
+	protected function defaultMeasurements($workOrderId, $patient_id) {
+		$this->setMeasurements(10, $workOrderId, $patient_id);  //Sistolicni
+		$this->setMeasurements(11, $workOrderId, $patient_id);  //Diastolicni
+		$this->setMeasurements(12, $workOrderId, $patient_id);  //Dihanje
+		$this->setMeasurements(13, $workOrderId, $patient_id);  //Srcni utrip
+		$this->setMeasurements(14, $workOrderId, $patient_id);  //Telesna teza
+		$this->setMeasurements(19, $workOrderId, $patient_id);  //Telesna temperatura
 	}
 
 	protected function setMedicine($medicineId, $workOrderId) {
@@ -384,10 +377,11 @@ class WorkOrderController extends Controller {
 		$tube->save();
 	}
 
-	protected function setMeasurements($measurementId, $workOrderId) {
+	protected function setMeasurements($measurementId, $workOrderId, $patient_id) {
 		$measurement = new WorkOrder_Measurement();
 		$measurement->measurement_id = $measurementId;
 		$measurement->work_order_id = $workOrderId;
+		$measurement->patient_id = $patient_id;
 		$measurement->save();
 	}
 
