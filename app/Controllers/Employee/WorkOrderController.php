@@ -2,7 +2,6 @@
 
 namespace App\Controllers\Employee;
 
-use App\Models\BloodTube;
 use App\Models\DependentPatient;
 use App\Models\FreeDays;
 use App\Models\User;
@@ -25,7 +24,7 @@ class WorkOrderController extends Controller {
 
 	public function __construct () {
 		// Only doctor and main nurse can access work order creation page.
-        $this->middleware('workOrder');
+		$this->middleware('workOrder');
 	}
 
 	/**
@@ -44,26 +43,41 @@ class WorkOrderController extends Controller {
 	 */
 	public function create () {
 		return view('newWorkorder')->with([
-			'visitTypes'        => VisitSubtype::all()->mapWithKeys(function ($visitSubtype) {
-				    return [$visitSubtype['visit_subtype_id'] => $visitSubtype['visit_subtype_title']];
+			'visitTypes'	=> VisitSubtype::all()->mapWithKeys(function ($visitSubtype) {
+				return [$visitSubtype['visit_subtype_id']
+						=> $visitSubtype['visit_subtype_title']];
 			}),
-			'patients'          => Patient::all()->mapWithKeys(function ($patient) {
+			'patients'		=> Patient::all()->mapWithKeys(function ($patient) {
 				$person = $patient->person;
-				return [$patient['patient_id'] => $patient['insurance_num'] . ' ' . $person['name'] . ' ' .$person['surname']];
+				return [$patient['patient_id']
+						=> $patient['insurance_num'] . ' ' . $person['name']
+												  . ' ' .$person['surname']];
 			}),
-			'medicine'          => Medicine::all()->mapWithKeys(function ($medicine) {
-				return [$medicine['medicine_id'] => $medicine['medicine_name'] . ' ' . $medicine['medicine_packaging'] . ' ' . $medicine['medicine_type']];
+			'medicine'		=> Medicine::all()->mapWithKeys(function ($medicine) {
+				return [$medicine['medicine_id']
+						=> $medicine['medicine_name'] . ' '
+						   . $medicine['medicine_packaging'] . ' '
+						   . $medicine['medicine_type']];
 			}),
-			'dependentChildId' => DependentPatient::where(function ($query) {
-                                $query->where('relationship_id', 13)
-                                    ->orWhere('relationship_id', 12);})->get()->mapWithKeys(function ($dependentChildId){
-                $patient = $dependentChildId->patient;
-                $person = $patient->person;
-                return [$dependentChildId['guardian_patient_id'] => $patient['insurance_num'] . ' ' . $person['name'] . ' ' .$person['surname']];
-            }),
-			'name'			    => auth()->user()->person->name . ' ' . auth()->user()->person->surname,
-			'role'			    => auth()->user()->userRole->user_role_title,
-			'lastLogin'		    => $this->lastLogin(auth()->user())
+			// Get sons and daughters.
+			// Encapsulate array with child's ID and set mothers ID as key.
+			'children'		=> DependentPatient::wherein('relationship_id', [12, 13])
+				->get()
+				->mapWithKeys(function ($child) {
+					$patient = $child->patient;
+					$person = $patient->person;
+					return [
+						$child['dependent_patient_id'] => [
+							$child['guardian_patient_id']
+							=> $patient['insurance_num'] . ' '
+							   . $person['name'] . ' ' .$person['surname']
+						]
+					];
+			}),
+			'name'			=> auth()->user()->person->name . ' '
+								 . auth()->user()->person->surname,
+			'role'			=> auth()->user()->userRole->user_role_title,
+			'lastLogin'		=> $this->lastLogin(auth()->user())
 		]);
 	}
 
@@ -86,7 +100,7 @@ class WorkOrderController extends Controller {
 			'blue'                  => 'nullable|numeric',
 			'yellow'                => 'nullable|numeric',
 			'green'                 => 'nullable|numeric',
-            'medicine[]'            => 'array|in_array:integer'
+			'medicine[]'            => 'array|in_array:integer'
 		],[
 			'required'		    => 'Polje je zahtevano.',
 			'numeric'		    => 'Zahtevano je število.',
@@ -95,7 +109,7 @@ class WorkOrderController extends Controller {
 			'required_without'  => 'Izberi končni datum ali interval',
 			'after'             => 'Datum mora biti večji ali enak današnjemu',
 			'date'              => 'Polje mora vsebovati datum',
-            'array'             => 'Napaka pri izbiri zdravil'
+			'array'             => 'Napaka pri izbiri zdravil'
 		]);
 
 		$workOrder = new WorkOrder();
@@ -201,22 +215,22 @@ class WorkOrderController extends Controller {
 				$this->setMeasurements(15, $workOrder->work_order_id);  //Telesna teza novorojencka
 				$this->setMeasurements(18, $workOrder->work_order_id);  //Telesna visina novorojencka
 				$this->setMeasurements(22, $workOrder->work_order_id);  //Meritev bilirubina
-                $newborn = request('newborn');
-                for ($i = 0; $i < count($newborn); $i++) {
-                    $workOrderPatient = new WorkOrder_Patient();
-                    $workOrderPatient->patient_id = $newborn[$i];
-                    $workOrderPatient->work_order_id = $workOrder->work_order_id;
-                    $workOrderPatient->save();
-                }
+				$newborn = request('newborn');
+				for ($i = 0; $i < count($newborn); $i++) {
+					$workOrderPatient = new WorkOrder_Patient();
+					$workOrderPatient->patient_id = $newborn[$i];
+					$workOrderPatient->work_order_id = $workOrder->work_order_id;
+					$workOrderPatient->save();
+				}
 				break;
 			case '3':   // Preventiva starostnika
 				$this->defaultMeasurements($workOrder->work_order_id);
 				break;
 			case '4':   // Aplikacija injekcij
 				$medicine = request('medicine');
-			    for ($i = 0; $i < count($medicine); $i++) {
-                    $this->setMedicine($medicine[$i], $workOrder->work_order_id);
-                }
+				for ($i = 0; $i < count($medicine); $i++) {
+					$this->setMedicine($medicine[$i], $workOrder->work_order_id);
+				}
 				break;
 			case '5':   // Odvzem krvi
 				if (request('red') != null) {
@@ -328,17 +342,17 @@ class WorkOrderController extends Controller {
 		}
 
 		// Rename keys for prescriber to meet frontend requirements.
-		$workOrder->prescriber()->employeeId = $workOrder->prescriber()->employee_id;
+		$workOrder->prescriber->employeeId = $workOrder->prescriber->employee_id;
 
 		// Retrieve nurse
 		// Check if there was a substitution and
 		// today is inside substitution period.
-		if (!is_null($workOrder->substitution())
-			&& Carbon::now() >= $workOrder->substitution()->start_date
-			&& Carbon::now() <= $workOrder->substitution()->end_date) {
+		if (!is_null($workOrder->substitution)
+			&& Carbon::now() >= $workOrder->substitution->start_date
+			&& Carbon::now() <= $workOrder->substitution->end_date) {
 
 		} else {
-			$workOrder->performer()->employeeId = $workOrder->performer()->employee_id;
+			$workOrder->performer->employeeId = $workOrder->performer->employee_id;
 		}
 
 		// Retrieve all visits.

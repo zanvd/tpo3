@@ -26,7 +26,7 @@
 @section('menu')
 		<div class="list-group">
 			<a href="#" class="list-group-item"> <span class="glyphicon glyphicon-user" aria-hidden="true"></span>Moj profil</a>
-		  	<a href="/delovni-nalog" class="list-group-item active main-color-bg">
+		  	<a href="/delovni-nalog/ustvari" class="list-group-item active main-color-bg">
 		   		<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> Nov delovni nalog
 		  	</a>
 		  	<a href="#" class="list-group-item"> <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span> Seznam delovnih nalogov</a>
@@ -43,6 +43,7 @@
 			<div class="alert alert-danger">{{ $error }}</div>
 		@endforeach					
 	@endif
+
 	<div class="row">
 		<div class="panel panel-default">
 			<div class="panel-heading main-color-bg">
@@ -85,11 +86,11 @@
 						  	</div>
 
 							<div class="form-group hidden" id="newbornForm">
-								<label>Novorojenček</label>
+								<label>Novorojenčki</label>
 								<select data-live-search="true" class="form-control selectpicker" name="newborn[]" id="newborn" title="Izberite..." disable multiple>
-									@if( !empty($dependentChildId))
-										@foreach($dependentChildId as $key => $value)
-											<option value="{{ $key }}">{{ $value }}</option>
+									@if( !empty($children))
+										@foreach($children as $index => $child)
+												<option value="{{ $index }}" data-guardian="{{ array_keys($child)[0] }}">{{ array_values($child)[0] }}</option>
 										@endforeach
 									@endif
 								</select>

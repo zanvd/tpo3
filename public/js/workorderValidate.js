@@ -296,12 +296,40 @@ $("#visits").on("change", function() {
 	}
 });
 
+/**
+ * Toggle shown children based on selected patient.
+ *
+ * Because of Bootstrap's select changes we can not iterate directly over option
+ * elements, but rather have to go through added list elements and hide those.
+ *
+ */
 $("select[name=patientId]").on("change", function() {
-    potentialMother = $("select[name=patientId]").val();
-	console.log(potentialMother);
+	// Retrieve patients ID.
+    var mother = $("select[name=patientId]").val();
+
+    var indices = [], index = 0, i = 0;
+
+    // Iterate over all children.
+	// New item stores index of original option element.
+	// Get indices of children which are supposed to be listed.
+	$('#newborn option').each(function () {
+		if ($(this).attr('data-guardian') == mother)
+			indices[index++] = i;
+		i++;
+	});
+
+	// Show only children which have patient marked as guardian.
+	$('#newbornForm li').each(function () {
+		// Try to match indices.
+		index = parseInt($(this).attr('data-original-index'));
+		if ($.inArray(index, indices) > -1) {
+			$(this).removeClass('hidden');
+		} else {
+			$(this).addClass('hidden');
+		}
+	});
 });
 
-var potentialMother = $("select[name=patientId]").val();;
 var newbornForm = $('#newbornForm');
 var medicineForm = $('#medicineForm');
 var bloodForm= $('#bloodForm');

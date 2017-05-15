@@ -65,7 +65,7 @@ class PatientProfileController extends Controller {
 			->get();
 
 		// Iterate over patients and retrieve their data from Person table.
-		foreach ($dependents as $index => $dependent) {
+		foreach ($dependents as $dependent) {
 			$person = Person::find($dependent->person_id);
 			$dependent->name = $person->name;
 			$dependent->surname = $person->surname;
