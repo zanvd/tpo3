@@ -268,7 +268,7 @@ class WorkOrderController extends Controller {
 //			$this->createVisit($vDate, false, $isFixed == 1, $workOrder->work_order_id);
 			$this->createVisit($vDate, false, false, $workOrder->work_order_id);
 		}
-		return redirect('/delovni-nalog')->with([
+		return redirect('/delovni-nalog/ustvari')->with([
 			'status' => 'Delovni nalog uspešno kreiran'
 		]);
 	}
