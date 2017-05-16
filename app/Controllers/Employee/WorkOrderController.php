@@ -19,12 +19,13 @@ use App\Models\WorkOrder_Patient;
 use App\Models\WorkOrder_Medicine;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class WorkOrderController extends Controller {
 
 	public function __construct () {
 		// Only doctor and main nurse can access work order creation page.
-		$this->middleware('workOrder');
+		//$this->middleware('role:Zdravnik|Patronažna sestra');
 	}
 
 	/**
@@ -289,10 +290,6 @@ class WorkOrderController extends Controller {
 		 * Preveri izpis za vse vrste obiskov (pri aplikaciji injekcij je treba izpisati tudi podatke o zdravilih, pri odvzemu krvi pa podatke o epruvetah).
 		 * Preveri, da se izpišejo tako podatki, ki se zajamejo, kot podatki, ki se avtomatsko določijo ob kreiranju DN.
 		 */
-		// Rename work order variables to meet frontend requirements.
-		$workOrder->createdAt = $workOrder->created_at;
-		$workOrder->startDate = $workOrder->start_date;
-		$workOrder->endDate = $workOrder->end_date;
 
 		// Retrieve all patients.
 		// Set double inner join on WorkOrder_Patient table.
@@ -310,47 +307,51 @@ class WorkOrderController extends Controller {
 				'=',
 				'Pat.patient_id')
 			->select('Pat.*')
-			->get();
+			->get()
+			->toArray(); // Return array instead of Collection.
 
-		// Iterate over patients and retrieve their data from Person table.
-		foreach ($patients as $patient) {
-			$person = $patient->person;
+		// DB returns stdObjects but we require Eloquent Models.
+		// Cast stdObject to Patient Model.
+		$patients = Patient::castStdToEloquent($patients);
 
-			$patient->name = $person->name;
-			$patient->surname = $person->surname;
-			$patient->phoneNum = $person->phone_num;
-			$patient->address = $person->address;
-			$patient->postNumber = $person->post_number;
-			$patient->region = $person->region;
-
-			// Rename keys to meet frontend requirements.
-			$patient->insurance = $patient->insurance_num;
-			$patient->birthDate = Carbon::createFromFormat('Y-m-d',
-													$patient->birth_date)
+		// Iterate over patients and set their birthday to required format.
+		foreach ($patients as $pat) {
+			$pat->birthDate = Carbon::createFromFormat('Y-m-d',
+													$pat->birth_date)
 													->format('d.m.Y');
 
-			// Remove unused values.
-			unset($patient->insurance_num, $patient->birth_date,
-				$patient->person_id);
+			// Check if work order type is of type mother and newborn.
+			if ($workOrder->visitSubtype->visit_subtype_title
+					== 'Obisk novorojenčka in otročnice') {
+				// Check whether this patient is mother or child.
+				if (!$pat->dependent->isEmpty()) {
+					$children[] = $pat;
+				}
+				else {
+					$patient = $pat;
+				}
+			} else
+				$patient = $pat;
 		}
 
-		// Rename keys for prescriber to meet frontend requirements.
-		$workOrder->prescriber->employeeId = $workOrder->prescriber->employee_id;
-
-		// Retrieve nurse
-		// Check if there was a substitution and
+		/// Check if there was a substitution and
 		// today is inside substitution period.
 		if (!is_null($workOrder->substitution)
 			&& Carbon::now() >= $workOrder->substitution->start_date
 			&& Carbon::now() <= $workOrder->substitution->end_date) {
-
-		} else {
-			$workOrder->performer->employeeId = $workOrder->performer->employee_id;
+			$substitution = $workOrder->substitution;
 		}
 
 		// Retrieve all visits.
+		$visits = $workOrder->visit;
 
-		return view('workOrder');
+		return view('workOrder', compact(
+			'workOrder',
+			'patient',
+			'children',
+			'substitution',
+			'visits'
+		));
 	}
 
 	protected function defaultMeasurements($workOrderId, $patient_id) {

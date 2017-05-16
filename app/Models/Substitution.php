@@ -3,7 +3,7 @@
 namespace App\Models;
 
 class Substitution extends Model {
-	protected $table = 'substitution';
+	protected $table = 'Substitution';
 
 	protected $primaryKey = 'substitution_id';
 

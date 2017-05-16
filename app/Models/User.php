@@ -19,6 +19,44 @@ class User extends Authenticatable implements CanResetPassword {
 	protected $guarded = [];
 
 	/**
+	 * Check if user has provided role.
+	 *
+	 * @param      $roles
+	 * @param bool $all
+	 *
+	 * @return bool
+	 * @internal param $role
+	 */
+	public function hasRole ($roles, $all = false) {
+		// Check if multiple roles were specified.
+		if (is_array($roles)) {
+			// Iterate over provided roles.
+			foreach ($roles as $role) {
+				// Check for role with nested call.
+				$temp = $this->hasRole($role);
+
+				// For OR it's enough if we find just one.
+				if ($temp && !$all)
+					return true;
+				// For AND we have to have all.
+				else if (!$temp && $all)
+					return false;
+			}
+
+			// It's either all roles were found or none.
+			return $all;
+		} else {
+			// Iterate over all user roles.
+			$userRoles = UserRole::all();
+			foreach ($userRoles as $userRole) {
+				if ($userRole == $roles)
+					return true;
+			}
+		}
+		return false;
+	}
+
+	/**
 	 * One User belongs to one UserRole.
 	 *
 	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
