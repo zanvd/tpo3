@@ -12,11 +12,37 @@ class Patient extends Model {
 	 *
 	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
 	 */
-    public function person() {
+    public function person () {
         return $this->belongsTo(
             'App\Models\Person',
             'person_id',
             'person_id'
         );
     }
+
+	/**
+	 * One Patient can be assigned as Guardian many times.
+	 *
+	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
+	 */
+    public function guardian () {
+    	return $this->hasMany(
+    		'App\Models\DependentPatient',
+			'guardian_patient_id',
+			'patient_id'
+		);
+	}
+
+	/**
+	 * One Patient can be assigned as Dependent many times.
+	 *
+	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
+	 */
+	public function dependent () {
+		return $this->hasMany(
+			'App\Models\DependentPatient',
+			'dependent_patient_id',
+			'patient_id'
+		);
+	}
 }

@@ -14,7 +14,7 @@ class WorkOrder extends Model {
 	 */
     public function prescriber () {
     	return $this->belongsTo(
-    		'App\Model\Employee',
+    		'App\Models\Employee',
 			'prescriber_id',
 			'employee_id');
 	}
@@ -26,7 +26,7 @@ class WorkOrder extends Model {
 	 */
     public function performer () {
     	return $this->belongsTo(
-    		'App\Model\Employee',
+    		'App\Models\Employee',
 			'performer_id',
 			'employee_id');
 	}
@@ -38,8 +38,32 @@ class WorkOrder extends Model {
 	 */
     public function substitution () {
     	return $this->belongsTo(
-    		'App\Model\Substitution',
+    		'App\Models\Substitution',
 			'substitution_id',
 			'substitution_id');
+	}
+
+	/**
+	 * One Work Order belongs to one VisitSubtype.
+	 *
+	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+	 */
+	public function visitSubtype () {
+		return $this->belongsTo(
+			'App\Models\VisitSubtype',
+			'visit_subtype_id',
+			'visit_subtype_id');
+	}
+
+	/**
+	 * One Work Order has many Visits.
+	 *
+	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
+	 */
+	public function visit () {
+		return $this->hasMany(
+			'App\Models\Visit',
+			'work_order_id',
+			'work_order_id');
 	}
 }
