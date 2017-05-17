@@ -12,7 +12,8 @@ class Patient extends Model {
 	 *
 	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
 	 */
-    public function person () {
+
+    public function person() {
         return $this->belongsTo(
             'App\Models\Person',
             'person_id',

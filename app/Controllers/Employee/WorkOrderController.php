@@ -34,7 +34,55 @@ class WorkOrderController extends Controller {
 	 * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
 	 */
 	public function index () {
-		return view('landing');
+	    $workOrders = WorkOrder::all();
+	    foreach($workOrders as $workOrder) {
+            $patients = DB::table('WorkOrder_Patient')
+                ->join('WorkOrder AS Wo',
+                    'WorkOrder_Patient.work_order_id',
+                    '=',
+                    'Wo.work_order_id')
+                ->join('Patient As Pat',
+                    'WorkOrder_Patient.patient_id',
+                    '=',
+                    'Pat.patient_id')
+                ->select('Pat.*')
+                ->get()
+                ->toArray(); // Return array instead of Collection.
+
+            // DB returns stdObjects but we require Eloquent Models.
+            // Cast stdObject to Patient Model.
+            $patients = Patient::castStdToEloquent($patients);
+
+            // Set visit_subtype object
+            $workOrder->visitTitle = $workOrder->visitSubtype;
+            unset($workOrder->visit_subtype_id);
+
+            // Set perscriber and performer person objects
+            $workOrder->performer = $workOrder->performer->person;
+            $workOrder->prescriber = $workOrder->prescriber->person;
+            unset($workOrder->perscriber_id, $workOrder->performer_id);
+
+            // Set performer substitution person object, if exists
+//            if ($workOrder->substitution != 0) {
+//                $workOrder->substitution = $workOrder->substitution->person;
+//            } else {
+//                unset($workOrder->substitution);
+//            }
+
+            // Iterate over patients and set their birthday to required format.
+            foreach ($patients as $pat) {
+                $pat->birthDate = Carbon::createFromFormat('Y-m-d',
+                    $pat->birth_date)
+                    ->format('d.m.Y');
+                $pat->person = $pat->person;
+                unset($pat->birth_date);
+            }
+            $workOrder->patients = $patients;
+        }
+//        dd($workOrders);
+		return view('workOrderList', compact(
+                'workOrders'
+        ));
 	}
 
 	/**
