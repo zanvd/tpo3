@@ -24,15 +24,15 @@
 @endsection
 
 @section('content')
-@if( $status = Session::get('status'))
+<div class="container">
+	@if( $status = Session::get('status'))
 		<div class="alert alert-success" role="alert">{{ $status }}</div>
 	@endif
 	@if (count($errors))
 		@foreach($errors->all() as $error)
 			<div class="alert alert-danger">{{ $error }}</div>
-		@endforeach					
+		@endforeach
 	@endif
-<div class="container">
 	<form class="article-comment" id="registrationForm" data-toggle="validator" method="POST" name="registrationForm" action="/registracija">
 		{{ csrf_field() }}
 		<div class="row">

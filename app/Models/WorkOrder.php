@@ -66,4 +66,34 @@ class WorkOrder extends Model {
 			'work_order_id',
 			'work_order_id');
 	}
+
+	/**
+	 * Bind Work Order table with relation table.
+	 *
+	 * One Work Order has many Medicines.
+	 *
+	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
+	 */
+	public function medicineRel () {
+		return $this->hasMany(
+			'App\Models\WorkOrder_Medicine',
+			'work_order_id',
+			'work_order_id'
+		);
+	}
+
+	/**
+	 * Bind Work Order table with relation table.
+	 *
+	 * One Work Order has many Blood Tubes.
+	 *
+	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
+	 */
+	public function bloodTubeRel () {
+		return $this->hasMany(
+			'App\Models\WorkOrder_BloodTube',
+			'work_order_id',
+			'work_order_id'
+		);
+	}
 }

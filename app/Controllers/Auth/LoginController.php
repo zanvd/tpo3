@@ -180,7 +180,7 @@ class LoginController extends Controller {
 	protected function validateLogin (Request $request) {
 		$this->validate($request, [
 			$this->username()	=> 'required',
-			'password'			=> 'required|min:8|max:64'
+			'password'			=> 'required'
 		]);
 	}
 

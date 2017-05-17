@@ -24,8 +24,11 @@ use Illuminate\Support\Facades\DB;
 class WorkOrderController extends Controller {
 
 	public function __construct () {
-		// Only doctor and main nurse can access work order creation page.
-		//$this->middleware('role:Zdravnik|Patronažna sestra');
+		// Only doctor and main nurse can access all work order pages.
+		$this->middleware('role:Zdravnik|Vodja PS');
+		// Nurse can access work order list and details page.
+		$this->middleware('role:Zdravnik|Vodja PS|Patronažna sestra')
+			 ->only(['index', 'show']);
 	}
 
 	/**
@@ -113,162 +116,182 @@ class WorkOrderController extends Controller {
 			'array'             => 'Napaka pri izbiri zdravil'
 		]);
 
-		$workOrder = new WorkOrder();
+		// Start Transaction.
+		DB::beginTransaction();
 
-		// TODO: only woman can have visit type 1 or 2
-		$visitSubtype = request('visitTypeId');
-		$isFixed = request('mandatory');
-		$workOrder->created_at = Carbon::now()->toDateTimeString();
+		// Try saving new patient to the database.
+		try {
+			$workOrder = new WorkOrder();
 
-		$numOfVisits = request('visits');
-		$start_date = request('firstVisit');
-		$fDate = \DateTime::createFromFormat(
-			'd.m.Y',
-			$start_date)->format('Y-m-d');
-		$start_date = new Carbon($fDate);
+			// TODO: only woman can have visit type 1 or 2
+			$visitSubtype = request('visitTypeId');
+			$isFixed = request('mandatory');
+			$workOrder->created_at = Carbon::now()->toDateTimeString();
 
-		// If start date is not a business day, set start date to first business day
-		while (!$this->isBusinessDay($start_date)) {
-			$start_date->addDay();
-		}
-		$workOrder->start_date = $start_date;
+			$numOfVisits = request('visits');
+			$start_date = request('firstVisit');
+			$fDate = \DateTime::createFromFormat(
+				'd.m.Y',
+				$start_date)->format('Y-m-d');
+			$start_date = new Carbon($fDate);
 
+			// If start date is not a business day, set start date to first business day
+			while (!$this->isBusinessDay($start_date)) {
+				$start_date->addDay();
+			}
+			$workOrder->start_date = $start_date;
 
-		$date = request('firstVisit');
-		$ftDate = \DateTime::createFromFormat(
-			'd.m.Y',
-			$date)->format('Y-m-d');
-		$date = new Carbon($date);
-		while (!$this->isBusinessDay($date)) {
-			$date->addDay();
-		}
+			$date = request('firstVisit');
+			$ftDate = \DateTime::createFromFormat(
+				'd.m.Y',
+				$date)->format('Y-m-d');
+			$date = new Carbon($date);
+			while (!$this->isBusinessDay($date)) {
+				$date->addDay();
+			}
 
-		// If there is more then one visit in WO, calculate other visit's dates
-		$num = $numOfVisits;
-		if ($numOfVisits > 1) {
-			$interval = request('interval');
+			// If there is more then one visit in WO, calculate other visit's dates
+			$num = $numOfVisits;
+			if ($numOfVisits > 1) {
+				$interval = request('interval');
 
-			// If interval is given, calculater date, that is business day, first after interval
-			if ($interval != null) { // obisk na vsakih x dni
-				while ($num > 1) {
-					$date->addDays($interval);
-					while (!$this->isBusinessDay($date)) {
+				// If interval is given, calculater date, that is business day, first after interval
+				if ($interval != null) { // obisk na vsakih x dni
+					while ($num > 1) {
+						$date->addDays($interval);
+						while (!$this->isBusinessDay($date)) {
+							$date->addDay();
+						}
+						$num--;
+					}
+					$workOrder->end_date = $date;
+				} // If the interval is not given, calculate interval from number of business days between start and end date
+				else { // zadnji datum in stevilo obiskov -> pogostost obiskov
+					$workDays = 0;
+					$end_date = request('finalDate');
+					$feDate = \DateTime::createFromFormat(
+						'd.m.Y',
+						$end_date)->format('Y-m-d');
+					$endDate = new Carbon($feDate);
+					while (!$date->isSameDay($endDate)) {
+						if ($this->isBusinessDay($date)) {
+							$workDays++;
+						}
 						$date->addDay();
 					}
-					$num--;
+					$workOrder->end_date = $date;
+					(int)$interval = ($workDays / ($numOfVisits - 1));
 				}
-				$workOrder->end_date = $date;
+			} else {
+				$workOrder->end_date = $start_date;
+				$interval = 0;
 			}
 
-			// If the interval is not given, calculate interval from number of business days between start and end date
-			else { // zadnji datum in stevilo obiskov -> pogostost obiskov
-				$workDays = 0;
-				$end_date = request('finalDate');
-				$feDate = \DateTime::createFromFormat(
-					'd.m.Y',
-					$end_date)->format('Y-m-d');
-				$endDate = new Carbon($feDate);
-				while (!$date->isSameDay($endDate)) {
-					if ($this->isBusinessDay($date)) {
-						$workDays++;
+			//narocnik
+			$user = Auth::user();
+			$prescriber = Employee::where('person_id', $user->person_id)->first();
+			$workOrder->prescriber_id = $prescriber->employee_id;
+
+			// Avtomatsko dodeljevanje MS
+			$patient_id = request('patientId');
+			$patient = Patient::find($patient_id);
+			$person = Person::find($patient->person_id);
+			$user = new User();
+			$personNurseId = User::where('user_role_id', 23)->get()->filter(function ($person, $region) {
+				return $person->region_id == $region;
+			})[0]->person_id;
+			$workOrder->performer_id = Employee::where('person_id', $personNurseId)->first()->employee_id;
+			//$workOrder->substitution = false;
+			$workOrder->visit_subtype_id = $visitSubtype;
+			$workOrder->save();
+
+			//pacient
+			$workOrderPatient = new WorkOrder_Patient();
+			$workOrderPatient->patient_id = $patient_id;
+			$workOrderPatient->work_order_id = $workOrder->work_order_id;
+			$workOrderPatient->save();
+
+			switch ($visitSubtype) {
+				case '1':   // Obisk nosecnice
+					$this->defaultMeasurements($workOrder->work_order_id);
+					$this->setMeasurements(16, $workOrder->work_order_id);  //Teza pred nosecnostjo
+					break;
+				case '2':   // Obisk otrocnice in novorojencka
+					$this->defaultMeasurements($workOrder->work_order_id);
+					$this->setMeasurements(15, $workOrder->work_order_id);  //Telesna teza novorojencka
+					$this->setMeasurements(18, $workOrder->work_order_id);  //Telesna visina novorojencka
+					$this->setMeasurements(22, $workOrder->work_order_id);  //Meritev bilirubina
+					$newborn = request('newborn');
+					for ($i = 0; $i < count($newborn); $i++) {
+						$workOrderPatient = new WorkOrder_Patient();
+						$workOrderPatient->patient_id = $newborn[$i];
+						$workOrderPatient->work_order_id = $workOrder->work_order_id;
+						$workOrderPatient->save();
 					}
-					$date->addDay();
-				}
-				$workOrder->end_date = $date;
-				(int)$interval = ($workDays / ($numOfVisits - 1));
+					break;
+				case '3':   // Preventiva starostnika
+					$this->defaultMeasurements($workOrder->work_order_id);
+					break;
+				case '4':   // Aplikacija injekcij
+					$medicine = request('medicine');
+					for ($i = 0; $i < count($medicine); $i++) {
+						$this->setMedicine($medicine[$i], $workOrder->work_order_id);
+					}
+					break;
+				case '5':   // Odvzem krvi
+					if (request('red') != null) {
+						$this->setNumOfBloodTubes(996, request('red'), $workOrder->work_order_id);
+					}
+					if (request('blue') != null) {
+						$this->setNumOfBloodTubes(997, request('blue'), $workOrder->work_order_id);
+					}
+					if (request('yellow') != null) {
+						$this->setNumOfBloodTubes(998, request('yellow'), $workOrder->work_order_id);
+					}
+					if (request('green') != null) {
+						$this->setNumOfBloodTubes(999, request('green'), $workOrder->work_order_id);
+					};
+					break;
+				case '6':   // Kontrola zdravstvenega stanja
+					$this->defaultMeasurements($workOrder->work_order_id);
+					$this->setMeasurements(20, $workOrder->work_order_id);  //Krvni sladkor
+					$this->setMeasurements(21, $workOrder->work_order_id);  //Oksigenacija SpO2
+					break;
 			}
-		} else {
-			$workOrder->end_date = $start_date;
-			$interval = 0;
-		}
 
-		//narocnik
-		$user = Auth::user();
-		$prescriber = Employee::where('person_id', $user->person_id)->first();
-		$workOrder->prescriber_id = $prescriber->employee_id;
-
-		// Avtomatsko dodeljevanje MS
-		$patient_id = request('patientId');
-		$patient = Patient::find($patient_id);
-		$person = Person::find($patient->person_id);
-		$user = new User();
-		$personNurseId = User::where('user_role_id', 23)->get()->filter(function ($person, $region) {
-			return $person->region_id == $region;
-		})[0]->person_id;
-		$workOrder->performer_id = Employee::where('person_id', $personNurseId)->first()->employee_id;
-		$workOrder->substitution = false;
-		$workOrder->visit_subtype_id = $visitSubtype;
-		$workOrder->save();
-
-		//pacient
-		$workOrderPatient = new WorkOrder_Patient();
-		$workOrderPatient->patient_id = $patient_id;
-		$workOrderPatient->work_order_id = $workOrder->work_order_id;
-		$workOrderPatient->save();
-
-		switch ($visitSubtype) {
-			case '1':   // Obisk nosecnice
-				$this->defaultMeasurements($workOrder->work_order_id);
-				$this->setMeasurements(16, $workOrder->work_order_id);  //Teza pred nosecnostjo
-				break;
-			case '2':   // Obisk otrocnice in novorojencka
-				$this->defaultMeasurements($workOrder->work_order_id);
-				$this->setMeasurements(15, $workOrder->work_order_id);  //Telesna teza novorojencka
-				$this->setMeasurements(18, $workOrder->work_order_id);  //Telesna visina novorojencka
-				$this->setMeasurements(22, $workOrder->work_order_id);  //Meritev bilirubina
-				$newborn = request('newborn');
-				for ($i = 0; $i < count($newborn); $i++) {
-					$workOrderPatient = new WorkOrder_Patient();
-					$workOrderPatient->patient_id = $newborn[$i];
-					$workOrderPatient->work_order_id = $workOrder->work_order_id;
-					$workOrderPatient->save();
-				}
-				break;
-			case '3':   // Preventiva starostnika
-				$this->defaultMeasurements($workOrder->work_order_id);
-				break;
-			case '4':   // Aplikacija injekcij
-				$medicine = request('medicine');
-				for ($i = 0; $i < count($medicine); $i++) {
-					$this->setMedicine($medicine[$i], $workOrder->work_order_id);
-				}
-				break;
-			case '5':   // Odvzem krvi
-				if (request('red') != null) {
-					$this->setNumOfBloodTubes(996, request('red'), $workOrder->work_order_id);
-				}
-				if (request('blue') != null) {
-					$this->setNumOfBloodTubes(997, request('blue'), $workOrder->work_order_id);
-				}
-				if (request('yellow') != null) {
-					$this->setNumOfBloodTubes(998, request('yellow'), $workOrder->work_order_id);
-				}
-				if (request('green') != null) {
-					$this->setNumOfBloodTubes(999, request('green'), $workOrder->work_order_id);
-				};
-				break;
-			case '6':   // Kontrola zdravstvenega stanja
-				$this->defaultMeasurements($workOrder->work_order_id);
-				$this->setMeasurements(20, $workOrder->work_order_id);  //Krvni sladkor
-				$this->setMeasurements(21, $workOrder->work_order_id);  //Oksigenacija SpO2
-				break;
-		}
-
-		// Create first visit
-		$vDate = $start_date;
-		$this->createVisit($start_date, true, $isFixed == 1, $workOrder->work_order_id);
+			// Create first visit
+			$vDate = $start_date;
+			$this->createVisit($start_date, true, $isFixed == 1, $workOrder->work_order_id);
 //		if (request('interval') != null) {
 //			$isFixed = 1;
 //		}
-		// Create other visits, if there are more
-		for ($i = 1; $i < $numOfVisits; $i++) {
-			$vDate->addDays($interval);
-			while (!$this->isBusinessDay($vDate)) {
-				$vDate->addDay();
-			}
+			// Create other visits, if there are more
+			for ($i = 1; $i < $numOfVisits; $i++) {
+				$vDate->addDays($interval);
+				while (!$this->isBusinessDay($vDate)) {
+					$vDate->addDay();
+				}
 //			$this->createVisit($vDate, false, $isFixed == 1, $workOrder->work_order_id);
-			$this->createVisit($vDate, false, false, $workOrder->work_order_id);
+				$this->createVisit($vDate, false, false, $workOrder->work_order_id);
+			}
+		} catch (\Exception $e) {
+			// Log exception.
+			error_log(print_r('Error when creating new work order: ' .
+							  $e, true));
+
+			// Rollback everything.
+			DB::rollback();
+
+			// Let the user know about the failure and ask to try again.
+			return redirect()->back()->withErrors([
+				'message' => 'Napaka pri ustvarjanju novega delovnega naloga ' .
+					'Prosimo, poskusite znova.'
+			]);
 		}
+
+		// Everything is fine. Commit changes to database.
+		DB::commit();
+
 		return redirect('/delovni-nalog/ustvari')->with([
 			'status' => 'Delovni nalog uspešno kreiran'
 		]);
@@ -297,6 +320,8 @@ class WorkOrderController extends Controller {
 		 * Preveri izpis za vse vrste obiskov (pri aplikaciji injekcij je treba izpisati tudi podatke o zdravilih, pri odvzemu krvi pa podatke o epruvetah).
 		 * Preveri, da se izpišejo tako podatki, ki se zajamejo, kot podatki, ki se avtomatsko določijo ob kreiranju DN.
 		 */
+		// Get work order type.
+		$type = $workOrder->visitSubtype->visit_subtype_title;
 
 		// Retrieve all patients.
 		// Set double inner join on WorkOrder_Patient table.
@@ -323,15 +348,17 @@ class WorkOrderController extends Controller {
 
 		// Iterate over patients and set their birthday to required format.
 		foreach ($patients as $pat) {
-			$pat->birthDate = Carbon::createFromFormat('Y-m-d',
+			$pat->birth_date = Carbon::createFromFormat('Y-m-d',
 													$pat->birth_date)
 													->format('d.m.Y');
 
 			// Check if work order type is of type mother and newborn.
-			if ($workOrder->visitSubtype->visit_subtype_title
-					== 'Obisk novorojenčka in otročnice') {
+			if ($type == 'Obisk novorojenčka in otročnice') {
 				// Check whether this patient is mother or child.
-				if (!$pat->dependent->isEmpty()) {
+				//TODO: relationship property not existing.
+				if (!$pat->dependent->isEmpty()
+						&& ($pat->dependent->relationship->relationship_type == 'Sin'
+						|| $pat->dependent->relationship->reltationship_type == 'Hči')) {
 					$children[] = $pat;
 				}
 				else {
@@ -344,20 +371,40 @@ class WorkOrderController extends Controller {
 		/// Check if there was a substitution and
 		// today is inside substitution period.
 		if (!is_null($workOrder->substitution)
-			&& Carbon::now() >= $workOrder->substitution->start_date
-			&& Carbon::now() <= $workOrder->substitution->end_date) {
+				&& Carbon::now() >= $workOrder->substitution->start_date
+				&& Carbon::now() <= $workOrder->substitution->end_date)
 			$substitution = $workOrder->substitution;
-		}
 
 		// Retrieve all visits.
 		$visits = $workOrder->visit;
+
+		// Check work order type and get additional equipment if necessary.
+		if ($type == 'Aplikacija injekcij') {
+			$medicines = [];
+			foreach ($workOrder->medicineRel as $relation) {
+				$medicines[] = $relation->medicine;
+			}
+		} else if ($type == 'Odvzem krvi')
+			$bloodTubes = $workOrder->bloodTubeRel;
+
+		dd(compact(
+			   'workOrder',
+			   'patient',
+			   'children',
+			   'substitution',
+			   'visits',
+			   'medicines',
+			   'bloodTubes'
+		   ));
 
 		return view('workOrder', compact(
 			'workOrder',
 			'patient',
 			'children',
 			'substitution',
-			'visits'
+			'visits',
+			'medicines',
+			'bloodTubes'
 		));
 	}
 

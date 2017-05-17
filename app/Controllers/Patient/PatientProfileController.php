@@ -14,7 +14,7 @@ class PatientProfileController extends Controller {
 	 */
 	public function __construct() {
 		// Only patients can access this page.
-		$this->middleware('patient');
+		$this->middleware('role:Pacient');
 	}
 
 	/**
