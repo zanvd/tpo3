@@ -198,3 +198,19 @@ Route::post('/oskrbovani-pacient',
 */
 Route::get('/profil',
 	$namespacePrefix['patient'].'PatientProfileController@index');
+
+
+/*
+|--------------------------------------------------------------------------
+| Plan the visits
+|--------------------------------------------------------------------------
+|
+| Get:		display the plan of the visits.		nurse
+| Post:		save the plan of the visits.		nurse
+|
+*/
+Route::get('/nacrt-obiskov/',
+    $namespacePrefix['employee'].'VisitPlanController@index');
+
+Route::post('/nacrt-obiskov',
+    $namespacePrefix['employee'].'VisitPlanController@store');
