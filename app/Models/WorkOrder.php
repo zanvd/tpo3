@@ -7,6 +7,21 @@ class WorkOrder extends Model {
 
     protected $primaryKey = 'work_order_id';
 
+    public function work_order_patient() {
+        return $this->hasMany(
+            'App\Models\WorkOrder_Patient'
+        );
+    }
+
+
+     public function performer_employee() {
+        return $this->belongsTo(
+            'App\Models\Employee',
+            'performer_id',
+            'performer_id'
+        );
+    }
+
 	/**
 	 * One Work Order belongs to one Prescriber (Employee).
 	 *
