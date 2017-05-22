@@ -7,13 +7,22 @@ class DependentPatient extends Model {
 
 	// There is no primary key in this table.
 	protected $primaryKey = null;
+	
 	public $incrementing = false;
 
-    public function patient() {
+    public function patient () {
         return $this->belongsTo(
             'App\Models\Patient',
             'dependent_patient_id',
             'patient_id'
         );
     }
+
+	public function relationship () {
+		return $this->belongsTo(
+			'App\Models\Relationship',
+			'relationship_id',
+			'relationship_id'
+		);
+	}
 }

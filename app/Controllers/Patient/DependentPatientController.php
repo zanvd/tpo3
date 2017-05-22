@@ -19,7 +19,7 @@ class DependentPatientController extends Controller {
 	 */
 	public function __construct() {
 		// Only patients can access this page.
-		$this->middleware('patient');
+		$this->middleware('role:Pacient');
 	}
 
 	/**
@@ -52,7 +52,7 @@ class DependentPatientController extends Controller {
 	/**
 	 * Create new dependant patient.
 	 *
-	 * @return $this|\Illuminate\Http\RedirectResponse
+	 * @return \Illuminate\Http\RedirectResponse
 	 */
 	public function store () {
 		$this->validate(request(), [

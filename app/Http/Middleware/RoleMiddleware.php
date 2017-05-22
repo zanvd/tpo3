@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Illuminate\Support\Facades\Auth;
 
 class RoleMiddleware {
 	/**
@@ -13,7 +14,6 @@ class RoleMiddleware {
 	 * @param         $roles
 	 *
 	 * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|mixed
-	 * @internal param $role
 	 *
 	 */
 	public function handle ($request, Closure $next, $roles) {
@@ -22,9 +22,9 @@ class RoleMiddleware {
 			$roles = explode('|', $roles);
 		}
 
+		$user = Auth::user();
 		// Check if user is authenticated and has desired roles.
-		$user = $request->user();
-		if (!is_null($user) && !$user->hasRole($roles, is_array($roles)))
+		if (Auth::guest() || !$user->hasRole($roles))
 			return redirect('/')->withErrors([
 				'message' => 'Nedvoljen dostop.'
 			]);
