@@ -13,7 +13,7 @@ class CreateVisitTable extends Migration {
 	public function up() {
 		Schema::create('Visit', function (Blueprint $table) {
 			$table->increments('visit_id');
-			$table->date('visit_date');
+			$table->date('planned_date');
 			$table->boolean('first_visit');
 			$table->boolean('fixed_visit');
 			$table->boolean('done')->default(false);
