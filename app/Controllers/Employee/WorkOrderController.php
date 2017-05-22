@@ -330,10 +330,14 @@ class WorkOrderController extends Controller {
 		// work order.
 		// Select statement retrieves all patients data.
 		$patients = DB::table('WorkOrder_Patient')
-			->join('WorkOrder AS Wo',
-				'WorkOrder_Patient.work_order_id',
-				'=',
-				'Wo.work_order_id')
+			->join('WorkOrder AS Wo', function ($join) use ($workOrder) {
+				$join->on(
+						'WorkOrder_Patient.work_order_id',
+						'=',
+						'Wo.work_order_id'
+					)
+					->where('Wo.work_order_id', '=', $workOrder->work_order_id);
+			})
 			->join('Patient As Pat',
 				'WorkOrder_Patient.patient_id',
 				'=',
@@ -341,6 +345,9 @@ class WorkOrderController extends Controller {
 			->select('Pat.*')
 			->get()
 			->toArray(); // Return array instead of Collection.
+
+		// If we decide to support assigning same patient to multiple guardians.
+		// $patIds = array_column($patients, 'patient_id');
 
 		// DB returns stdObjects but we require Eloquent Models.
 		// Cast stdObject to Patient Model.
@@ -354,12 +361,11 @@ class WorkOrderController extends Controller {
 
 			// Check if work order type is of type mother and newborn.
 			if ($type == 'Obisk novorojenčka in otročnice') {
-				// Check whether this patient is mother or child.
-				//TODO: relationship property not existing.
-				if (!$pat->dependent->isEmpty()
-						&& ($pat->dependent->relationship->relationship_type == 'Sin'
-						|| $pat->dependent->relationship->reltationship_type == 'Hči')) {
-					$children[] = $pat;
+				// Check whether this patient is mother or child
+				if (!$pat->dependent->isEmpty()) {
+					$relationship = $pat->dependent[0]->relationship->relationship_type;
+					if ($relationship == 'Hči' || $relationship == 'Sin')
+						$children[] = $pat;
 				}
 				else {
 					$patient = $pat;

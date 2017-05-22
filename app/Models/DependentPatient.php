@@ -7,6 +7,7 @@ class DependentPatient extends Model {
 
 	// There is no primary key in this table.
 	protected $primaryKey = null;
+	
 	public $incrementing = false;
 
     public function patient () {
