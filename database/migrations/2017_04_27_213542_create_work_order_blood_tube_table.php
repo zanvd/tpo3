@@ -11,7 +11,7 @@ class CreateWorkOrderBloodTubeTable extends Migration {
 	 * @return void
 	 */
 	public function up() {
-		Schema::create('WorkOrder_BloodTubes', function (Blueprint $table) {
+		Schema::create('WorkOrder_BloodTube', function (Blueprint $table) {
 			$table->unsignedInteger('blood_tube_id');
 			$table->unsignedInteger('work_order_id');
 			$table->unsignedInteger('num_of_tubes');

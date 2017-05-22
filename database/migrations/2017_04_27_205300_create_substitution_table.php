@@ -15,8 +15,8 @@ class CreateSubstitutionTable extends Migration {
 			$table->increments('substitution_id');
 			$table->date('start_date');
 			$table->date('end_date');
-			$table->integer('employee_absent');
-			$table->integer('employee_substitution');
+			$table->unsignedInteger('employee_absent');
+			$table->unsignedInteger('employee_substitution');
 
 			$table->foreign('employee_absent')
 				  ->references('employee_id')->on('Employee');

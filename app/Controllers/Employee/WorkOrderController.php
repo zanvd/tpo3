@@ -24,8 +24,11 @@ use Illuminate\Support\Facades\DB;
 class WorkOrderController extends Controller {
 
 	public function __construct () {
-		// Only doctor and main nurse can access work order creation page.
-		//$this->middleware('role:Zdravnik|Patronažna sestra');
+		// Only doctor and main nurse can access all work order pages.
+		$this->middleware('role:Zdravnik|Vodja PS');
+		// Nurse can access work order list and details page.
+		$this->middleware('role:Zdravnik|Vodja PS|Patronažna sestra')
+			 ->only(['index', 'show']);
 	}
 
 	/**
@@ -392,6 +395,8 @@ class WorkOrderController extends Controller {
 		 * Preveri izpis za vse vrste obiskov (pri aplikaciji injekcij je treba izpisati tudi podatke o zdravilih, pri odvzemu krvi pa podatke o epruvetah).
 		 * Preveri, da se izpišejo tako podatki, ki se zajamejo, kot podatki, ki se avtomatsko določijo ob kreiranju DN.
 		 */
+		// Get work order type.
+		$type = $workOrder->visitSubtype->visit_subtype_title;
 
 		// Retrieve all patients.
 		// Set double inner join on WorkOrder_Patient table.
@@ -400,10 +405,14 @@ class WorkOrderController extends Controller {
 		// work order.
 		// Select statement retrieves all patients data.
 		$patients = DB::table('WorkOrder_Patient')
-			->join('WorkOrder AS Wo',
-				'WorkOrder_Patient.work_order_id',
-				'=',
-				'Wo.work_order_id')
+			->join('WorkOrder AS Wo', function ($join) use ($workOrder) {
+				$join->on(
+						'WorkOrder_Patient.work_order_id',
+						'=',
+						'Wo.work_order_id'
+					)
+					->where('Wo.work_order_id', '=', $workOrder->work_order_id);
+			})
 			->join('Patient As Pat',
 				'WorkOrder_Patient.patient_id',
 				'=',
@@ -412,22 +421,26 @@ class WorkOrderController extends Controller {
 			->get()
 			->toArray(); // Return array instead of Collection.
 
+		// If we decide to support assigning same patient to multiple guardians.
+		// $patIds = array_column($patients, 'patient_id');
+
 		// DB returns stdObjects but we require Eloquent Models.
 		// Cast stdObject to Patient Model.
 		$patients = Patient::castStdToEloquent($patients);
 
 		// Iterate over patients and set their birthday to required format.
 		foreach ($patients as $pat) {
-			$pat->birthDate = Carbon::createFromFormat('Y-m-d',
+			$pat->birth_date = Carbon::createFromFormat('Y-m-d',
 													$pat->birth_date)
 													->format('d.m.Y');
 
 			// Check if work order type is of type mother and newborn.
-			if ($workOrder->visitSubtype->visit_subtype_title
-					== 'Obisk novorojenčka in otročnice') {
-				// Check whether this patient is mother or child.
+			if ($type == 'Obisk novorojenčka in otročnice') {
+				// Check whether this patient is mother or child
 				if (!$pat->dependent->isEmpty()) {
-					$children[] = $pat;
+					$relationship = $pat->dependent[0]->relationship->relationship_type;
+					if ($relationship == 'Hči' || $relationship == 'Sin')
+						$children[] = $pat;
 				}
 				else {
 					$patient = $pat;
@@ -439,20 +452,40 @@ class WorkOrderController extends Controller {
 		/// Check if there was a substitution and
 		// today is inside substitution period.
 		if (!is_null($workOrder->substitution)
-			&& Carbon::now() >= $workOrder->substitution->start_date
-			&& Carbon::now() <= $workOrder->substitution->end_date) {
+				&& Carbon::now() >= $workOrder->substitution->start_date
+				&& Carbon::now() <= $workOrder->substitution->end_date)
 			$substitution = $workOrder->substitution;
-		}
 
 		// Retrieve all visits.
 		$visits = $workOrder->visit;
+
+		// Check work order type and get additional equipment if necessary.
+		if ($type == 'Aplikacija injekcij') {
+			$medicines = [];
+			foreach ($workOrder->medicineRel as $relation) {
+				$medicines[] = $relation->medicine;
+			}
+		} else if ($type == 'Odvzem krvi')
+			$bloodTubes = $workOrder->bloodTubeRel;
+
+		dd(compact(
+			   'workOrder',
+			   'patient',
+			   'children',
+			   'substitution',
+			   'visits',
+			   'medicines',
+			   'bloodTubes'
+		   ));
 
 		return view('workOrder', compact(
 			'workOrder',
 			'patient',
 			'children',
 			'substitution',
-			'visits'
+			'visits',
+			'medicines',
+			'bloodTubes'
 		));
 	}
 

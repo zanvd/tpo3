@@ -25,7 +25,6 @@ class User extends Authenticatable implements CanResetPassword {
 	 * @param bool $all
 	 *
 	 * @return bool
-	 * @internal param $role
 	 */
 	public function hasRole ($roles, $all = false) {
 		// Check if multiple roles were specified.
@@ -45,14 +44,8 @@ class User extends Authenticatable implements CanResetPassword {
 
 			// It's either all roles were found or none.
 			return $all;
-		} else {
-			// Iterate over all user roles.
-			$userRoles = UserRole::all();
-			foreach ($userRoles as $userRole) {
-				if ($userRole == $roles)
+		} else if ($this->userRole->user_role_title == $roles)
 					return true;
-			}
-		}
 		return false;
 	}
 

@@ -21,7 +21,7 @@ class RegisterEmployeeController extends Controller {
 	 */
 	public function __construct() {
 		// Only administrator can access register page.
-		$this->middleware('admin');
+		$this->middleware('role:Admin');
 	}
 
 	/**
