@@ -37,13 +37,32 @@ class WorkOrderController extends Controller {
 	 * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
 	 */
 	public function index () {
+		/**
+		 * Zdravnik/vodja PS/patronažna sestra lahko izpiše seznam delovnih nalogov po različnih kriterijih.
+		 *
+		 * Seznam naj bo možno filtrirati glede na časovno obdobje izdaje, vrsto obiska, izdajatelja (kateri zdravnik ali
+		 * vodja PS), pacienta, zadolženo patronažno sestro in nadomestno patronažno sestro.
+		 *
+		 * Za vsak DN iz seznama naj bo potem možno izpisati njegove podrobnosti.
+		 *
+		 * Pri uporabniški vlogi zdravnik naj bo kot kriterij za izbor zdravnika že vnaprej nastavljena šifra trenutno
+		 * prijavljenega zdravnika, pri uporabniški vlogi patronažna sestra pa naj bo kot kriterij za zadolženo in
+		 * nadomestno patronažno sestro nastavljena šifra trenutno prijavljene patronažne sestre.
+		 *
+		 * Za izbran DN naj bo moč izpisati njegove podrobnosti (povezava na zgodbo Izpis delovnega naloga).
+		 */
+
 		$workOrders = WorkOrder::all();
 		foreach($workOrders as $workOrder) {
 			$patients = DB::table('WorkOrder_Patient')
-				->join('WorkOrder AS Wo',
-					'WorkOrder_Patient.work_order_id',
-					'=',
-					'Wo.work_order_id')
+				->join('WorkOrder AS Wo', function ($join) use ($workOrder) {
+					$join->on(
+						'WorkOrder_Patient.work_order_id',
+						'=',
+						'Wo.work_order_id'
+					)
+						->where('Wo.work_order_id', '=', $workOrder->work_order_id);
+				})
 				->join('Patient As Pat',
 					'WorkOrder_Patient.patient_id',
 					'=',

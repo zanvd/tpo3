@@ -1,5 +1,11 @@
 @extends('layoutLog')
 
+@section('script')
+    <script src="{{ URL::asset('js/workorderFilter.js') }}"></script>
+    <script src="{{ URL::asset('js/bootstrap-datepicker.min.js') }}"></script>
+    <script src="{{ URL::asset('js/bootstrap-datepicker.sl.min.js') }}"></script>
+@endsection
+
 @section('title')
     <title>Preglej delovni nalog</title>
 @endsection
@@ -9,7 +15,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-10">
-                    <h1><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span> Preglej delovni nalog </h1>
+                    <h1><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span> Izdani delovni nalogi </h1>
                 </div>
                 <div class="col-md-2">
                 </div>
@@ -40,29 +46,43 @@
     @endif
 
     <div class="row">
-        <div class="panel panel-default">
+        <div class="panel panel-primary filterable">
             <div class="panel-heading main-color-bg">
                 <h3 class="panel-title">Seznam delovnih nalogov</h3>
+                <div class="pull-right">
+                    <button id="filterBtn" class="btn btn-default btn-xs btn-filter"><span class="glyphicon glyphicon-filter"></span> Filter</button>
+                </div>
             </div>
             <div class="panel-body">
                 <table class="table table-hover table-responsive">
                     <thead>
-                        <tr>
-                            <th>Izdan</th>
-                            <th>Vrsta obiska</th>
-                            <th>Izdajatelj</th>
-                            <th>Pacient</th>
-                            <th>Zadolžena MS</th>
-                            <th>Nadomestna MS</th>
+                        <tr class="filters">
+                            <th><input type="text" class="form-control" placeholder="#" disabled></th>
+                            <th><input type="text" class="form-control" placeholder="Izdan" disabled></th>
+                            <th><input type="text" class="form-control" placeholder="Vrsta obiska" disabled></th>
+                            <th><input type="text" class="form-control" placeholder="Izdajatelj" disabled></th>
+                            <th><input type="text" class="form-control" placeholder="Pacient" disabled></th>
+                            <th><input type="text" class="form-control" placeholder="Zadolžena MS" disabled></th>
+                            <th><input type="text" class="form-control" placeholder="Nadomestna MS" disabled></th>
                         </tr>
+                        {{--<tr class="filters">--}}
+                            {{--<th>Preglej</th>--}}
+                            {{--<th>Izdan</th>--}}
+                            {{--<th>Vrsta obiska</th>--}}
+                            {{--<th>Izdajatelj</th>--}}
+                            {{--<th>Pacient</th>--}}
+                            {{--<th>Zadolžena MS</th>--}}
+                            {{--<th>Nadomestna MS</th>--}}
+                        {{--</tr>--}}
                     </thead>
                     <tbody>
                     @if( ! empty($workOrders) )
                         @foreach($workOrders as $workOrder)
                             <tr>
                                 <td>
-                                    <a href='/delovni-nalog/{{$workOrder->work_order_id}}'>{{$workOrder->created_at}}</a>
+                                    <a href='/delovni-nalog/{{$workOrder->work_order_id}}'>{{$loop->iteration}} Odpri delovni nalog</a>
                                 </td>
+                                <td>{{$workOrder->created_at}}</td>
                                 <td>{{$workOrder->visitTitle->visit_subtype_title}}</td>
                                 <td>{{$workOrder->prescriber->name . ' ' . $workOrder->prescriber->surname}}</td>
                                 <td>
@@ -79,17 +99,9 @@
                             </tr>
                         @endforeach
                     @endif
-                        <tr>
-                            <td>17.5.2017</td>
-                            <td>Obisk nosečnice</td>
-                            <td>Zdravnik</td>
-                            <td>Mario Špinel</td>
-                            <td>Sestra Center</td>
-                            <td>Sestra Šiška</td>
-                        </tr>
                     </tbody>
                 </table>
-            {{--</div>--}}
+            </div>
         </div>
-
+    </div>
 @endsection
