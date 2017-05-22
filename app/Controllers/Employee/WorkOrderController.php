@@ -74,7 +74,6 @@ class WorkOrderController extends Controller {
 			// DB returns stdObjects but we require Eloquent Models.
 			// Cast stdObject to Patient Model.
 			$patients = Patient::castStdToEloquent($patients);
-//            dd($patients);
 
 			// Set visit_subtype object
 			$workOrder->visitTitle = $workOrder->visitSubtype;
@@ -380,21 +379,6 @@ class WorkOrderController extends Controller {
 	 * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
 	 */
 	public function show (WorkOrder $workOrder) {
-		/**
-		 * Zdravnik/vodja PS/patronažna sestra lahko izpiše delovni nalog.
-		 *
-		 * Za vsak DN je treba izpisati:
-		 * njegove podrobnosti in
-		 * podatke o vseh predvidenih obiskih:
-			 * predvideni datum obiska
-			 * dejanski datum obiska (če je bil obisk že opravljen)
-			 * zadolžena medicinska sestra oziroma nadomestna medicinska sestra.
-		 *
-		 * Za že opravljene obiske naj bo možen tudi izpis podrobnosti obiska (povezava na zgodbo #11).
-		 *
-		 * Preveri izpis za vse vrste obiskov (pri aplikaciji injekcij je treba izpisati tudi podatke o zdravilih, pri odvzemu krvi pa podatke o epruvetah).
-		 * Preveri, da se izpišejo tako podatki, ki se zajamejo, kot podatki, ki se avtomatsko določijo ob kreiranju DN.
-		 */
 		// Get work order type.
 		$type = $workOrder->visitSubtype->visit_subtype_title;
 
@@ -430,9 +414,13 @@ class WorkOrderController extends Controller {
 
 		// Iterate over patients and set their birthday to required format.
 		foreach ($patients as $pat) {
+			// Store data about patient.
+			$pat->person = $pat->person;
+			$pat->person->region = $pat->person->region->region_title;
+
 			$pat->birth_date = Carbon::createFromFormat('Y-m-d',
 													$pat->birth_date)
-													->format('d.m.Y');
+										->format('d.m.Y');
 
 			// Check if work order type is of type mother and newborn.
 			if ($type == 'Obisk novorojenčka in otročnice') {
@@ -465,18 +453,57 @@ class WorkOrderController extends Controller {
 			foreach ($workOrder->medicineRel as $relation) {
 				$medicines[] = $relation->medicine;
 			}
-		} else if ($type == 'Odvzem krvi')
+		} else if ($type == 'Odvzem krvi') {
+			// Get number of blood tubes and store them by color.
 			$bloodTubes = $workOrder->bloodTubeRel;
 
-		dd(compact(
-			   'workOrder',
-			   'patient',
-			   'children',
-			   'substitution',
-			   'visits',
-			   'medicines',
-			   'bloodTubes'
-		   ));
+			foreach ($bloodTubes as $bt) {
+				$color = $bt->bloodTube->color;
+
+				switch ($color) {
+					case 'Rdeča':
+						$bloodTubes->red = $bt->num_of_tubes;
+						break;
+					case 'Modra':
+						$bloodTubes->blue = $bt->num_of_tubes;
+						break;
+					case 'Zelena':
+						$bloodTubes->green = $bt->num_of_tubes;
+						break;
+					case 'Rumena':
+						$bloodTubes->yellow = $bt->num_of_tubes;
+						break;
+				}
+			}
+		}
+
+		// Fix format of dates.
+		$workOrder->created_at = Carbon::createFromFormat('Y-m-d H:i:s',
+														  $workOrder->created_at)
+									   ->format('H:i d.m.Y');
+		$workOrder->start_date = Carbon::createFromFormat('Y-m-d',
+														  $workOrder->start_date)
+									   ->format('d.m.Y');
+		$workOrder->end_date = Carbon::createFromFormat('Y-m-d',
+														  $workOrder->end_date)
+									   ->format('d.m.Y');
+
+		// Store type of visits.
+		$workOrder->type = $workOrder->visitSubtype->visit_subtype_title;
+
+		// Store actual data about employees instead of just id's.
+		$workOrder->prescriber = $workOrder->prescriber->employee_id . ' '
+			. $workOrder->prescriber->person->name . ' '
+			. $workOrder->prescriber->person->surname;
+		$workOrder->performer = $workOrder->performer->employee_id . ' '
+								 . $workOrder->performer->person->name . ' '
+								 . $workOrder->performer->person->surname;
+
+		// Unset unnecessary id's.
+		unset($workOrder->visit_subtype_id);
+		unset($workOrder->substitution_id);
+		unset($workOrder->prescriber_id);
+		unset($workOrder->performer_id);
 
 		return view('workOrder', compact(
 			'workOrder',
