@@ -80,14 +80,14 @@
                         @foreach($workOrders as $workOrder)
                             <tr>
                                 <td>
-                                    <a href='/delovni-nalog/{{$workOrder->work_order_id}}'>{{$loop->iteration}} Odpri delovni nalog</a>
+                                    <a href='/delovni-nalog/{{$workOrder->work_order_id}}'>#{{$loop->iteration}}</a>
                                 </td>
                                 <td>{{$workOrder->created_at}}</td>
                                 <td>{{$workOrder->visitTitle->visit_subtype_title}}</td>
                                 <td>{{$workOrder->prescriber->name . ' ' . $workOrder->prescriber->surname}}</td>
                                 <td>
                                     @foreach($workOrder->patients as $pat)
-                                        {{$pat->person->name}}
+                                        {{$pat->person->name . ' ' . $pat->person->surname}}<br/>
                                     @endforeach
                                 </td>
                                 <td>{{$workOrder->performer->name . ' ' . $workOrder->performer->surname}}</td>

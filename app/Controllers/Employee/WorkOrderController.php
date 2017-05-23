@@ -9,7 +9,6 @@ use App\Models\Employee;
 use App\Models\Patient;
 use App\Models\Medicine;
 use App\Controllers\Controller;
-use App\Models\Person;
 use App\Models\Visit;
 use App\Models\VisitSubtype;
 use App\Models\WorkOrder;
@@ -25,7 +24,8 @@ class WorkOrderController extends Controller {
 
 	public function __construct () {
 		// Only doctor and main nurse can access all work order pages.
-		$this->middleware('role:Zdravnik|Vodja PS');
+		$this->middleware('role:Zdravnik|Vodja PS')
+            ->except(['index', 'show']);
 		// Nurse can access work order list and details page.
 		$this->middleware('role:Zdravnik|Vodja PS|Patronažna sestra')
 			 ->only(['index', 'show']);
@@ -51,8 +51,26 @@ class WorkOrderController extends Controller {
 		 *
 		 * Za izbran DN naj bo moč izpisati njegove podrobnosti (povezava na zgodbo Izpis delovnega naloga).
 		 */
+        $user = auth()->user();
+        $userRole = $user->userRole->user_role_title;
+        $employeeId = $user->person->employee->employee_id;
 
-		$workOrders = WorkOrder::all();
+        switch($userRole) {
+            case "Zdravnik":
+            case "Vodja PS":
+                $workOrders = WorkOrder::where('prescriber_id', $employeeId)->get();
+                break;
+            case "Patronažna sestra":
+                // TODO: dodaj za primere, ko je nadomestna sestra
+                $workOrders = WorkOrder::where('performer_id', $employeeId)->get();
+                break;
+            default:
+                // Something went wrong -> user not authorized for this page.
+                // Redirect to previous site.
+                return redirect()->back();
+                break;
+        }
+
 		foreach($workOrders as $workOrder) {
 			$patients = DB::table('WorkOrder_Patient')
 				->join('WorkOrder AS Wo', function ($join) use ($workOrder) {
