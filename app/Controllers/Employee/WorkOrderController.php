@@ -102,13 +102,6 @@ class WorkOrderController extends Controller {
 			$workOrder->prescriber = $workOrder->prescriber->person;
 			unset($workOrder->perscriber_id, $workOrder->performer_id);
 
-			// Set performer substitution person object, if exists
-//            if ($workOrder->substitution != 0) {
-//                $workOrder->substitution = $workOrder->substitution->person;
-//            } else {
-//                unset($workOrder->substitution);
-//            }
-
 			// Iterate over patients and set their birthday to required format.
 			foreach ($patients as $pat) {
 				$pat->birthDate = Carbon::createFromFormat('Y-m-d',
@@ -286,7 +279,6 @@ class WorkOrderController extends Controller {
 				return $person->region_id == $region;
 			})[0]->person_id;
 			$workOrder->performer_id = Employee::where('person_id', $personNurseId)->first()->employee_id;
-			$workOrder->substitution = false;
 			$workOrder->visit_subtype_id = $visitSubtype;
 			$workOrder->save();
 
@@ -455,15 +447,17 @@ class WorkOrderController extends Controller {
 				$patient = $pat;
 		}
 
-		/// Check if there was a substitution and
-		// today is inside substitution period.
-		if (!is_null($workOrder->substitution)
-				&& Carbon::now() >= $workOrder->substitution->start_date
-				&& Carbon::now() <= $workOrder->substitution->end_date)
-			$substitution = $workOrder->substitution;
-
 		// Retrieve all visits.
 		$visits = $workOrder->visit;
+
+		// Set substituion data for each visit.
+		foreach ($visits as $visit) {
+			$substituion = $visit->substituion;
+			if (!is_null($substituion))
+			$visit->substitution = $substituion->employeeSubstitution->employee_id . ' '
+				. $substituion->employeeSubstitution->person->name . ' '
+				. $substituion->employeeSubstitution->person->surname;
+		}
 
 		// Check work order type and get additional equipment if necessary.
 		if ($type == 'Aplikacija injekcij') {
@@ -519,15 +513,15 @@ class WorkOrderController extends Controller {
 
 		// Unset unnecessary id's.
 		unset($workOrder->visit_subtype_id);
-		unset($workOrder->substitution_id);
 		unset($workOrder->prescriber_id);
 		unset($workOrder->performer_id);
+
+		//dd($workOrder, $patient, $children, $visits);
 
 		return view('workOrder', compact(
 			'workOrder',
 			'patient',
 			'children',
-			'substitution',
 			'visits',
 			'medicines',
 			'bloodTubes'

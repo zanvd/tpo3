@@ -32,18 +32,6 @@ class WorkOrder extends Model {
 	}
 
 	/**
-	 * One Work Order belongs to one Substitution.
-	 *
-	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-	 */
-    public function substitution () {
-    	return $this->belongsTo(
-    		'App\Models\Substitution',
-			'substitution_id',
-			'substitution_id');
-	}
-
-	/**
 	 * One Work Order belongs to one VisitSubtype.
 	 *
 	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

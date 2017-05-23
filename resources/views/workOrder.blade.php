@@ -170,6 +170,7 @@
 										<th>Predviden datum</th>
 										<th>Dejanski datum</th>
 										<th>Obveznost</th>
+										<th>Nadomeščanje</th>
 										<th>Pregled</th>
 									</tr>
 								</thead>
@@ -191,6 +192,11 @@
 										<td>Obvezen</td>
 									@else
 										<td>Okviren</td>
+									@endif
+									@if(!empty($visit->substituion))
+										<td>$visit->substitution</td>
+									@else
+										<td>Ni nadomeščanja</td>
 									@endif
 									@if($visit->done == 1)
 										<td><a href="/obisk/{{ $visit->visit_id }}">Podrobnosti</a></td>

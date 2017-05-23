@@ -15,7 +15,7 @@ class CreateWorkOrderMeasurementTable extends Migration {
 			$table->unsignedInteger('measurement_id');
 			$table->unsignedInteger('work_order_id');
 			$table->unsignedInteger('patient_id');
-			$table->unsignedInteger('num_of_units')->nullable();
+			$table->unsignedInteger('measurement_value')->nullable();
 			$table->date('measurement_date')->nullable();
 
 			$table->foreign('measurement_id')->references('measurement_id')->on('Measurement');
