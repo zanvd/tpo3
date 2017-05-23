@@ -543,7 +543,7 @@ class WorkOrderController extends Controller {
 
 	protected function createVisit($vDate, $isFirst, $isFixed, $workOrderId) {
 		$visit = new Visit();
-		$visit->visit_date = $vDate;
+		$visit->planned_date = $vDate;
 		$visit->first_visit = $isFirst;
 		$visit->fixed_visit = $isFixed;
 		$visit->work_order_id = $workOrderId;

@@ -167,7 +167,7 @@
 								<thead>
 									<tr>
 										<th>#</th>
-										<th>Predviden datum</th>
+										<th>Predvideni datum</th>
 										<th>Dejanski datum</th>
 										<th>Obveznost</th>
 										<th>Nadomeščanje</th>
@@ -183,7 +183,7 @@
 										</td>
 									@if($visit->done == 1)
 										<td>
-										{{  \Carbon\Carbon::createFromFormat('Y-m-d', $visit->visit_date)->format('d.m.Y') }}
+										{{  \Carbon\Carbon::createFromFormat('Y-m-d', $visit->actual_date)->format('d.m.Y') }}
 										</td>
 									@else
 										<td>Neopravljen</td>

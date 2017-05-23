@@ -14,14 +14,17 @@ class CreateVisitTable extends Migration {
 		Schema::create('Visit', function (Blueprint $table) {
 			$table->increments('visit_id');
 			$table->date('planned_date');
+			$table->date('actual_date')->nullable();
 			$table->boolean('first_visit');
 			$table->boolean('fixed_visit');
 			$table->boolean('done')->default(false);
 			$table->unsignedInteger('work_order_id');
 			$table->unsignedInteger('substitution_id')->nullable();
+			$table->unsignedInteger('plan_id')->nullable();
 
 			$table->foreign('work_order_id')->references('work_order_id')->on('WorkOrder');
 			$table->foreign('substitution_id')->references('substitution_id')->on('Substitution');
+			$table->foreign('plan_id')->references('plan_id')->on('Plan');
 		});
 	}
 

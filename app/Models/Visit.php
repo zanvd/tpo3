@@ -8,12 +8,12 @@ class Visit extends Model {
     protected $primaryKey = 'visit_id';
 
 	/**
-	 * One Visit has one Substitution.
+	 * One Visit belongs to one Substitution.
 	 *
-	 * @return \Illuminate\Database\Eloquent\Relations\HasOne
+	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
 	 */
 	public function substitution () {
-		return $this->hasOne(
+		return $this->belongsTo(
 			'App\Models\Substitution',
 			'substitution_id',
 			'substitution_id');
