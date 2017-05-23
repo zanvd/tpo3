@@ -1,0 +1,74 @@
+Povsod je geslo: geslo123
+
+----------------------------------------------------------------
+
+Administrator:
+	- admin@patronaza.tpo
+	- Tadej Pečar
+
+Zdravnik:
+	- zdravnik@patronaza.tpo
+	- Aljaž Markežič
+
+Vodja PS:
+	- vodjaps@patronaza.tpo
+	- Adam Prestor
+
+----------------------------------------------------------------
+	
+Sestra Lj-Center:
+	- sestra-center@patronaza.tpo
+	- Lara Avsec
+
+Sestra Lj-Bežigrad:
+	- sestra-bezigrad@patronaza.tpo
+	- Vida Jelenc
+
+Sestra Lj-Šiška:
+	- sestra-siska@patronaza.tpo
+	- Mateja Suhadolc
+
+----------------------------------------------------------------
+
+Rožle Potočnik:
+	- rozle.potocnik@patronaza.tpo
+	- Lj-Center
+	- Mici Potočnik:
+		- mati
+		- kontakt
+
+Mitja Kovačič:
+	- mitja.kovacic@patronaza.tpo
+	- Lj-Center
+	- starostnik
+	- Melisa Kovačič:
+		- žena
+		- starostnica
+
+----------------------------------------------------------------
+
+Metka Kos:
+	- metka.kos@patronaza.tpo
+	- Lj-Bežigrad
+	- Karli Kos:
+		- sin
+	- Frida Kos:
+		- hči
+
+----------------------------------------------------------------
+
+Vili Vidmar:
+	- vili.vidmar@patronaza.tpo
+	- Lj-Šiška
+	- starostnik
+
+Barbara Zupančič:
+	- barbara.zupancic@patronaza.tpo
+	- Lj-Šiška
+	- Gabrijel Zupančič:
+		- sin
+	- Žiga Kosmač:
+		- oče
+		- starostnik
+
+----------------------------------------------------------------
