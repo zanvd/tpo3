@@ -43,8 +43,8 @@ INSERT INTO `VisitSubtype`(`visit_subtype_id`, `visit_subtype_title`, `visit_typ
 (6, "Kontrola zdravstvenega stanja", 2);
 
 INSERT INTO `Relationship`(`relationship_id`, `relationship_type`) VALUES
-(1,"Žena")
-(2,"Mož")
+(1,"Žena"),
+(2,"Mož"),
 (10,"Mati"),
 (11,"Oče"),
 (12,"Hči"),
