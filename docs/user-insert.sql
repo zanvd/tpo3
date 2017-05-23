@@ -17,7 +17,7 @@ INSERT INTO `Person` (`person_id`,`name`,`surname`,`phone_num`,`address`,`post_n
 INSERT INTO `Person` (`person_id`,`name`,`surname`,`phone_num`,`address`,`post_number`,`region_id`) VALUES (11,'Vili','Vidmar','031258741','Vodnikova cesta 55',1000,13169);
 INSERT INTO `Person` (`person_id`,`name`,`surname`,`phone_num`,`address`,`post_number`,`region_id`) VALUES (12,'Mitja','Kovačič','041963147','Trubarjeva ulica 123',1000,47207);
 INSERT INTO `Person` (`person_id`,`name`,`surname`,`phone_num`,`address`,`post_number`,`region_id`) VALUES (13,'Melisa','Kovačič','041963147','Trubarjeva ulica 123',1000,47207);
-INSERT INTO `Person` (`person_id`,`name`,`surname`,`phone_num`,`address`,`post_number`,`region_id`) VALUES (14,'Barabara','Zupančič','051741258','Za vasjo 18',1000,13169);
+INSERT INTO `Person` (`person_id`,`name`,`surname`,`phone_num`,`address`,`post_number`,`region_id`) VALUES (14,'Barbara','Zupančič','051741258','Za vasjo 18',1000,13169);
 INSERT INTO `Person` (`person_id`,`name`,`surname`,`phone_num`,`address`,`post_number`,`region_id`) VALUES (15,'Gabrijel','Zupančič','051741258','Za vasjo 18',1000,13169);
 INSERT INTO `Person` (`person_id`,`name`,`surname`,`phone_num`,`address`,`post_number`,`region_id`) VALUES (16,'Žiga','Kosmač','051741258','Za vasjo 4',1000,13169);
 
