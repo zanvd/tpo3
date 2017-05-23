@@ -48,46 +48,50 @@
     <div class="row">
         <div class="panel panel-primary filterable">
             <div class="panel-heading main-color-bg">
+            	<div class="row">
+            	<div class="col-md-10">
                 <h3 class="panel-title">Seznam delovnih nalogov</h3>
-                <div class="pull-right">
+                </div>
+                <div class="pull-right col-md-2">
                     <button id="filterBtn" class="btn btn-default btn-xs btn-filter"><span class="glyphicon glyphicon-filter"></span> Filter</button>
+                </div>
                 </div>
             </div>
             <div class="panel-body">
                 <table class="table table-hover table-responsive">
                     <thead>
-                        <tr class="filters">
-                            <th><input type="text" class="form-control" placeholder="#" disabled></th>
-                            <th><input type="text" class="form-control" placeholder="Izdan" disabled></th>
-                            <th><input type="text" class="form-control" placeholder="Vrsta obiska" disabled></th>
-                            <th><input type="text" class="form-control" placeholder="Izdajatelj" disabled></th>
-                            <th><input type="text" class="form-control" placeholder="Pacient" disabled></th>
-                            <th><input type="text" class="form-control" placeholder="Zadolžena MS" disabled></th>
-                            <th><input type="text" class="form-control" placeholder="Nadomestna MS" disabled></th>
+                        <tr class="filters" id="filter">
+                            <th><input style="display: none;" type="text" id="1" class="form-control" placeholder="#" disabled></th>
+                            <th><input style="display: none;" type="text" id="2" class="form-control" placeholder="Izdan" disabled></th>
+                            <th><input style="display: none;" type="text" id="3" class="form-control" placeholder="Vrsta obiska" disabled></th>
+                            <th><input style="display: none;" type="text" id="4" class="form-control" placeholder="Izdajatelj" disabled></th>
+                            <th><input style="display: none;" type="text" id="5" class="form-control" placeholder="Pacient" disabled></th>
+                            <th><input style="display: none;" type="text" id="6" class="form-control" placeholder="Zadolžena MS" disabled></th>
+                            <th><input style="display: none;" type="text" id="7" class="form-control" placeholder="Nadomestna MS" disabled></th>
                         </tr>
-                        {{--<tr class="filters">--}}
-                            {{--<th>Preglej</th>--}}
-                            {{--<th>Izdan</th>--}}
-                            {{--<th>Vrsta obiska</th>--}}
-                            {{--<th>Izdajatelj</th>--}}
-                            {{--<th>Pacient</th>--}}
-                            {{--<th>Zadolžena MS</th>--}}
-                            {{--<th>Nadomestna MS</th>--}}
-                        {{--</tr>--}}
+                        <tr class="filters" id="noFilter">
+                            <th>Preglej</th>
+                            <th>Izdan</th>
+                            <th>Vrsta obiska</th>
+                            <th>Izdajatelj</th>
+                            <th>Pacient</th>
+                            <th>Zadolžena MS</th>
+                            <th>Nadomestna MS</th>
+                        </tr>
                     </thead>
                     <tbody>
                     @if( ! empty($workOrders) )
                         @foreach($workOrders as $workOrder)
                             <tr>
                                 <td>
-                                    <a href='/delovni-nalog/{{$workOrder->work_order_id}}'>{{$loop->iteration}} Odpri delovni nalog</a>
+                                    <a href='/delovni-nalog/{{$workOrder->work_order_id}}'>#{{$loop->iteration}}</a>
                                 </td>
                                 <td>{{$workOrder->created_at}}</td>
                                 <td>{{$workOrder->visitTitle->visit_subtype_title}}</td>
                                 <td>{{$workOrder->prescriber->name . ' ' . $workOrder->prescriber->surname}}</td>
                                 <td>
                                     @foreach($workOrder->patients as $pat)
-                                        {{$pat->person->name}}
+                                        {{$pat->person->name . ' ' . $pat->person->surname}}<br/>
                                     @endforeach
                                 </td>
                                 <td>{{$workOrder->performer->name . ' ' . $workOrder->performer->surname}}</td>

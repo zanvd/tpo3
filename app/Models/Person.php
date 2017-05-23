@@ -58,4 +58,17 @@ class Person extends Model {
 			'person_id'
 		);
 	}
+
+    /**
+     * One Person has one Employee.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function employee () {
+        return $this->hasOne(
+            'App\Models\Employee',
+            'person_id',
+            'person_id'
+        );
+    }
 }
