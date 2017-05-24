@@ -24,19 +24,19 @@
 @endsection
 
 @section('menu')
-			@if ($role == 'Pacient')
-            	@include(menuPatient)
-			@elseif ($role == 'Admin')
-			  	@include(menuAdmin)
-			@elseif ($role == 'Vodja PS')
-				@include(menuVPS)
-			@elseif ($role == 'Zdravnik')
-				@include(menuDoctor)
-			@elseif ($role == 'Patronažna sestra')
-				@include(menuPS)
-			@else
-				@include(menuEmployee)
-			@endif
+	@if ($role == 'Pacient')
+		@include('menuPatient')
+	@elseif ($role == 'Admin')
+		@include('menuAdmin')
+	@elseif ($role == 'Vodja PS')
+		@include('menuVPS')
+	@elseif ($role == 'Zdravnik')
+		@include('menuDoctor')
+	@elseif ($role == 'Patronažna sestra')
+		@include('menuPS')
+	@else
+		@include('menuEmployee')
+	@endif
 @endsection
 
 @section('content')

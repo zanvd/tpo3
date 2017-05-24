@@ -112,10 +112,14 @@ class WorkOrderController extends Controller {
 			}
 			$workOrder->patients = $patients;
 		}
-//        dd($workOrders);
-		return view('workOrderList', compact(
-				'workOrders'
-		));
+
+		return view('workOrderList')->with([
+            'workOrders' => $workOrders,
+            'name'			=> auth()->user()->person->name . ' '
+								 . auth()->user()->person->surname,
+			'role'			=> auth()->user()->userRole->user_role_title,
+			'lastLogin'		=> $this->lastLogin(auth()->user())
+		]);
 	}
 
 	/**

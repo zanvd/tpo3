@@ -11,24 +11,23 @@
 @endsection
 
 @section('header')
-<header id="header">
-	  <div class="container">
-		<div class="row">
-		  <div class="col-md-10">
-			<h1><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Nov delovni nalog </h1>
-		  </div>
-		  <div class="col-md-2">
-		  </div>
+	<header id="header">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-10">
+					<h1><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Nov delovni nalog </h1>
+				</div>
+				<div class="col-md-2"></div>
+			</div>
 		</div>
-	  </div>
 	</header>
 @endsection
 
 @section('menu')
-		@if ($role == 'Admin')
-			@include(menuAdmin)
+		@if ($role == 'Zdravnik')
+			@include('menuDoctor')
 		@elseif ($role == 'Vodja PS')
-			@include(menuVPS)
+			@include('menuVPS')
 		@endif
 @endsection
 

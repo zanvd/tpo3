@@ -26,13 +26,13 @@
 @endsection
 
 @section('menu')
-            @if ($role == 'Vodja PS')
-                @include(menuVPS)
-            @elseif ($role == 'Zdravnik')
-                @include(menuDoctor)
-            @elseif ($role == 'Patronažna sestra')
-                @include(menuPS)
-            @endif
+    @if ($role == 'Vodja PS')
+        @include('menuVPS')
+    @elseif ($role == 'Zdravnik')
+        @include('menuDoctor')
+    @elseif ($role == 'Patronažna sestra')
+        @include('menuPS')
+    @endif
 @endsection
 
 @section('content')
