@@ -2,6 +2,7 @@
 
 @section('title')
 <title>Ustvari profil</title>
+<?php $activeView = 'dodajPacienta' ?>
 @endsection
 
 @section('css')
@@ -14,7 +15,7 @@
 	<div class="container">
 	<div class="row">
 	  <div class="col-md-10">
-	  <h1><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>Dodaj oskrbovanega pacienta </h1>
+	  	<h1><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>Dodaj oskrbovanega pacienta </h1>
 	  </div>
 	  <div class="col-md-2">
 	  </div>
@@ -24,13 +25,7 @@
 @endsection
 
 @section('menu')
-	  <div class="list-group">
-		<a href="/profil" class="list-group-item">
-		 <span class="glyphicon glyphicon-user" aria-hidden="true"></span> Moj profil
-		</a>
-		<a href="/spremeni-geslo" class="list-group-item "> <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> Sprememba gesla</a>
-		<a href="/oskrbovani-pacient" class="list-group-item active main-color-bg"> <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Dodaj oskrbovanega pacienta</a>
-	  </div>
+	  @include(menuPatient)
 @endsection
 
 @section('content')

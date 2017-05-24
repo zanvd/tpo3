@@ -2,6 +2,7 @@
 
 @section('title')
 <title>Nov delovni nalog</title>
+<?php $activeView = 'novDN' ?>
 @endsection
 
 @section('css')
@@ -14,7 +15,7 @@
 	  <div class="container">
 		<div class="row">
 		  <div class="col-md-10">
-			<h1><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> Nov delovni nalog </h1>
+			<h1><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Nov delovni nalog </h1>
 		  </div>
 		  <div class="col-md-2">
 		  </div>
@@ -24,14 +25,11 @@
 @endsection
 
 @section('menu')
-		<div class="list-group">
-			<a href="#" class="list-group-item"> <span class="glyphicon glyphicon-user" aria-hidden="true"></span>Moj profil</a>
-		  	<a href="/delovni-nalog/ustvari" class="list-group-item active main-color-bg">
-		   		<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> Nov delovni nalog
-		  	</a>
-		  	<a href="/delovni-nalog" class="list-group-item"> <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span> Seznam delovnih nalogov</a>
-		  	<a href="/spremeni-geslo" class="list-group-item "> <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> Sprememba gesla</a>
-		</div>
+		@if ($role == 'Admin')
+			@include(menuAdmin)
+		@elseif ($role == 'Vodja PS')
+			@include(menuVPS)
+		@endif
 @endsection
 
 @section('content')

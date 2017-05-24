@@ -2,6 +2,7 @@
 
 @section('title')
 <title>Ustvari profil</title>
+<?php $activeView = 'spremeniGeslo' ?>
 @endsection
 
 @section('css')
@@ -13,7 +14,7 @@
 	  <div class="container">
 		<div class="row">
 		  <div class="col-md-10">
-			<h1><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>Sprememba gesla </h1>
+			<h1><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>Sprememba gesla  </h1> 
 		  </div>
 		  <div class="col-md-2">
 		  </div>
@@ -23,19 +24,19 @@
 @endsection
 
 @section('menu')
-			<div class="list-group">
-			  <a href="/profil" class="list-group-item">
-			   <span class="glyphicon glyphicon-user" aria-hidden="true"></span> Moj profil
-			  </a>
-			@if ($role == 'Zdravnik' || $role == 'Vodja PS')
-                          <a href="/delovni-nalog/ustvari" class="list-group-item"> <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> Dodaj delovni nalog</a>
-			<a href="/delovni-nalog" class="list-group-item"> <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span> Seznam delovnih nalogov</a>
-                        @endif
-			  <a href="/spremeni-geslo" class="list-group-item active main-color-bg"> <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> Sprememba gesla</a>
 			@if ($role == 'Pacient')
-			  <a href="/oskrbovani-pacient" class="list-group-item"> <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Dodaj oskrbovanega pacienta</a>
+            	@include(menuPatient)
+			@elseif ($role == 'Admin')
+			  	@include(menuAdmin)
+			@elseif ($role == 'Vodja PS')
+				@include(menuVPS)
+			@elseif ($role == 'Zdravnik')
+				@include(menuDoctor)
+			@elseif ($role == 'Patronažna sestra')
+				@include(menuPS)
+			@else
+				@include(menuEmployee)
 			@endif
-			</div>
 @endsection
 
 @section('content')

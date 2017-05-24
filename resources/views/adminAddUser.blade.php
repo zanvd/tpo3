@@ -2,6 +2,7 @@
 
 @section('title')
 <title>Ustvari profil</title>
+<?php $activeView = 'dodajUporabnika' ?>
 @endsection
 
 @section('css')
@@ -13,7 +14,7 @@
 	  <div class="container">
 		<div class="row">
 		  <div class="col-md-10">
-			<h1><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> Ustvari profil </h1>
+			<h1><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Ustvari profil </h1>
 		  </div>
 		  <div class="col-md-2">
 		  </div>
@@ -23,12 +24,7 @@
 @endsection
 
 @section('menu')
-			<div class="list-group">
-			  <a href="#" class="list-group-item active main-color-bg">
-			   <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> Ustvari profil
-			  </a>
-			  <a href="#" class="list-group-item"> <span class="glyphicon glyphicon-user" aria-hidden="true"></span> Uporabniki</a>
-			</div>
+			@include(menuAdmin)
 @endsection
 
 @section('content')
