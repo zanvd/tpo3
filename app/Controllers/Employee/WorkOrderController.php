@@ -4,7 +4,6 @@ namespace App\Controllers\Employee;
 
 use App\Models\DependentPatient;
 use App\Models\FreeDays;
-use App\Models\Substitution;
 use App\Models\User;
 use App\Models\Employee;
 use App\Models\Patient;
@@ -286,11 +285,12 @@ class WorkOrderController extends Controller {
 			$workOrder->prescriber_id = $prescriber->employee_id;
 
 			/** Avtomatsko dodeljevanje MS */
-            $patient_id = request('patientId');
-            $region_id = Patient::find($patient_id)->person->region_id;
-            $personNurseId = User::where('user_role_id', 23)->get()->filter(function ($user) use ($region_id) {
-                return $user->person->region_id == $region_id;
-            })->first()->person_id;
+			$patient_id = request('patientId');
+			$region_id = Patient::find($patient_id)->person->region_id;
+			$personNurseId = User::where('user_role_id', 23)->get()->filter(function ($user) use ($region_id) {
+				return $user->person->region_id == $region_id;
+			})->first()->person_id;
+
 			$workOrder->performer_id = Employee::where('person_id', $personNurseId)->first()->employee_id;
 			$workOrder->visit_subtype_id = $visitSubtype;
 			$workOrder->save();
