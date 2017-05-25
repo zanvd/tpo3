@@ -36,7 +36,7 @@
 				<h3 class="panel-title">Nov uporabnik</h3>
 			  </div>
 			  <div class="panel-body">
-				<form class="article-comment" id="registrationForm" method="POST" data-toggle="validator" action="/registracija/zaposleni">
+				<form class="article-comment" id="registrationForm" method="POST" data-toggle="validator" action="/zaposleni/ustvari">
 				{{ csrf_field() }}
 				<div class="form-group">
 					<label for="function">Funkcija: </label>

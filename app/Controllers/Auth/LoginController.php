@@ -87,7 +87,7 @@ class LoginController extends Controller {
 
 		switch ($role) {
 			case 'Admin':
-				return $this->redirectTo('/registracija/zaposleni')
+				return $this->redirectTo('/zaposleni/ustvari')
                     ->with([
                         'name' => $user->person->name,
                         'role' => $role,

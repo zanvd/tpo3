@@ -109,7 +109,7 @@ class RegisterEmployeeController extends Controller {
 			'active'		=> 1
 		]);
 
-		return redirect('/registracija/zaposleni')
+		return redirect('/zaposleni/ustvari')
 			->with(['status' => 'Nov zaposleni uspešno registriran.']);
 	}
 }
