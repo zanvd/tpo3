@@ -4,6 +4,7 @@ namespace App\Controllers\Employee;
 
 use App\Models\DependentPatient;
 use App\Models\FreeDays;
+use App\Models\Substitution;
 use App\Models\User;
 use App\Models\Employee;
 use App\Models\Patient;
@@ -63,6 +64,10 @@ class WorkOrderController extends Controller {
                 break;
             case "Patronažna sestra":
                 // TODO: dodaj za primere, ko je nadomestna sestra
+                // Finds array of employee_id-s that are absent
+//                $absentMS = Substitution::where('employee_substitution', $employeeId)->select('employee_absent')->set();
+
+//                $workOrders = WorkOrder::where('performer_id', $employeeId)->orwhere()->get();
                 $workOrders = WorkOrder::where('performer_id', $employeeId)->get();
                 break;
             default:
@@ -399,14 +404,14 @@ class WorkOrderController extends Controller {
                         /** Obisk otrocnice in novorojencka */
                         $this->defaultMeasurements($visitId, $patient_id);
                         $newborn = request('newborn');
-                        for ($i = 0; $i < count($newborn); $i++) {
+                        for ($j = 0; $j < count($newborn); $j++) {
                             // Set measurements for every newborn
                             /** Telesna teza novorojencka*/
-                            $this->setMeasurements(15, $visitId, $newborn[$i]);
+                            $this->setMeasurements(15, $visitId, $newborn[$j]);
                             /** Telesna visina novorojencka */
-                            $this->setMeasurements(18, $visitId, $newborn[$i]);
+                            $this->setMeasurements(18, $visitId, $newborn[$j]);
                             /** Meritev bilirubina */
-                            $this->setMeasurements(22, $visitId, $newborn[$i]);
+                            $this->setMeasurements(22, $visitId, $newborn[$j]);
                         }
                         break;
                     case '3':
@@ -647,7 +652,7 @@ class WorkOrderController extends Controller {
 	}
 
 	protected function isBusinessDay($date) {
-		if (FreeDays::where($date) == null) {
+		if (FreeDays::find($date) == null) {
 			return false;
 		}
 		if ($date->isWeekend()) {
