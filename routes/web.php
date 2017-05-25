@@ -196,3 +196,19 @@ Route::post('/oskrbovani-pacient',
 */
 Route::get('/profil',
 	$namespacePrefix['patient'].'PatientProfileController@index');
+
+
+/*
+|--------------------------------------------------------------------------
+| Visit
+|--------------------------------------------------------------------------
+|
+| Get:		display the visit list page.		    doctor, chief nurse, nurse
+| Get:		display requested visit.			    doctor, chief nurse, nurse
+|
+*/
+Route::get('/obisk',
+    $namespacePrefix['employee'].'VisitController@index');
+
+Route::get('/obisk/{visit}',
+    $namespacePrefix['employee'].'VisitController@show');
