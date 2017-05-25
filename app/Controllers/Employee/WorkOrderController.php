@@ -270,6 +270,9 @@ class WorkOrderController extends Controller {
 					}
 					$workOrder->end_date = $date;
 					(int)$interval = ($days / ($numOfVisits - 1));
+					if ($interval < 1) {
+					    $interval = 1;
+                    }
 				}
 			} else {
 				$workOrder->end_date = $start_date;
