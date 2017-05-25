@@ -285,9 +285,11 @@ class WorkOrderController extends Controller {
 
 			/** Avtomatsko dodeljevanje MS */
 			$patient_id = request('patientId');
-			$personNurseId = User::where('user_role_id', 23)->get()->filter(function ($person, $region) {
-				return $person->region_id == $region;
-			})[0]->person_id;
+			$region_id = Patient::find($patient_id)->person->region_id;
+			$personNurseId = User::where('user_role_id', 23)->get()->filter(function ($user) use ($region_id) {
+				return $user->person->region_id == $region_id;
+			})->first()->person_id;
+			
 			$workOrder->performer_id = Employee::where('person_id', $personNurseId)->first()->employee_id;
 			$workOrder->visit_subtype_id = $visitSubtype;
 			$workOrder->save();
