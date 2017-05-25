@@ -140,10 +140,10 @@ Route::put('/verifikacija',
 | Post:		perform registration.			admin
 |
 */
-Route::get('/registracija/zaposleni',
+Route::get('/zaposleni/ustvari',
 	$namespacePrefix['auth'].'RegisterEmployeeController@index');
 
-Route::post('/registracija/zaposleni',
+Route::post('/zaposleni/ustvari',
 	$namespacePrefix['auth'].'RegisterEmployeeController@store');
 
 
