@@ -203,9 +203,9 @@
 										<td>Ni nadomeščanja</td>
 									@endif
 									@if($visit->done == 1)
-										<td><a href="/obisk/{{ $visit->visit_id }}">Podrobnosti</a></td>
+										<td><a href="/obisk/{{ $visit->visit_id }}">{{$visit->visit_id}}</a></td>
 									@else
-										<td></td>
+                                        <td><a href="/obisk/{{ $visit->visit_id }}">{{$visit->visit_id}}</a></td>
 									@endif
 									</tr>
 								@endforeach
