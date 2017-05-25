@@ -82,11 +82,11 @@
 						  	</div>
 
 							<div class="form-group hidden" id="newbornForm">
-								<label>Novorojenček</label>
+								<label>Novorojenčki</label>
 								<select data-live-search="true" class="form-control selectpicker" name="newborn[]" id="newborn" title="Izberite..." disable multiple>
-									@if( !empty($dependentChildId))
-										@foreach($dependentChildId as $key => $value)
-											<option value="{{ $key }}">{{ $value }}</option>
+									@if( !empty($children))
+										@foreach($children as $index => $child)
+											<option value="{{ $index }}" data-guardian="{{ array_keys($child)[0] }}">{{ array_values($child)[0] }}</option>
 										@endforeach
 									@endif
 								</select>
