@@ -2,8 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
 class Visit_Measurement extends Model {
 	protected $table = 'Visit_Measurement';
 
