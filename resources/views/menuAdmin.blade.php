@@ -1,8 +1,8 @@
 <div class="list-group">
 	@if ($activeView == "dodajUporabnika")
-	<a href="#" class="list-group-item main-color-bg"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Ustvari profil</a>
+	<a href="/zaposleni/ustvari" class="list-group-item main-color-bg"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Ustvari profil</a>
 	@else
-	<a href="#" class="list-group-item"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Ustvari profil</a>
+	<a href="/zaposleni/ustvari" class="list-group-item"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Ustvari profil</a>
 	@endif
 	@if ($activeView == "spremeniGeslo")
 	<a href="/spremeni-geslo" class="list-group-item main-color-bg"> <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> Sprememba gesla</a>
