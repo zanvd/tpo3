@@ -59,16 +59,18 @@ class WorkOrderController extends Controller {
 
         switch($userRole) {
             case "Zdravnik":
-            case "Vodja PS":
                 $workOrders = WorkOrder::where('prescriber_id', $employeeId)->get();
+                break;
+            case "Vodja PS":
+                $workOrders = WorkOrder::all();
                 break;
             case "Patronažna sestra":
                 // TODO: dodaj za primere, ko je nadomestna sestra
                 // Finds array of employee_id-s that are absent
-//                $absentMS = Substitution::where('employee_substitution', $employeeId)->select('employee_absent')->set();
+                $absentMS = Substitution::where('employee_substitution', $employeeId)->select('employee_absent')->set();
 
-//                $workOrders = WorkOrder::where('performer_id', $employeeId)->orwhere()->get();
-                $workOrders = WorkOrder::where('performer_id', $employeeId)->get();
+                $workOrders = WorkOrder::where('performer_id', $employeeId)->orwhere()->get();
+//                $workOrders = WorkOrder::where('performer_id', $employeeId)->get();
                 break;
             default:
                 // Something went wrong -> user not authorized for this page.
@@ -284,12 +286,11 @@ class WorkOrderController extends Controller {
 			$workOrder->prescriber_id = $prescriber->employee_id;
 
 			/** Avtomatsko dodeljevanje MS */
-			$patient_id = request('patientId');
-			$region_id = Patient::find($patient_id)->person->region_id;
-			$personNurseId = User::where('user_role_id', 23)->get()->filter(function ($user) use ($region_id) {
-				return $user->person->region_id == $region_id;
-			})->first()->person_id;
-			
+            $patient_id = request('patientId');
+            $region_id = Patient::find($patient_id)->person->region_id;
+            $personNurseId = User::where('user_role_id', 23)->get()->filter(function ($user) use ($region_id) {
+                return $user->person->region_id == $region_id;
+            })->first()->person_id;
 			$workOrder->performer_id = Employee::where('person_id', $personNurseId)->first()->employee_id;
 			$workOrder->visit_subtype_id = $visitSubtype;
 			$workOrder->save();
