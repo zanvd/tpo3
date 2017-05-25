@@ -529,7 +529,12 @@ class WorkOrderController extends Controller {
 			'visits',
 			'medicines',
 			'bloodTubes'
-		));
+		))->with([
+			'name'			=> auth()->user()->person->name . ' '
+								 . auth()->user()->person->surname,
+			'role'			=> auth()->user()->userRole->user_role_title,
+			'lastLogin'		=> $this->lastLogin(auth()->user())
+		]);
 	}
 
 	protected function defaultMeasurements($workOrderId, $patient_id) {

@@ -24,7 +24,7 @@
 @endsection
 
 @section('menu')
-			@include(menuAdmin)
+	@include('menuAdmin')
 @endsection
 
 @section('content')
