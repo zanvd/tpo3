@@ -25,7 +25,7 @@
 @endsection
 
 @section('menu')
-	  @include(menuPatient)
+	  @include('menuPatient')
 @endsection
 
 @section('content')
