@@ -62,10 +62,10 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-md-6 form-group">
-                                            <b>Patronažna sestra:</b> {{ $workOrder->prescriber }}
+                                            <b>Patronažna sestra:</b> {{ $workOrder->performer }}
                                         </div>
                                         <div class="col-md-6 form-group">
-                                            <b>Datum izvedbe:</b> {{ $visit->actual_date   }}
+                                            <b>Datum izvedbe:</b> {{ $visit->actual_date }}
                                         </div>
                                     </div>
                                 @endif

@@ -39,7 +39,10 @@ class VisitController extends Controller {
 
         $workOrder = WorkOrder::where('work_order_id', $visit->work_order_id)->first();
         $type = $workOrder->visitSubtype->visit_subtype_title;
-
+        $workOrder->type = $type;
+        $workOrder->performer = $workOrder->performer->employee_id . ' '
+            . $workOrder->performer->person->name . ' '
+            . $workOrder->performer->person->surname;
         $patients = DB::table('WorkOrder_Patient')
             ->join('WorkOrder AS Wo', function ($join) use ($workOrder) {
                 $join->on(
@@ -86,6 +89,7 @@ class VisitController extends Controller {
         }
 
         return view('visit', compact(
+            'visit',
             'workOrder',
             'patient',
             'children'
