@@ -13,8 +13,11 @@ class CreateMeasurementTable extends Migration {
 	public function up() {
 		Schema::create('Measurement', function (Blueprint $table) {
 			$table->increments('measurement_id');
-			$table->string('measurement_title', 45);
-			$table->string('units', 15);
+			$table->text('description');
+			$table->boolean('required');
+			$table->unsignedInteger('visit_subtype_id');
+
+			$table->foreign('visit_subtype_id')->references('visit_subtype_id')->on('VisitSubtype');
 		});
 	}
 
