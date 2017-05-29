@@ -14,6 +14,7 @@ class CreateInputTable extends Migration {
 		Schema::create('Input', function (Blueprint $table) {
 			$table->increments('input_id');
 			$table->string('input_name', 100);
+			$table->string('type', 30);
 			$table->unsignedInteger('measurement_id');
 
 			$table->foreign('measurement_id')->references('measurement_id')->on('Measurement');

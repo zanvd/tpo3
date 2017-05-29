@@ -503,7 +503,6 @@ class WorkOrderController extends Controller {
 		// Iterate over patients and set their birthday to required format.
 		foreach ($patients as $pat) {
 			// Store data about patient.
-			$pat->person = $pat->person;
 			$pat->person->region = $pat->person->region->region_title;
 
 			$pat->birth_date = Carbon::createFromFormat('Y-m-d',

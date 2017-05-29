@@ -203,8 +203,8 @@ Route::get('/profil',
 | Visit
 |--------------------------------------------------------------------------
 |
-| Get:		display the visit list page.		    doctor, chief nurse, nurse
-| Get:		display requested visit.			    doctor, chief nurse, nurse
+| Get:		display the visit list page.	doctor, chief nurse, nurse
+| Get:		display requested visit.		doctor, chief nurse, nurse
 |
 */
 Route::get('/obisk',
