@@ -14,7 +14,6 @@ class CreateMeasurementTable extends Migration {
 		Schema::create('Measurement', function (Blueprint $table) {
 			$table->increments('measurement_id');
 			$table->text('description');
-			$table->boolean('required');
 			$table->unsignedInteger('visit_subtype_id');
 
 			$table->foreign('visit_subtype_id')->references('visit_subtype_id')->on('VisitSubtype');
