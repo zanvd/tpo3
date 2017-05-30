@@ -13,7 +13,7 @@
           
           <h4>Obiski sestra </h4>
           <ol>
-            @foreach ($obvezniObiski as $visit)
+            @foreach ($visits as $visit)
             <li> {{  $visit->work_order->work_order_id  }} je delovni nalog za obisk {{  $visit->planned_date  }} <br> obisk: {{  $visit->work_order->visitSubtype->visit_subtype_title }} pregled je: {{  $visit->work_order->visitSubtype->visit_type->visit_type_title}}<br> Pacients:
               <ul>
               @foreach($wops as $wop)
@@ -26,7 +26,7 @@
             @endforeach
           </ol>
 
-          {!! $obvezniObiski->render() !!}
+          {!! $visits->render() !!}
           
           
       

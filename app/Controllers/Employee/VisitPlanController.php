@@ -79,7 +79,7 @@ class VisitPlanController extends Controller
 
 
 
-        return view('visitPlan', ['obvezniObiski' => $obiski_paginated, 'wops' => $wops]);
+        return view('visitPlan', ['visits' => $obiski_paginated, 'wops' => $wops]);
 
 
 /*
