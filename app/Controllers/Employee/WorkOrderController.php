@@ -341,51 +341,51 @@ class WorkOrderController extends Controller {
 			/** Create first visit **/
 			$vDate = $start_date;
 			$visitId = $this->createVisit($start_date, true, $isFixed == 1, $workOrder->work_order_id);
-			/** Create one time measurement for first visit of pregnant woman */
-			if ($visitSubtype == '1') {
-				/** Obisk nosecnice */
-				// First visit only
-				/** Teza pred nosecnostjo */
-				$this->setMeasurements(16, $visitId, $patient_id);
-			}
 			/** Create measurements for first visit that are same for all visits */
 			switch ($visitSubtype) {
+			    //setMeasurements($measurementId, $visitId, $patient_id) {
 				case '1':
-					/** Obisk nosecnice */
-					// For all visits
-					$this->defaultMeasurements($visitId, $patient_id);
-					break;
+					/** Obisk nosecnice 1-24 */
+                    // First visit only
+                    /** Teza pred nosecnostjo */
+                    $this->setMeasurements(24, $visitId, $patient_id);
+                    // For all visits
+                    for ($k = 1; $k < 24; $k++) {
+                        $this->setMeasurements($k, $visitId, $patient_id);
+                    }
+                    break;
 				case '2':
-					/** Obisk otrocnice in novorojencka */
-					$this->defaultMeasurements($visitId, $patient_id);
+					/** Obisk otrocnice in novorojencka  25-48 */
+                    for ($k = 25; $k < 49; $k++) {
+                        $this->setMeasurements($k, $visitId, $patient_id);
+                    }
 					$newborn = request('newborn');
 					for ($i = 0; $i < count($newborn); $i++) {
-						// Set measurements for every newborn
-						/** Telesna teza novorojencka*/
-						$this->setMeasurements(15, $visitId, $newborn[$i]);
-						/** Telesna visina novorojencka */
-						$this->setMeasurements(18, $visitId, $newborn[$i]);
-						/** Meritev bilirubina */
-						$this->setMeasurements(22, $visitId, $newborn[$i]);
+						// Set measurements for every newborn 49-62
+                        for ($k = 49; $k < 63; $k++) {
+                            $this->setMeasurements($k, $visitId, $newborn[$i]);
+                        }
 					}
 					break;
 				case '3':
-					/** Preventiva starostnika */
-					$this->defaultMeasurements($visitId, $patient_id);
+					/** Preventiva starostnika 63-79 */
+                    for ($k = 63; $k < 80; $k++) {
+                        $this->setMeasurements($k, $visitId, $patient_id);
+                    }
 					break;
 				case '4':
-					/** Aplikacija injekcij */
+					/** Aplikacija injekcij 80 */
+                    $this->setMeasurements(80, $visitId, $patient_id);
 					break;
 				case '5':
-					/** Odvzem krvi */
+					/** Odvzem krvi 81*/
+                    $this->setMeasurements(81, $visitId, $patient_id);
 					break;
 				case '6':
-					/** Kontrola zdravstvenega stanja */
-					$this->defaultMeasurements($visitId, $patient_id);
-					$this->setMeasurements(20, $visitId, $patient_id);
-					/** Krvni sladkor */
-					$this->setMeasurements(21, $visitId, $patient_id);
-					/** Oksigenacija SpO2 */
+					/** Kontrola zdravstvenega stanja 82-92*/
+                    for ($k = 82; $k < 93; $k++) {
+                        $this->setMeasurements($k, $visitId, $patient_id);
+                    }
 					break;
 			}
 
@@ -396,45 +396,49 @@ class WorkOrderController extends Controller {
 					$vDate->addDay();
 				}
 				$visitId = $this->createVisit($vDate, false, false, $workOrder->work_order_id);
-				switch ($visitSubtype) {
-					case '1':
-						/** Obisk nosecnice */
-						// For all visits
-						$this->defaultMeasurements($visitId, $patient_id);
-						break;
-					case '2':
-						/** Obisk otrocnice in novorojencka */
-						$this->defaultMeasurements($visitId, $patient_id);
-						$newborn = request('newborn');
-						for ($j = 0; $j < count($newborn); $j++) {
-							// Set measurements for every newborn
-							/** Telesna teza novorojencka*/
-							$this->setMeasurements(15, $visitId, $newborn[$j]);
-							/** Telesna visina novorojencka */
-							$this->setMeasurements(18, $visitId, $newborn[$j]);
-							/** Meritev bilirubina */
-							$this->setMeasurements(22, $visitId, $newborn[$j]);
-						}
-						break;
-					case '3':
-						/** Preventiva starostnika */
-						$this->defaultMeasurements($visitId, $patient_id);
-						break;
-					case '4':
-						/** Aplikacija injekcij */
-						break;
-					case '5':
-						/** Odvzem krvi */
-						break;
-					case '6':
-						/** Kontrola zdravstvenega stanja */
-						$this->defaultMeasurements($visitId, $patient_id);
-						$this->setMeasurements(20, $visitId, $patient_id);
-						/** Krvni sladkor */
-						$this->setMeasurements(21, $visitId, $patient_id);
-						/** Oksigenacija SpO2 */
-						break;
-				}
+                switch ($visitSubtype) {
+                    //setMeasurements($measurementId, $visitId, $patient_id) {
+                    case '1':
+                        /** Obisk nosecnice 1-24 */
+                        // For all visits
+                        for ($k = 1; $k < 24; $k++) {
+                            $this->setMeasurements($k, $visitId, $patient_id);
+                        }
+                        break;
+                    case '2':
+                        /** Obisk otrocnice in novorojencka  25-48 */
+                        for ($k = 25; $k < 49; $k++) {
+                            $this->setMeasurements($k, $visitId, $patient_id);
+                        }
+                        $newborn = request('newborn');
+                        for ($i = 0; $i < count($newborn); $i++) {
+                            // Set measurements for every newborn 49-62
+                            for ($k = 49; $k < 63; $k++) {
+                                $this->setMeasurements($k, $visitId, $newborn[$i]);
+                            }
+                        }
+                        break;
+                    case '3':
+                        /** Preventiva starostnika 63-79 */
+                        for ($k = 63; $k < 80; $k++) {
+                            $this->setMeasurements($k, $visitId, $patient_id);
+                        }
+                        break;
+                    case '4':
+                        /** Aplikacija injekcij 80 */
+                        $this->setMeasurements(80, $visitId, $patient_id);
+                        break;
+                    case '5':
+                        /** Odvzem krvi 81*/
+                        $this->setMeasurements(81, $visitId, $patient_id);
+                        break;
+                    case '6':
+                        /** Kontrola zdravstvenega stanja 82-92*/
+                        for ($k = 82; $k < 93; $k++) {
+                            $this->setMeasurements($k, $visitId, $patient_id);
+                        }
+                        break;
+                }
 			}
 
 		} catch (\Exception $e) {
@@ -608,15 +612,6 @@ class WorkOrderController extends Controller {
 			'role'			=> auth()->user()->userRole->user_role_title,
 			'lastLogin'		=> $this->lastLogin(auth()->user())
 		]);
-	}
-
-	protected function defaultMeasurements($visitId, $patient_id) {
-		$this->setMeasurements(10, $visitId, $patient_id);  //Sistolicni
-		$this->setMeasurements(11, $visitId, $patient_id);  //Diastolicni
-		$this->setMeasurements(12, $visitId, $patient_id);  //Dihanje
-		$this->setMeasurements(13, $visitId, $patient_id);  //Srcni utrip
-		$this->setMeasurements(14, $visitId, $patient_id);  //Telesna teza
-		$this->setMeasurements(19, $visitId, $patient_id);  //Telesna temperatura
 	}
 
 	protected function setMedicine($medicineId, $workOrderId) {
