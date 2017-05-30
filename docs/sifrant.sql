@@ -88,7 +88,7 @@ INSERT INTO `Illness`(`illness_id`, `illness_name`) VALUES
 ("Z48.0","Oskrba pri kirurških prevezah in šivih"),
 ("Z51.9","Zdravstvena oskrba, neopredeljena");
 
-INSERT INTO `Measurements`(`measurement_id`, `description`, `visit_subtype_id`) VALUES
+INSERT INTO `Measurement`(`measurement_id`, `description`, `visit_subtype_id`) VALUES
 (1, "Seznanitev nosečnice o normalnem poteku nosečnosti in o spremembah na telesu.", 1),
 (2, "Povabilo v šolo za starše.", 1),
 (3, "Seznanitev o rednih ginekoloških pregledih.", 1),
