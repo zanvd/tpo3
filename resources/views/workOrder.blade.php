@@ -40,7 +40,7 @@
 	<div class="alert alert-success" role="alert">{{ $status }}</div>
 @endif
 @if (count($errors))
-	@foreach($errors->all() as $error)
+	@foreach ($errors->all() as $error)
 		<div class="alert alert-danger">{{ $error }}</div>
 	@endforeach
 @endif
@@ -129,7 +129,7 @@
 				<div class="col-md-12">
 					<div class="panel panel-default">
 						<div class="panel-heading">
-							<h3 class="panel-title">Novorojenček</h3>
+							<h3 class="panel-title">Novorojenčki</h3>
 						</div>
 						<div class="panel-body">
 							<table class="table">
@@ -143,7 +143,7 @@
 									</tr>
 								</thead>
 								<tbody>
-								@foreach($children as $child)
+								@foreach ($children as $child)
 									<tr>
 										<td>{{ $loop->iteration }}</td>
 										<td>{{ $child->person->name }}</td>
@@ -179,30 +179,30 @@
 									</tr>
 								</thead>
 								<tbody>
-								@foreach($visits as $visit)
+								@foreach ($visits as $visit)
 									<tr>
 										<td>{{ $loop->iteration }}</td>
 										<td>
-										{{  \Carbon\Carbon::createFromFormat('Y-m-d', $visit->planned_date)->format('d.m.Y') }}
+										{{ \Carbon\Carbon::createFromFormat('Y-m-d', $visit->planned_date)->format('d.m.Y') }}
 										</td>
-									@if($visit->done == 1)
+									@if ($visit->done == 1)
 										<td>
-										{{  \Carbon\Carbon::createFromFormat('Y-m-d', $visit->actual_date)->format('d.m.Y') }}
+										{{ \Carbon\Carbon::createFromFormat('Y-m-d', $visit->actual_date)->format('d.m.Y') }}
 										</td>
 									@else
 										<td>Neopravljen</td>
 									@endif
-									@if($visit->fixed_visit == 1)
+									@if ($visit->fixed_visit == 1)
 										<td>Obvezen</td>
 									@else
 										<td>Okviren</td>
 									@endif
-									@if(!empty($visit->substituion))
+									@if (!empty($visit->substituion))
 										<td>$visit->substitution</td>
 									@else
 										<td>Ni nadomeščanja</td>
 									@endif
-									@if($visit->done == 1)
+									@if ($visit->done == 1)
 										<td><a href="/obisk/{{ $visit->visit_id }}">Obisk opravljen</a></td>
 									@else
                                         <td><a href="/obisk/{{ $visit->visit_id }}">Neopravljen obisk</a></td>
