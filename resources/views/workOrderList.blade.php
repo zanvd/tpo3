@@ -145,25 +145,14 @@
                                         </td>
                                         <td id="PS">{{$workOrder->performer->name . ' ' . $workOrder->performer->surname}}</td>
                                         <td id="subPS">
-                                        </td>
-                                    </tr>
-                                @endforeach
-                                @foreach($substitutions as $workOrder)
-                                    <tr>
-                                        <td>
-                                            <a href='/delovni-nalog/{{$workOrder->work_order_id}}'>Odpri delovni nalog</a>
-                                        </td>
-                                        <td id="issued">{{$workOrder->created_at}}</td>
-                                        <td id="visitType">{{$workOrder->visitTitle->visit_subtype_title}}</td>
-                                        <td id="prescriber">{{$workOrder->prescriber->name . ' ' . $workOrder->prescriber->surname}}</td>
-                                        <td id="patient">
-                                            @foreach($workOrder->patients as $pat)
-                                                {{$pat->person->name . ' ' . $pat->person->surname}}
-                                                @break
-                                            @endforeach
-                                        </td>
-                                        <td id="PS">{{$workOrder->performer->name . ' ' . $workOrder->performer->surname}}</td>
-                                        <td id="subPS">{{$workOrder->substutution}}
+											@if (!empty($workOrder->substitutions))
+												@foreach ($workOrder->substitutions as $substitution)
+												{{ $substitution }}
+												@if (!$loop->last)
+												<br />
+												@endif
+												@endforeach
+											@endif
                                         </td>
                                     </tr>
                                 @endforeach

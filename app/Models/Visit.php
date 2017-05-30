@@ -18,4 +18,16 @@ class Visit extends Model {
 			'substitution_id',
 			'substitution_id');
 	}
+
+	/**
+	 * One Visit belongs to one Work order.
+	 *
+	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+	 */
+	public function workOrder () {
+		return $this->belongsTo(
+			'App\Models\WorkOrder',
+			'work_order_id',
+			'work_order_id');
+	}
 }

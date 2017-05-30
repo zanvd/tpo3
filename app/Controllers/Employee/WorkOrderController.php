@@ -60,15 +60,8 @@ class WorkOrderController extends Controller {
 				$workOrders = WorkOrder::where('prescriber_id', $employeeId)->get();
 				break;
 			case "Vodja PS":
-				$workOrders = WorkOrder::all();
-				break;
 			case "Patronažna sestra":
-				// TODO: dodaj za primere, ko je nadomestna sestra
-				// Finds array of employee_id-s that are absent
-				$absentMS = Substitution::where('employee_substitution', $employeeId)->select('employee_absent')->set();
-
-				$workOrders = WorkOrder::where('performer_id', $employeeId)->orwhere()->get();
-//                $workOrders = WorkOrder::where('performer_id', $employeeId)->get();
+				$workOrders = WorkOrder::all();
 				break;
 			default:
 				// Something went wrong -> user not authorized for this page.
@@ -117,10 +110,49 @@ class WorkOrderController extends Controller {
 				unset($pat->birth_date);
 			}
 			$workOrder->patients = $patients;
+
+			// Check for substitutions and insert them.
+			// Get visits.
+			$visits = $workOrder->visit->filter(function ($visit) {
+				return $visit->substitution_id != null;
+			})->all();
+
+			foreach ($visits as $visit) {
+				// Create substitution array if it doesn't exist yet.
+				if (!isset($workOrder->substitutions))
+					$workOrder->substitutions = [];
+
+				$substitution =
+					$visit->substitution->employeeSubstitution->person->name
+					. ' '
+					. $visit->substitution->employeeSubstitution->person->surname;
+
+				// Check if this substitution is already included.
+				if (!in_array($substitution, $workOrder->substitutions))
+					$workOrder->substitutions = array_merge(
+						$workOrder->substitutions,
+						[$substitution]
+					);
+			}
+
+		}
+
+		// If nurse is accessing the page,
+		// filter work orders based on substitutions and performer.
+		if ($userRole == 'Patronažna sestra') {
+			$name = $user->person->name . ' ' . $user->person->surname;
+			$workOrders = $workOrders->filter(
+				function ($workOrder) use ($name, $employeeId) {
+					if ($workOrder->performer->employee->employee_id == $employeeId)
+						return true;
+
+					if(!is_null($workOrder->substitutions))
+						return in_array($name, $workOrder->substitutions);
+			});
 		}
 
 		return view('workOrderList')->with([
-			'workOrders' => $workOrders,
+			'workOrders'	=> $workOrders,
 			'name'			=> auth()->user()->person->name . ' '
 								 . auth()->user()->person->surname,
 			'role'			=> auth()->user()->userRole->user_role_title,
@@ -211,7 +243,6 @@ class WorkOrderController extends Controller {
 		try {
 			$workOrder = new WorkOrder();
 
-			// TODO: only woman can have visit type 1 or 2
 			$visitSubtype = request('visitTypeId');
 			$isFixed = request('mandatory');
 			$workOrder->created_at = Carbon::now()->toDateTimeString();
