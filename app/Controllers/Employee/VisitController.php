@@ -58,10 +58,10 @@ class VisitController extends Controller {
             $visit->workorder = $workOrder;
 
             // Prescriber
-            $visit->prescriber = $visit->workorder->prescriber->person->name . ' ' . $visit->workorder->prescriber->person->surname;
+            $visit->prescriber = $visit->workOrder->prescriber->person->name . ' ' . $visit->workOrder->prescriber->person->surname;
 
             // Performer
-            $visit->performer = $visit->workorder->performer->person->name . ' ' . $visit->workorder->performer->person->surname;
+            $visit->performer = $visit->workOrder->performer->person->name . ' ' . $visit->workOrder->performer->person->surname;
 
                 // Patient
             $patient = WorkOrder_Patient::where('work_order_id', $workOrder->work_order_id)->first()->patient;

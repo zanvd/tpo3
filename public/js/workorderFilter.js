@@ -178,33 +178,6 @@ $(document).ready(function(){
     $('input[name=dateTo]').change(function() {
         table.draw();
     });
-    $('select[name=prescribers]').change(function() {
-        prescribers = $(this).val();
-    });
-    $('select[name=preformers]').change(function() {
-        preformers = $(this).val();
-    });
-    $('select[name=visitTypes]').change(function() {
-        visitTypes = $(this).val();
-    });
-    $('select[name=patients]').change(function() {
-        patients = $(this).val();
-    });
-    $('select[name=subistitutions]').change(function() {
-        subistitutions = $(this).val();
-    });
-
-    $('.btn').click(function(e){
-        
-        if(dateFrom != "") {
-            table.columns( 1 ).search( dateFrom ).draw();
-        }
-
-        if(dateTo != "") {
-            table.columns( 1 ).search( dateTo ).draw();
-        }
-
-    });
 
     $('.dataTables_filter').hide();
 

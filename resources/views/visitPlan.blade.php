@@ -1,21 +1,21 @@
 @extends('layoutLog')
 
-@section('css')
-<link rel="stylesheet" type="text/css" href="{{ URL::asset('css/bootstrap-datepicker.min.css') }}">
-<link rel="stylesheet" type="text/css" href="{{ URL::asset('css/bootstrapValidator.min.css') }}">
-@endsection
-
 @section('script')
-    <script src="{{ URL::asset('js/moment-with-locales.js') }}"></script>
     <script src="{{ URL::asset('js/bootstrap-datepicker.min.js') }}"></script>
     <script src="{{ URL::asset('js/bootstrap-datepicker.sl.min.js') }}"></script>
-    <script src="{{ URL::asset('js/bootstrapValidator.js') }}"></script>
-    <script src="{{ URL::asset('js/visitValidate.js') }}"></script>
+    <script src="//cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+    <script src="{{ URL::asset('js/workorderFilter.js') }}"></script>
+@endsection
+
+@section('css')
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.15/css/jquery.dataTables.min.css">
+<link rel="stylesheet" type="text/css" href="{{ URL::asset('css/bootstrap-datepicker.min.css') }}">
 @endsection
 
 @section('title')
     <title>Planiranje obiskov</title>
 <?php $activeView = 'planObiskov' ?>
+<?php $role = 'Patronažna sestra' ?>
 @endsection
 
 @section('header')
@@ -33,7 +33,13 @@
 @endsection
 
 @section('menu')
-        @include('menuPS')
+         @if ($role == 'Vodja PS')
+            @include('menuVPS')
+        @elseif ($role == 'Zdravnik')
+            @include('menuDoctor')
+        @elseif ($role == 'Patronažna sestra')
+            @include('menuPS')
+        @endif
 @endsection
 
 @section('content')
@@ -67,23 +73,24 @@
                     </div>
                 </div>
                 <div class="col-md-6">
-
+                </div>
+                <div class="col-md-12">
+                    <table class="table table-hover" id="datatable">
+                        <thead>
+                            <tr>
+                                <th>Preglej</th>
+                                <th>Datum obiska</th>
+                                <th>Vrsta obiska</th>
+                                <th>Delovni nalog</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
                 </div>
             </div>
 
         </div>
-        <table class="table table-hover table-responsive">
-            <thead>
-                <tr>
-                    <th>Preglej</th>
-                    <th>Datum obiska</th>
-                    <th>Vrsta obiska</th>
-                    <th>Delovni nalog</th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
     </div>
     </div>
     </form>
@@ -95,7 +102,7 @@
         <div class="panel-body">
             <div class="row">
                 <div class="col-md-12">
-                    <table class="table table-hover table-responsive">
+                    <table class="table table-hover" id="datatable2">
                     <thead>
                         <tr>
                             <th>Preglej</th>
