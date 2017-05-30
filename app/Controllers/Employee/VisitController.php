@@ -6,6 +6,7 @@ use App\Models\Patient;
 use App\Models\Visit;
 use App\Models\WorkOrder;
 use App\Controllers\Controller;
+use App\Models\WorkOrder_Patient;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -22,6 +23,59 @@ class VisitController extends Controller {
 	 * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
 	 */
 	public function index () {
+
+	    $user = auth()->user();
+        $userRole = $user->userRole->user_role_title;
+        $employeeId = $user->person->employee->employee_id;
+
+        switch($userRole) {
+            case "Zdravnik":
+                $workOrderIds = WorkOrder::select('work_order_id')->where('prescriber_id', $employeeId)->get();
+                $visits = Visit::wherein('work_order_id', $workOrderIds)->get();
+//                dd($visits);
+                break;
+            case "Vodja PS":
+                $visits = Visit::all();
+                break;
+            case "Patronažna sestra":
+                // TODO: dodaj za primere, ko je nadomestna sestra
+                // Finds array of employee_id-s that are absent
+                $workOrderIds = WorkOrder::select('work_order_id')->where('performer_id', $employeeId)->get();
+                $visits = Visit::wherein('work_order_id', $workOrderIds)->get();
+                break;
+            default:
+                // Something went wrong -> user not authorized for this page.
+                // Redirect to previous site.
+                return redirect()->back();
+                break;
+        }
+
+        foreach ($visits as $visit) {
+            $workOrder = WorkOrder::where('work_order_id', $visit->work_order_id)->first();
+            // Get work order type.
+            $type = $workOrder->visitSubtype->visit_subtype_title;
+            $workOrder->type = $type;
+            $visit->workorder = $workOrder;
+
+            // Prescriber
+            $visit->prescriber = $visit->workorder->prescriber->person->name . ' ' . $visit->workorder->prescriber->person->surname;
+
+            // Performer
+            $visit->performer = $visit->workorder->performer->person->name . ' ' . $visit->workorder->performer->person->surname;
+
+                // Patient
+            $patient = WorkOrder_Patient::where('work_order_id', $workOrder->work_order_id)->first()->patient;
+            $visit->patient = $patient->person->name . ' ' . $patient->person->surname;
+        }
+
+        return view('visitList')->with([
+            'visits'        => $visits,
+            'name'			=> auth()->user()->person->name . ' '
+                . auth()->user()->person->surname,
+            'role'			=> auth()->user()->userRole->user_role_title,
+            'lastLogin'		=> $this->lastLogin(auth()->user())
+        ]);
+
 
 	}
 

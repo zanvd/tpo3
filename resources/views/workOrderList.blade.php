@@ -14,7 +14,7 @@
 @endsection
 
 @section('title')
-    <title>Preglej delovni nalog</title>
+    <title>Izdani delovni nalogi</title>
 <?php $activeView = 'seznamDN' ?>
 @endsection
 

@@ -18,4 +18,11 @@ class Visit extends Model {
 			'substitution_id',
 			'substitution_id');
 	}
+
+    public function workorder () {
+        return $this->belongsTo(
+            'App\Models\WorkOrder',
+            'work_order_id',
+            'work_order_id');
+    }
 }
