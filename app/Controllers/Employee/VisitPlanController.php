@@ -29,7 +29,7 @@ class VisitPlanController extends Controller
 
     public function index(){
 
-    	$todayDate = "2017-05-24";//date("Y-m-d");
+    	$todayDate = date("Y-m-d");
     	
         //ID sestre, ki je prijavljena v sistem.
         global $employee_id;
