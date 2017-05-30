@@ -133,7 +133,7 @@
                                 @foreach($workOrders as $workOrder)
                                     <tr>
                                         <td>
-                                            <a href='/delovni-nalog/{{$workOrder->work_order_id}}'>#{{$loop->iteration}}</a>
+                                            <a href='/delovni-nalog/{{$workOrder->work_order_id}}'>Odpri delovni nalog</a>
                                         </td>
                                         <td id="issued">{{$workOrder->created_at}}</td>
                                         <td id="visitType">{{$workOrder->visitTitle->visit_subtype_title}}</td>
