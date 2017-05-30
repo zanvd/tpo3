@@ -134,7 +134,7 @@
                                         <td>
                                             <a href='/delovni-nalog/{{$workOrder->work_order_id}}'>Odpri delovni nalog</a>
                                         </td>
-                                        <td id="issued">{{$workOrder->created_at}}</td>
+                                        <td id="issued">{{ \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $workOrder->created_at)->format('d.m.Y')}}</td>
                                         <td id="visitType">{{$workOrder->visitTitle->visit_subtype_title}}</td>
                                         <td id="prescriber">{{$workOrder->prescriber->name . ' ' . $workOrder->prescriber->surname}}</td>
                                         <td id="patient">
