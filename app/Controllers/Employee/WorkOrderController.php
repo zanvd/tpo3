@@ -535,9 +535,9 @@ class WorkOrderController extends Controller {
 		foreach ($visits as $visit) {
 			$substituion = $visit->substituion;
 			if (!is_null($substituion))
-			$visit->substitution = $substituion->employeeSubstitution->employee_id . ' '
-				. $substituion->employeeSubstitution->person->name . ' '
-				. $substituion->employeeSubstitution->person->surname;
+				$visit->substitution = $substituion->employeeSubstitution->employee_id . ' '
+					. $substituion->employeeSubstitution->person->name . ' '
+					. $substituion->employeeSubstitution->person->surname;
 		}
 
 		// Check work order type and get additional equipment if necessary.
@@ -547,7 +547,7 @@ class WorkOrderController extends Controller {
 				$medicines[] = $relation->medicine;
 			}
 		} else if ($type == 'Odvzem krvi') {
-			// Get number of blood tubes and store them by color.
+			// Get the number of blood tubes and store them by color.
 			$bloodTubes = $workOrder->bloodTubeRel;
 
 			foreach ($bloodTubes as $bt) {
@@ -582,7 +582,7 @@ class WorkOrderController extends Controller {
 									   ->format('d.m.Y');
 
 		// Store type of visits.
-		$workOrder->type = $workOrder->visitSubtype->visit_subtype_title;
+		$workOrder->type = $type;
 
 		// Store actual data about employees instead of just id's.
 		$workOrder->prescriber = $workOrder->prescriber->employee_id . ' '
@@ -597,8 +597,6 @@ class WorkOrderController extends Controller {
 		unset($workOrder->prescriber_id);
 		unset($workOrder->performer_id);
 
-		//dd($workOrder, $patient, $children, $visits);
-
 		return view('workOrder', compact(
 			'workOrder',
 			'patient',
@@ -607,10 +605,10 @@ class WorkOrderController extends Controller {
 			'medicines',
 			'bloodTubes'
 		))->with([
-			'name'			=> auth()->user()->person->name . ' '
-								 . auth()->user()->person->surname,
-			'role'			=> auth()->user()->userRole->user_role_title,
-			'lastLogin'		=> $this->lastLogin(auth()->user())
+			'name'		=> auth()->user()->person->name . ' '
+							 . auth()->user()->person->surname,
+			'role'		=> auth()->user()->userRole->user_role_title,
+			'lastLogin'	=> $this->lastLogin(auth()->user())
 		]);
 	}
 
