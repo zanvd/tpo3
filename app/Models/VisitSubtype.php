@@ -14,4 +14,12 @@ class VisitSubtype extends Model {
             'visit_type_id'
         );
     }
+
+    public function visit() {
+        return $this->hasMany(
+            'App\Models\Visit',
+            'visit_type_id',
+            'visit_type_id'
+        );
+    }
 }
