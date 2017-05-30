@@ -148,6 +148,8 @@
                                         </td>
                                     </tr>
                                 @endforeach
+                            @endif
+                            @if( ! empty($substitutions) )
                                 @foreach($substitutions as $workOrder)
                                     <tr>
                                         <td>
