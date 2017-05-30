@@ -357,16 +357,24 @@ class WorkOrderController extends Controller {
 				/** Odvzem krvi */
 				if (request('red') != null && request('red') > 0) {
 					$this->setNumOfBloodTubes(996, request('red'), $workOrder->work_order_id);
-				}
+				} else {
+                    $this->setNumOfBloodTubes(996, 0, $workOrder->work_order_id);
+                }
 				if (request('blue') != null && request('blue') > 0) {
 					$this->setNumOfBloodTubes(997, request('blue'), $workOrder->work_order_id);
-				}
+				} else {
+                    $this->setNumOfBloodTubes(997, 0, $workOrder->work_order_id);
+                }
 				if (request('yellow') != null && request('yellow') > 0) {
 					$this->setNumOfBloodTubes(998, request('yellow'), $workOrder->work_order_id);
-				}
+				} else {
+                    $this->setNumOfBloodTubes(998, 0, $workOrder->work_order_id);
+                }
 				if (request('green') != null && request('green') > 0) {
 					$this->setNumOfBloodTubes(999, request('green'), $workOrder->work_order_id);
-				};
+				} else {
+                    $this->setNumOfBloodTubes(999, 0, $workOrder->work_order_id);
+                }
 			}
 
 			/** Create first visit **/
