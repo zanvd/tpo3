@@ -1,7 +1,6 @@
 @extends('layoutLog')
 
 @section('script')
-    <script src="{{ URL::asset('js/moment-with-locales.js') }}"></script>
     <script src="{{ URL::asset('js/bootstrap-datepicker.min.js') }}"></script>
     <script src="{{ URL::asset('js/bootstrap-datepicker.sl.min.js') }}"></script>
     <script src="//cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
@@ -53,7 +52,7 @@
     @endif
 
     <div class="row">
-        <div class="panel panel-primary filterable">
+        <div class="panel panel-default">
             <div class="panel-heading main-color-bg">
             	<div class="row">
             	<div class="col-md-12">
@@ -146,9 +145,25 @@
                                         </td>
                                         <td id="PS">{{$workOrder->performer->name . ' ' . $workOrder->performer->surname}}</td>
                                         <td id="subPS">
-                                            @if ( !empty ($workOrder->substutution ))
-                                                {{$workOrder->substutution->name}}
-                                            @endif
+                                        </td>
+                                    </tr>
+                                @endforeach
+                                @foreach($substitutions as $workOrder)
+                                    <tr>
+                                        <td>
+                                            <a href='/delovni-nalog/{{$workOrder->work_order_id}}'>Odpri delovni nalog</a>
+                                        </td>
+                                        <td id="issued">{{$workOrder->created_at}}</td>
+                                        <td id="visitType">{{$workOrder->visitTitle->visit_subtype_title}}</td>
+                                        <td id="prescriber">{{$workOrder->prescriber->name . ' ' . $workOrder->prescriber->surname}}</td>
+                                        <td id="patient">
+                                            @foreach($workOrder->patients as $pat)
+                                                {{$pat->person->name . ' ' . $pat->person->surname}}
+                                                @break
+                                            @endforeach
+                                        </td>
+                                        <td id="PS">{{$workOrder->performer->name . ' ' . $workOrder->performer->surname}}</td>
+                                        <td id="subPS">{{$workOrder->substutution}}
                                         </td>
                                     </tr>
                                 @endforeach

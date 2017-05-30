@@ -169,7 +169,23 @@ Route::post('/delovni-nalog',
 
 Route::get('/delovni-nalog/{workOrder}',
 		   $namespacePrefix['employee'].'WorkOrderController@show');
+/*
+|--------------------------------------------------------------------------
+| Plan
+|--------------------------------------------------------------------------
+|
+| 
+| Get:		display plan creation page.				chief nurse, nurse
+| Post:		create new plan.						chief nurse, nurse
+|
+|
+*/
+Route::get('/nacrt-obiskov/ustvari', function () {
+		return view('visitPlan');
+});
 
+Route::post('/nacrt-obiskov',
+    $namespacePrefix['employee'].'WorkOrderController@store');
 
 /*
 |--------------------------------------------------------------------------
