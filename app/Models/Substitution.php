@@ -14,8 +14,21 @@ class Substitution extends Model {
 	 */
 	public function employeeSubstitution () {
 		return $this->belongsTo(
-			'App\Model\Employee',
+			'App\Models\Employee',
 			'employee_substitution',
 			'employee_id');
+	}
+
+	/**
+	 * One Substitution has many Visits.
+	 *
+	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
+	 */
+	public function visit () {
+		return $this->hasMany(
+			'App\Models\Visit',
+			'substitution_id',
+			'substitution_id'
+		);
 	}
 }
