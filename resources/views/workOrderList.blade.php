@@ -1,9 +1,16 @@
 @extends('layoutLog')
 
 @section('script')
-    <script src="{{ URL::asset('js/workorderFilter.js') }}"></script>
+    <script src="{{ URL::asset('js/moment-with-locales.js') }}"></script>
     <script src="{{ URL::asset('js/bootstrap-datepicker.min.js') }}"></script>
     <script src="{{ URL::asset('js/bootstrap-datepicker.sl.min.js') }}"></script>
+    <script src="//cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+    <script src="{{ URL::asset('js/workorderFilter.js') }}"></script>
+@endsection
+
+@section('css')
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.15/css/jquery.dataTables.min.css">
+<link rel="stylesheet" type="text/css" href="{{ URL::asset('css/bootstrap-datepicker.min.css') }}">
 @endsection
 
 @section('title')
@@ -49,62 +56,107 @@
         <div class="panel panel-primary filterable">
             <div class="panel-heading main-color-bg">
             	<div class="row">
-            	<div class="col-md-10">
+            	<div class="col-md-12">
                 <h3 class="panel-title">Seznam delovnih nalogov</h3>
-                </div>
-                <div class="pull-right col-md-2">
-                    <button id="filterBtn" class="btn btn-default btn-xs btn-filter"><span class="glyphicon glyphicon-filter"></span> Filter</button>
                 </div>
                 </div>
             </div>
             <div class="panel-body">
-                <table class="table table-hover table-responsive">
-                    <thead>
-                        <tr class="filters" id="filter">
-                            <th><input style="display: none;" type="text" id="1" class="form-control" placeholder="#" disabled></th>
-                            <th><input style="display: none;" type="text" id="2" class="form-control" placeholder="Izdan" disabled></th>
-                            <th><input style="display: none;" type="text" id="3" class="form-control" placeholder="Vrsta obiska" disabled></th>
-                            <th><input style="display: none;" type="text" id="4" class="form-control" placeholder="Izdajatelj" disabled></th>
-                            <th><input style="display: none;" type="text" id="5" class="form-control" placeholder="Pacient" disabled></th>
-                            <th><input style="display: none;" type="text" id="6" class="form-control" placeholder="Zadolžena MS" disabled></th>
-                            <th><input style="display: none;" type="text" id="7" class="form-control" placeholder="Nadomestna MS" disabled></th>
-                        </tr>
-                        <tr class="filters" id="noFilter">
-                            <th>Preglej</th>
-                            <th>Izdan</th>
-                            <th>Vrsta obiska</th>
-                            <th>Izdajatelj</th>
-                            <th>Pacient</th>
-                            <th>Zadolžena MS</th>
-                            <th>Nadomestna MS</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    @if( ! empty($workOrders) )
-                        @foreach($workOrders as $workOrder)
-                            <tr>
-                                <td>
-                                    <a href='/delovni-nalog/{{$workOrder->work_order_id}}'>#{{$loop->iteration}}</a>
-                                </td>
-                                <td>{{$workOrder->created_at}}</td>
-                                <td>{{$workOrder->visitTitle->visit_subtype_title}}</td>
-                                <td>{{$workOrder->prescriber->name . ' ' . $workOrder->prescriber->surname}}</td>
-                                <td>
-                                    @foreach($workOrder->patients as $pat)
-                                        {{$pat->person->name . ' ' . $pat->person->surname}}<br/>
-                                    @endforeach
-                                </td>
-                                <td>{{$workOrder->performer->name . ' ' . $workOrder->performer->surname}}</td>
-                                <td>
-                                    @if ( !empty ($workOrder->substutution ))
-                                        {{$workOrder->substutution->name}}
-                                    @endif
-                                </td>
-                            </tr>
-                        @endforeach
-                    @endif
-                    </tbody>
-                </table>
+                <div class="col-md-12">
+                    <div class="row">
+                        <h3> <span class="glyphicon glyphicon-filter"></span>  Filtriranje </h3>
+                   </div>
+                   <div class="row">
+                       <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Datum od</label>
+                                <input type="text" placeholder="Vnesite datum..." name="dateFrom" id="dateFrom" class="form-control date datepicker">
+                            </div>
+                            <div class ="form-group">
+                            <label>Izdajatelj</label>
+                                <select  data-live-search="true" class="form-control selectpicker" name="prescribers" id="prescribers" title="Izberite..." >
+                                    <option value=""></option>
+                                </select>
+                            </div>
+                            <div class ="form-group">
+                            <label>Pacient</label>
+                                <select  data-live-search="true" class="form-control selectpicker" name="patients" id="patients" title="Izberite..." >
+                                    <option value=""></option>
+                                </select>
+                            </div>
+                            @if ($role == 'Vodja PS' || $role == 'Zdravnik')
+                            <div class ="form-group">
+                            <label>Nadomestna PS</label>
+                                <select  data-live-search="true" class="form-control selectpicker" name="subistitutions" id="subistitutions" title="Izberite..." >
+                                  <option value=""></option>
+                                </select>
+                            </div>
+                            @endif
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Datum do</label>
+                                <input type="text" placeholder="Vnesite datum..." name="dateTo" id="dateTo" class="form-control date datepicker">
+                            </div>
+                            <div class ="form-group">
+                            <label>Vrsta obiska</label>
+                                <select  data-live-search="true" class="form-control selectpicker" name="visitTypes" id="visitTypes" title="Izberite..." >
+                                    <option value=""></option>
+                                </select>
+                            </div>
+                            @if ($role == 'Vodja PS' || $role == 'Zdravnik')
+                            <div class ="form-group">
+                            <label>Zadolžena PS</label>
+                                <select  data-live-search="true" class="form-control selectpicker" name="preformers" id="preformers" title="Izberite..." >
+                                    <option value=""></option>
+                                </select>
+                            </div>
+                            @endif
+                        </div>
+                    </div> 
+                    
+                    <div class="row col-md-12" style="margin-top: 10px;">
+                        <table class="table table-hover" id="datatable">
+                            <thead>
+                                <tr>
+                                    <th>Preglej</th>
+                                    <th>Izdan</th>
+                                    <th>Vrsta obiska</th>
+                                    <th>Izdajatelj</th>
+                                    <th>Pacient</th>
+                                    <th>Zadolžena PS</th>
+                                    <th>Nadomestna PS</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            @if( ! empty($workOrders) )
+                                @foreach($workOrders as $workOrder)
+                                    <tr>
+                                        <td>
+                                            <a href='/delovni-nalog/{{$workOrder->work_order_id}}'>#{{$loop->iteration}}</a>
+                                        </td>
+                                        <td id="issued">{{$workOrder->created_at}}</td>
+                                        <td id="visitType">{{$workOrder->visitTitle->visit_subtype_title}}</td>
+                                        <td id="prescriber">{{$workOrder->prescriber->name . ' ' . $workOrder->prescriber->surname}}</td>
+                                        <td id="patient">
+                                            @foreach($workOrder->patients as $pat)
+                                                {{$pat->person->name . ' ' . $pat->person->surname}}
+                                                @break
+                                            @endforeach
+                                        </td>
+                                        <td id="PS">{{$workOrder->performer->name . ' ' . $workOrder->performer->surname}}</td>
+                                        <td id="subPS">
+                                            @if ( !empty ($workOrder->substutution ))
+                                                {{$workOrder->substutution->name}}
+                                            @endif
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            @endif
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
