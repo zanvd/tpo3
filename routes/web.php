@@ -243,3 +243,34 @@ Route::get('obisk/{visit}/uredi',
 
 Route::patch('obisk/{visit}',
 		   $namespacePrefix['employee'].'VisitController@update');
+
+/*
+|--------------------------------------------------------------------------
+| Substitution
+|--------------------------------------------------------------------------
+|
+| Get:		display substitutions.	        chief nurse
+| Get:		create new substitution.		chief nurse
+|
+*/
+Route::get('/nadomeščanja',
+    $namespacePrefix['employee'].'SubstitutionController@index');
+
+Route::post('/nadomeščanja',
+    $namespacePrefix['employee'].'SubstitutionController@store');
+
+
+/*
+|--------------------------------------------------------------------------
+| Plan the visits
+|--------------------------------------------------------------------------
+|
+| Get:		display the plan of the visits.		nurse
+| Post:		save the plan of the visits.		nurse
+|
+*/
+Route::get('/nacrt-obiskov/ustvari',
+    $namespacePrefix['employee'].'VisitPlanController@index');
+
+Route::post('/nacrt-obiskov',
+    $namespacePrefix['employee'].'VisitPlanController@store');

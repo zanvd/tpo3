@@ -43,4 +43,16 @@ class Visit extends Model {
 			'visit_id'
 		);
 	}
+
+	/**
+	*One Visit belongs to one visit_subtype
+	*/
+
+	public function visit_subtype() {
+        return $this->belongsTo(
+            'App\Models\VisitSubtype',
+            'visit_subtype_id',
+            'visit_subtype_id'
+        );
+    }
 }
