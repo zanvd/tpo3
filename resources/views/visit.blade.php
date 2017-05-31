@@ -88,7 +88,7 @@
                         <div class="col-md-12">
                             <div class="panel panel-default">
                                 <div class="panel-heading">
-                                    <h3 class="panel-title">Pacient</h3>
+                                    <h3 class="panel-title"><span class="glyphicon glyphicon-user"></span> Pacient</h3>
                                 </div>
                                 <div class="panel-body">
                                     @if (!empty($patient))
@@ -125,43 +125,67 @@
                                             </div>
                                         </div>
                                     @endif
-									<hr />
-									<div class="row col-md-12">
-										<div class="row">
-											<h3 class="panel-title">Meritve</h3>
-										</div>
-										@if (!empty($patient->measurements))
-											@foreach ($patient->measurements as $measurement)
-											<div class="row">
-												<div class="col-md-6 form-group">
-													<b>{{ $measurement->description }}:</b>
-													<ul>
-														@foreach ($measurement->input as $input)
-															@php
-															switch ($input->type) {
-																case 'radio':
-																	echo $measurement->value;
-																	break;
-																case 'text':
-																	echo $input->name . ': ' . $measurement->value;
-																	break;
-																case 'date':
-																	echo \Carbon\Carbon::createFromFormat('Y-m-d', $measurement->value)->format('d.m.Y');
-																	break;
-																case 'select':
-																	echo '<li>' . $measurement->value . '</li>';
-																	break;
-																default:
-																	echo 'Izbrani obisk nima meritev.';
-																	break;
-															}
-															@endphp
-														@endforeach
-													</ul>
+									<div class="row">
+										<div class="col-md-12">
+											<div class="panel panel-info">
+												<div class="panel-heading">
+													<h3 class="panel-title">
+														<a data-toggle="collapse" href="#collapse0">
+															<span class="glyphicon glyphicon-heart-empty"></span> Meritve
+														</a>
+													</h3>
+												</div>
+												<div id="collapse0" class="panel-collapse collapse">
+													<div class="panel-body">
+														@if (!empty($patient->measurements))
+															@foreach ($patient->measurements as $measurement)
+																<div class="panel panel-default">
+																	<div class="panel-body">
+																		<em>{{ $measurement->description }}:</em>
+																		<ul>
+																			@if ($measurement->input[0]->type == 'radio')
+																				{{  $measurement->value }}<br />
+																				@foreach ($measurement->input as $input)
+																					@if ($input->type == 'text')
+																						{{  $input->input_name }}: {{ $measurement->value}}<br />
+																					@endif
+																				@endforeach
+																			@else
+																				@foreach ($measurement->input as $input)
+																					@php
+																						switch ($input->type) {
+																							case 'radio':
+																								break;
+																							case 'number':
+																							case 'text':
+																								echo $input->input_name . ': ' . $measurement->value . '<br />';
+																								break;
+																							case 'date':
+																								echo $input->input_name . ': ' . is_null($measurement->value)
+																										? 'Meritev še ni bila opravljena.<br />'
+																										: \Carbon\Carbon::createFromFormat('Y-m-d',
+																															$measurement->value)
+																											->format('d.m.Y') . '<br />';
+																								break;
+																							case 'select':
+																								echo '<li>' . $measurement->value . '</li>';
+																								break;
+																							default:
+																								echo 'Izbrani obisk nima meritev<br />';
+																								break;
+																						}
+																					@endphp
+																				@endforeach
+																			@endif
+																		</ul>
+																	</div>
+																</div>
+															@endforeach
+														@endif
+													</div>
 												</div>
 											</div>
-											@endforeach
-										@endif
+										</div>
 									</div>
                                 </div>
                             </div>
@@ -173,7 +197,7 @@
                         <div class="col-md-12">
                             <div class="panel panel-default">
                                 <div class="panel-heading">
-                                    <h3 class="panel-title">Novorojenčki</h3>
+                                    <h3 class="panel-title"><span class="glyphicon glyphicon-user"></span> Novorojenčki</h3>
                                 </div>
                                 <div class="panel-body">
 								@foreach ($children as $child)
@@ -193,42 +217,67 @@
 											<b>ZZZS:</b> {{ $child->insurance_num }}
 										</div>
 									</div>
-									<div class="row col-md-12">
-										<div class="row">
-											<h3 class="panel-title">Meritve</h3>
-										</div>
-										@if (!empty($patient->measurements))
-											@foreach ($patient->measurements as $measurement)
-											<div class="row">
-												<div class="col-md-6 form-group">
-													<b>{{ $measurement->description }}:</b>
-													<ul>
-														@foreach ($measurement->input as $input)
-															@php
-																switch ($input->type) {
-																	case 'radio':
-																		echo $measurement->value;
-																		break;
-																	case 'text':
-																		echo $input->name . ': ' . $measurement->value;
-																		break;
-																	case 'date':
-																		echo \Carbon\Carbon::createFromFormat('Y-m-d', $measurement->value)->format('d.m.Y');
-																		break;
-																	case 'select':
-																		echo '<li>' . $measurement->value . '</li>';
-																		break;
-																	default:
-																		echo 'Izbrani obisk nima meritev.';
-																		break;
-																}
-															@endphp
-														@endforeach
-													</ul>
+									<div class="row">
+										<div class="col-md-12">
+											<div class="panel panel-info">
+												<div class="panel-heading">
+													<h3 class="panel-title">
+														<a data-toggle="collapse" href="#collapse{{ $loop->iteration }}">
+															<span class="glyphicon glyphicon-heart-empty"></span> Meritve
+														</a>
+													</h3>
+												</div>
+												<div id="collapse{{ $loop->iteration }}" class="panel-collapse collapse">
+													<div class="panel-body">
+														@if (!empty($patient->measurements))
+															@foreach ($patient->measurements as $measurement)
+																<div class="panel panel-default">
+																	<div class="panel-body">
+																		<em>{{ $measurement->description }}:</em>
+																		<ul>
+																			@if ($measurement->input[0]->type == 'radio')
+																			{{  $measurement->value }}<br />
+																				@foreach ($measurement->input as $input)
+																					@if ($input->type == 'text')
+																					{{  $input->input_name }}: {{ $measurement->value}}<br />
+																					@endif
+																				@endforeach
+																			@else
+																				@foreach ($measurement->input as $input)
+																					@php
+																						switch ($input->type) {
+																							case 'radio':
+																								break;
+																							case 'number':
+																							case 'text':
+																								echo $input->input_name . ': ' . $measurement->value . '<br />';
+																								break;
+																							case 'date':
+																								echo $input->input_name . ': ' . is_null($measurement->value)
+																										? 'Meritev še ni bila opravljena.<br />'
+																										: \Carbon\Carbon::createFromFormat('Y-m-d',
+																															$measurement->value)
+																											->format('d.m.Y') . '<br />';
+																								break;
+																							case 'select':
+																								echo '<li>' . $measurement->value . '</li>';
+																								break;
+																							default:
+																								echo 'Izbrani obisk nima meritev<br />';
+																								break;
+																						}
+																					@endphp
+																				@endforeach
+																			@endif
+																		</ul>
+																	</div>
+																</div>
+															@endforeach
+														@endif
+													</div>
 												</div>
 											</div>
-											@endforeach
-										@endif
+										</div>
 									</div>
 									@if (!$loop->last)
 										<hr />
@@ -239,12 +288,74 @@
                         </div>
                     </div>
                 @endif
+				@if (!empty($medicines))
+					<div class="row">
+						<div class="col-md-12">
+							<div class="panel panel-default">
+								<div class="panel-heading">
+									<h3 class="panel-title"><span class="glyphicon glyphicon-plus"></span> Zdravila</h3>
+								</div>
+								<div class="panel-body">
+									<table class="table">
+										<thead>
+										<tr>
+											<th>#</th>
+											<th>Naziv</th>
+											<th>Pakiranje</th>
+											<th>Tip</th>
+										</tr>
+										</thead>
+										<tbody>
+										@foreach($medicines as $med)
+											<tr>
+												<td>{{ $loop->iteration }}</td>
+												<td>{{ $med->medicine_name }}</td>
+												<td>{{ $med->medicine_packaging }}</td>
+												<td>{{ $med->medicine_type }}</td>
+											</tr>
+										@endforeach
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				@endif
+				@if (!empty($bloodTubes))
+					<div class="row">
+						<div class="col-md-12">
+							<div class="panel panel-default">
+								<div class="panel-heading">
+									<h3 class="panel-title"><span class="glyphicon glyphicon-tint"></span> Epruvete</h3>
+								</div>
+								<div class="panel-body">
+									<div class="row">
+										<div class="col-md-6 form-group">
+											<b>Rdečih epruvet:</b> {{ $bloodTubes['red'] }}
+										</div>
+										<div class="col-md-6 form-group">
+											<b>Modrih epruvet:</b> {{ $bloodTubes['blue'] }}
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-6 form-group">
+											<b>Zelenih epruvet:</b> {{ $bloodTubes['green'] }}
+										</div>
+										<div class="col-md-6 form-group">
+											<b>Rumenih epruvet:</b> {{ $bloodTubes['yellow'] }}
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				@endif
                 @if (!empty($visits))
                     <div class="row">
                         <div class="col-md-12">
                             <div class="panel panel-default">
                                 <div class="panel-heading">
-                                    <h3 class="panel-title">Ostali obiski</h3>
+                                    <h3 class="panel-title"><span class="glyphicon glyphicon-list"></span> Ostali obiski</h3>
                                 </div>
                                 <div class="panel-body">
                                     <table class="table">
@@ -285,77 +396,11 @@
 											@else
 												<td>Ni nadomeščanja</td>
 											@endif
-											@if ($vis->done == 1)
 												<td><a href="/obisk/{{ $vis->visit_id }}">Podrobnosti</a></td>
-											@else
-												<td></td>
-											@endif
                                             </tr>
                                         @endforeach
                                         </tbody>
                                     </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                @endif>
-                @if (!empty($medicines))
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="panel panel-default">
-                                <div class="panel-heading">
-                                    <h3 class="panel-title">Zdravila</h3>
-                                </div>
-                                <div class="panel-body">
-                                    <table class="table">
-                                        <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Naziv</th>
-                                            <th>Pakiranje</th>
-                                            <th>Tip</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        @foreach($medicines as $med)
-                                            <tr>
-                                                <td>{{ $loop->iteration }}</td>
-                                                <td>{{ $med->medicine_name }}</td>
-                                                <td>{{ $med->medicine_packaging }}</td>
-                                                <td>{{ $med->medicine_type }}</td>
-                                            </tr>
-                                        @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                @endif
-                @if (!empty($bloodTubes))
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="panel panel-default">
-                                <div class="panel-heading">
-                                    <h3 class="panel-title">Epruvete</h3>
-                                </div>
-                                <div class="panel-body">
-                                    <div class="row">
-                                        <div class="col-md-6 form-group">
-                                            <b>Rdečih epruvet:</b> {{ $bloodTubes->red }}
-                                        </div>
-                                        <div class="col-md-6 form-group">
-                                            <b>Modrih epruvet:</b> {{ $bloodTubes->blue }}
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-6 form-group">
-                                            <b>Zelenih epruvet:</b> {{ $bloodTubes->green }}
-                                        </div>
-                                        <div class="col-md-6 form-group">
-                                            <b>Rumenih epruvet:</b> {{ $bloodTubes->yellow }}
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                         </div>
