@@ -400,7 +400,7 @@ class WorkOrderController extends Controller {
 					$newborn = request('newborn');
 					for ($i = 0; $i < count($newborn); $i++) {
 						// Set measurements for every newborn 49-62
-                        $this->setMeasurements(25, $visitId, $newborn[$i]));
+                        $this->setMeasurements(25, $visitId, $newborn[$i]);
                         for ($k = 49; $k < 63; $k++) {
                             $this->setMeasurements($k, $visitId, $newborn[$i]);
                         }
