@@ -17,4 +17,12 @@ class WorkOrder_Patient extends Model {
             'patient_id'
         );
     }
+
+    public function work_order() {
+        return $this->hasOne(
+            'App\Models\WorkOrder',
+            'work_order_id',
+            'work_order_id'
+        );
+    }
 }

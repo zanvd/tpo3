@@ -1,19 +1,3 @@
-var filters = [ [], [], [], [], [], [], []] ;
-var dates,
-    prescribers,
-    performers,
-    visitTypes,
-    patients,
-    substitutions,
-    visitDone;
-
-var dateFrom = "",
-    dateTo = "",
-    prescribers = "",
-    performers = "",
-    visitTypes = "",
-    patients = "",
-    substitutions = "";
 
 $('.datepicker').datepicker({
     format: 'dd.mm.yyyy',
@@ -26,9 +10,48 @@ $.fn.dataTable.ext.search.push(
         var maxStr = $('input[name=dateTo]').val();
         var min,max;
 
-        var date = data[1] || 0; // use data for the age column
+        var date = data[1] || 0; 
 
         var arrDate = date.toString().split('.');
+
+        var date2 = new Date(arrDate[2],arrDate[1],arrDate[0]);
+
+        if(minStr != ""){
+            var arrMin = minStr.split('.');
+            var min = new Date(arrMin[2],arrMin[1],arrMin[0]);
+        }
+        if(maxStr != ""){
+            var arrMax = maxStr.split('.');
+            var max = new Date(arrMax[2],arrMax[1],arrMax[0]);
+        }
+        // console.log(min + " " + date2);
+        // console.log(min > date2);
+
+
+        if ( ( isNaN( min ) && isNaN( max ) ) ||
+            ( isNaN( min ) && date2 <= max ) ||
+            ( min <= date2   && isNaN( max ) ) ||
+            ( min <= date2   && date2 <= max ) )
+        {
+            return true;
+        }
+        return false;
+
+    },
+    function( settings, data, dataIndex ) {
+        var minStr = $('input[name=dateFromD]').val();
+        var maxStr = $('input[name=dateToD]').val();
+        var min,max;
+
+        var date = data[2] || 0; 
+
+        date = date.toString().trim();
+        if( (minStr.length != 0 || maxStr.length !=0) && date === "Neopravljen") {
+            //console.log("da")
+            return false;
+        }
+
+        var arrDate = date.split('.');
 
         var date2 = new Date(arrDate[2],arrDate[1],arrDate[0]);
 
@@ -165,76 +188,25 @@ var table = $('#datatable').DataTable({
                 select.append( '<option value="'+d+'">'+d+'</option>' )
             } );
         } );
-        this.api().columns( 2 ).every( function () {
-
-            var column = this;
-            var select = $('select[name="visitDone"]')
-                .on( 'change', function () {
-                    var val = $.fn.dataTable.util.escapeRegex(
-                        $(this).val()
-                    );
-                    if (val == 'Neopravljen') {
-                        column
-                            .search(val ? '^' + val + '$' : '', true, false)
-                            .draw();
-                    } else if (val == 'Opravljen') {
-                        // TODO: tuki spremeni neki oz kakor veš
-                        column
-                            .search(val ? '^' + val + '$' : '', true, false)
-                            .draw();
-                    } else {
-                        column
-                            .search(val ? '^' + val + '$' : '', true, false)
-                            .draw();
-                    }
-                } );
-            select.append( '<option value="Neopravljen">Neopravljen</option>' );
-            select.append( '<option value="Opravljen">Opravljen</option>' );
-        } );
     }
 });
 
 $(document).ready(function(){
 
-
-
-
-    $('input[name=dateFrom]').change(function() {
+     $('input[name=dateFrom]').change(function() {
         table.draw();
     });
     $('input[name=dateTo]').change(function() {
         table.draw();
     });
-    $('select[name=prescribers]').change(function() {
-        prescribers = $(this).val();
+    
+    $('input[name=dateFromD]').change(function() {
+        table.draw();
     });
-    $('select[name=performers]').change(function() {
-        performers = $(this).val();
+    $('input[name=dateToD]').change(function() {
+        table.draw();
     });
-    $('select[name=visitTypes]').change(function() {
-        visitTypes = $(this).val();
-    });
-    $('select[name=patients]').change(function() {
-        patients = $(this).val();
-    });
-    $('select[name=substitutions]').change(function() {
-        substitutions = $(this).val();
-    });
-    $('select[name=visitDone]').change(function() {
-        visitDone = $(this).val();
-    });
-
-    $('.btn').click(function(e){
-
-        if(dateFrom != "") {
-            table.columns( 1 ).search( dateFrom ).draw();
-        }
-
-        if(dateTo != "") {
-            table.columns( 1 ).search( dateTo ).draw();
-        }
-
-    });
+    
 
     $('.dataTables_filter').hide();
 

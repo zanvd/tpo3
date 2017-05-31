@@ -1,10 +1,12 @@
 @extends('layoutLog')
 
 @section('script')
+    <script src="{{ URL::asset('js/moment-with-locales.js') }}"></script>
+    <script src="{{ URL::asset('js/bootstrapValidator.js') }}"></script>
     <script src="{{ URL::asset('js/bootstrap-datepicker.min.js') }}"></script>
     <script src="{{ URL::asset('js/bootstrap-datepicker.sl.min.js') }}"></script>
     <script src="//cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
-    <script src="{{ URL::asset('js/workorderFilter.js') }}"></script>
+    <script src="{{ URL::asset('js/visitPlan.js') }}"></script>
 @endsection
 
 @section('css')
@@ -15,7 +17,6 @@
 @section('title')
     <title>Planiranje obiskov</title>
 <?php $activeView = 'planObiskov' ?>
-<?php $role = 'Patronažna sestra' ?>
 @endsection
 
 @section('header')
@@ -23,7 +24,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-10">
-                    <h1><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span> Plan obiskov </h1>
+                    <h1><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Ustvari plan </h1>
                 </div>
                 <div class="col-md-2">
                 </div>
@@ -43,7 +44,6 @@
 @endsection
 
 @section('content')
-    <!--
     @if( $status = Session::get('status'))
         <div class="alert alert-success" role="alert">{{ $status }}</div>
     @endif
@@ -51,7 +51,7 @@
         @foreach($errors->all() as $error)
             <div class="alert alert-danger">{{ $error }}</div>
         @endforeach
-    @endif-->
+    @endif
     <form class="article-comment" id="planForm" data-toggle="validator" method="POST" name="planForm" action="/nacrt-obiskov">
         {{ csrf_field() }}
     <div class="row">
@@ -80,6 +80,7 @@
                             <tr>
                                 <th>Preglej</th>
                                 <th>Datum obiska</th>
+                                <th>Obvezen</th>
                                 <th>Vrsta obiska</th>
                                 <th>Delovni nalog</th>
                             </tr>
@@ -87,6 +88,14 @@
                         <tbody>
                         </tbody>
                     </table>
+                </div>
+            </div>
+            <input type="hidden" name="visitIDs" id="visitIDs" value="">
+            <input type="hidden" name="removedVisitIDs" id="removedVisitIDs" value="">
+            <input type="hidden" name="planIDs" id="planIDs" value="">
+            <div class="row" style="margin-top: 10px">
+                <div class="col-md-12">
+                    <button class="btn btn-success" type="submit">Shrani</button>
                 </div>
             </div>
 
@@ -97,7 +106,7 @@
     <div class="row">
     <div class="panel panel-default">
         <div class="panel-heading main-color-bg">
-            <h3 class="panel-title">Seznam obiskov </h3>
+            <h3 class="panel-title">Seznam neopravljenih obiskov </h3>
         </div>
         <div class="panel-body">
             <div class="row">
@@ -106,83 +115,98 @@
                     <thead>
                         <tr>
                             <th>Preglej</th>
-                            <th>Izdan</th>
+                            <th>Datum obiska</th>
+                            <th>Obvezen</th>
                             <th>Vrsta obiska</th>
-                            <th>Izdajatelj</th>
-                            <th>Pacient</th>
-                            <th>Zadolžena MS</th>
-                            <th>Nadomestna MS</th>
+                            <th>Delovni nalog</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                                <td>
-                                    <a href='#'>1 Odpri delovni nalog</a>
-                                </td>
-                                <td>16.2.2017</td>
-                                <td>Obisk nosečnice</td>
-                                <td>Marjana Kovač</td>
-                                <td>
-                                    Jana Pacient
-                                    Franc Novorojencek
-                                </td>
-                                <td>Dr. House</td>
-                                <td>
-                                    Tina Nadomestna
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <a href='#'>2 Odpri delovni nalog</a>
-                                </td>
-                                <td>12.4.2017</td>
-                                <td>Odvzem krvi</td>
-                                <td>Tadej Kovač</td>
-                                <td>
-                                    Darko Pacient
-                                </td>
-                                <td>Dr. Dre</td>
-                                <td>
-                                    Maja Nadomestna
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <a href='#'>3 Odpri delovni nalog</a>
-                                </td>
-                                <td>20.3.2017</td>
-                                <td>Navaden obisk</td>
-                                <td>Lana Zidarič</td>
-                                <td>
-                                    Klara Pacient
-                                </td>
-                                <td>Dr. Ščinkavec</td>
-                                <td>
-                                    Nataša Nadomestna
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <a href='#'>4 Odpri delovni nalog</a>
-                                </td>
-                                <td>12.2.2017</td>
-                                <td>Obisk nosečnice</td>
-                                <td>Marjana Kovač</td>
-                                <td>
-                                    Katarina Pacient
-                                    Maj Novorojencek
-                                </td>
-                                <td>Dr. House</td>
-                                <td>
-                                    Jana Nadomestna
-                                </td>
-                            </tr>
+                    @if( ! empty($okvirniBrezPlana) )
+                                @foreach($okvirniBrezPlana as $visit)
+                                    <tr class="okvirni" id="{{$visit->visit_id}}">
+                                        <td><a href="/obisk/{{$visit->visit_id}}">Odpri obisk</a></td>
+                                        <td>{{ \Carbon\Carbon::createFromFormat('Y-m-d', $visit->plannedDate)->format('d.m.Y')}}</td>
+                                        @if($visit->fixedVisit == 0)
+                                            <td>Ne</td>
+                                        @else
+                                            <td>Da</td>
+                                        @endif
+                                        <td>{{$visit->visitTitle}}</td>
+                                        <td><a href="/delovni-nalog/{{$visit->workOrderId}}">Odpri delovni nalog</a></td>
+                                    </tr>
+                                @endforeach
+                    @endif
                     </tbody>
                 </table>
                 </div>
             </div>
-
         </div>
     </div>
+        <div class="row hidden">
+                <div class="col-md-12">
+                    <table id="okvirni2">
+                    @if( ! empty($okvirniVPlanu) )
+                                @foreach($okvirniVPlanu as $visit)
+                                    <tr>
+                                        <td>{{$visit->visit_id}}</td>
+                                        <td>{{ \Carbon\Carbon::createFromFormat('Y-m-d', $visit->plannedDate)->format('d.m.Y')}}</td>
+                                        @if($visit->fixedVisit == 0)
+                                            <td>Ne</td>
+                                        @else
+                                            <td>Da</td>
+                                        @endif
+                                        <td>{{$visit->visitTitle}}</td>
+                                        <td>{{$visit->workOrderId}}</td>
+                                        <td>{{$visit->planID}}</td>
+                                    </tr>
+                                @endforeach
+                    @endif
+                    </table>
+                </div>
+        </div>
+        <div class="row hidden">
+                <div class="col-md-12">
+                    <table id="obvezni">
+                    @if( ! empty($obvezniBrezPlana) )
+                                @foreach($obvezniBrezPlana as $visit)
+                                    <tr>
+                                        <td>{{$visit->visit_id}}</td>
+                                        <td>{{ \Carbon\Carbon::createFromFormat('Y-m-d', $visit->plannedDate)->format('d.m.Y')}}</td>
+                                        @if($visit->fixedVisit == 0)
+                                            <td>Ne</td>
+                                        @else
+                                            <td>Da</td>
+                                        @endif
+                                        <td>{{$visit->visitTitle}}</td>
+                                        <td>{{$visit->workOrderId}}</td>
+                                    </tr>
+                                @endforeach
+                    @endif
+                    </table>
+                </div>
+        </div>
+        <div class="row hidden">
+                <div class="col-md-12">
+                    <table id="obvezni2">
+                    @if( ! empty($obvezniVPlanu) )
+                                @foreach($okvirniVPlanu as $visit)
+                                    <tr>
+                                        <td>{{$visit->visit_id}}</td>
+                                        <td>{{ \Carbon\Carbon::createFromFormat('Y-m-d', $visit->plannedDate)->format('d.m.Y')}}</td>
+                                        @if($visit->fixedVisit == 0)
+                                            <td>Ne</td>
+                                        @else
+                                            <td>Da</td>
+                                        @endif
+                                        <td>{{$visit->visitTitle}}</td>
+                                        <td>{{$visit->workOrderId}}</td>
+                                        <td>{{$visit->planID}}</td>
+                                    </tr>
+                                @endforeach
+                    @endif
+                    </table>
+                </div>
+        </div>
     </div>
 @endsection
