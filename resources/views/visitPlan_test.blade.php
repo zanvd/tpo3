@@ -10,23 +10,60 @@
           <h1>Dobrodošli!</h1>
           <p>To je view za načrtovanje obiskov. </p>
 
-          
-          <h4>Obiski sestra </h4>
+          <p> {{  $plani  }} </p>
+          <h4>Obiski obvezni brez plana </h4>
           <ol>
-            @foreach ($visits as $visit)
-            <li> {{  $visit->work_order->work_order_id  }} je delovni nalog za obisk {{  $visit->planned_date  }} <br> obisk: {{  $visit->work_order->visitSubtype->visit_subtype_title }} pregled je: {{  $visit->work_order->visitSubtype->visit_type->visit_type_title}}<br> Pacients:
+            @foreach ($obvezniBrezPlana as $visit)
+            <li> {{  $visit->visit_id  }} je id obiska ki pripada delovnemu nalogu {{  $visit->workOrderId  }} je delovni nalog za obisk {{  $visit->plannedDate  }} <br> obisk: {{  $visit->visitTitle }} pregled je: {{  $visit->work_order->visitSubtype->visit_type->visit_type_title}}<br> Pacients:
               <ul>
-              @foreach($wops as $wop)
-                @if($wop->work_order_id == $visit->work_order->work_order_id)
-                  <li>{{  $wop->patient->person->name  }}</li>
-                @endif
+              @foreach($visit->patients as $patient)
+                  <li>{{  $patient->person->name  }}</li>
               @endforeach
               </ul>
             </li>
             @endforeach
           </ol>
 
-          {!! $visits->render() !!}
+          <h4>Obiski obvezni v planu </h4>
+          <ol>
+            @foreach ($obvezniVPlanu as $visit)
+            <li> {{  $visit->visit_id  }} je id obiska ki pripada delovnemu nalogu {{  $visit->workOrderId  }} je delovni nalog za obisk {{  $visit->plannedDate  }} <br> obisk: {{  $visit->visitTitle }} pregled je: {{  $visit->work_order->visitSubtype->visit_type->visit_type_title}}<br> Pacients:
+              <ul>
+              @foreach($visit->patients as $patient)
+                  <li>{{  $patient->person->name  }}</li>
+              @endforeach
+              </ul>
+            </li>
+            @endforeach
+          </ol>
+
+          <h4>Obiski okvirni brez plana </h4>
+          <ol>
+            @foreach ($okvirniBrezPlana as $visit)
+            <li> {{  $visit->visit_id  }} je id obiska ki pripada delovnemu nalogu {{  $visit->workOrderId  }} je delovni nalog za obisk {{  $visit->plannedDate  }} <br> obisk: {{  $visit->visitTitle }} pregled je: {{  $visit->work_order->visitSubtype->visit_type->visit_type_title}}<br> Pacients:
+              <ul>
+              @foreach($visit->patients as $patient)
+                  <li>{{  $patient->person->name  }}</li>
+              @endforeach
+              </ul>
+            </li>
+            @endforeach
+          </ol>
+
+          <h4>Obiski okvirni v planu </h4>
+          <ol>
+            @foreach ($okvirniVPlanu as $visit)
+            <li> {{  $visit->visit_id  }} je id obiska ki pripada delovnemu nalogu {{  $visit->workOrderId  }} je delovni nalog za obisk {{  $visit->plannedDate  }} <br> obisk: {{  $visit->visitTitle }} pregled je: {{  $visit->work_order->visitSubtype->visit_type->visit_type_title}}<br> Pacients:
+              <ul>
+              @foreach($visit->patients as $patient)
+                  <li>{{  $patient->person->name  }}</li>
+              @endforeach
+              </ul>
+            </li>
+            @endforeach
+          </ol>
+
+          
           
           
       
