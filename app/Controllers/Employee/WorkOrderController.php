@@ -379,10 +379,9 @@ class WorkOrderController extends Controller {
 
 			/** Create first visit **/
 			$vDate = $start_date;
-			$visitId = $this->createVisit($start_date, true, $isFixed == 1, $workOrder->work_order_id);
+			$visitId = $this->createVisit($start_date, true, $isFixed, $workOrder->work_order_id);
 			/** Create measurements for first visit that are same for all visits */
 			switch ($visitSubtype) {
-			    //setMeasurements($measurementId, $visitId, $patient_id) {
 				case '1':
 					/** Obisk nosecnice 1-24 */
                     // First visit only
@@ -395,12 +394,13 @@ class WorkOrderController extends Controller {
                     break;
 				case '2':
 					/** Obisk otrocnice in novorojencka  25-48 */
-                    for ($k = 25; $k < 49; $k++) {
+                    for ($k = 26; $k < 49; $k++) {
                         $this->setMeasurements($k, $visitId, $patient_id);
                     }
 					$newborn = request('newborn');
 					for ($i = 0; $i < count($newborn); $i++) {
 						// Set measurements for every newborn 49-62
+                        $this->setMeasurements(25, $visitId, $newborn[$i]);
                         for ($k = 49; $k < 63; $k++) {
                             $this->setMeasurements($k, $visitId, $newborn[$i]);
                         }
@@ -434,7 +434,7 @@ class WorkOrderController extends Controller {
 				while (!$this->isBusinessDay($vDate)) {
 					$vDate->addDay();
 				}
-				$visitId = $this->createVisit($vDate, false, false, $workOrder->work_order_id);
+				$visitId = $this->createVisit($vDate, false, $isFixed, $workOrder->work_order_id);
                 switch ($visitSubtype) {
                     //setMeasurements($measurementId, $visitId, $patient_id) {
                     case '1':
@@ -446,14 +446,14 @@ class WorkOrderController extends Controller {
                         break;
                     case '2':
                         /** Obisk otrocnice in novorojencka  25-48 */
-                        for ($k = 25; $k < 49; $k++) {
+                        for ($k = 26; $k < 49; $k++) {
                             $this->setMeasurements($k, $visitId, $patient_id);
                         }
                         $newborn = request('newborn');
-                        for ($i = 0; $i < count($newborn); $i++) {
+                        for ($j = 0; $j < count($newborn); $j++) {
                             // Set measurements for every newborn 49-62
                             for ($k = 49; $k < 63; $k++) {
-                                $this->setMeasurements($k, $visitId, $newborn[$i]);
+                                $this->setMeasurements($k, $visitId, $newborn[$j]);
                             }
                         }
                         break;

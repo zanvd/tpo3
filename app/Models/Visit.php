@@ -30,4 +30,17 @@ class Visit extends Model {
 			'work_order_id',
 			'work_order_id');
 	}
+
+	/**
+	 * One Visit has many Measurements.
+	 *
+	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
+	 */
+	public function measurementRel () {
+		return $this->hasMany(
+			'App\Models\Visit_Measurement',
+			'visit_id',
+			'visit_id'
+		);
+	}
 }

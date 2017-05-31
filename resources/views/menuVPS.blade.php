@@ -14,6 +14,16 @@
 	@else
 	<a href="/delovni-nalog" class="list-group-item"> <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span> Seznam delovnih nalogov</a>
 	@endif
+	@if ($activeView == "seznamObiskov")
+		<a href="/obisk" class="list-group-item main-color-bg"> <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span> Seznam obiskov</a>
+	@else
+		<a href="/obisk" class="list-group-item"> <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span> Seznam obiskov</a>
+	@endif
+	@if ($activeView == "nadomescanja")
+		<a href="/nadomeščanja" class="list-group-item main-color-bg"> <span class="glyphicon  glyphicon-plus" aria-hidden="true"></span> Nadomeščanja</a>
+	@else
+		<a href="/nadomeščanja" class="list-group-item"> <span class="glyphicon  glyphicon-plus" aria-hidden="true"></span> Nadomeščanja</a>
+	@endif
 	@if ($activeView == "spremeniGeslo")
 	<a href="/spremeni-geslo" class="list-group-item main-color-bg"> <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> Sprememba gesla</a>
 	@else

@@ -2,7 +2,9 @@
 
 namespace App\Controllers\Employee;
 
+use App\Models\Employee;
 use App\Models\Patient;
+use App\Models\Substitution;
 use App\Models\Visit;
 use App\Models\WorkOrder;
 use App\Controllers\Controller;
@@ -32,16 +34,23 @@ class VisitController extends Controller {
             case "Zdravnik":
                 $workOrderIds = WorkOrder::select('work_order_id')->where('prescriber_id', $employeeId)->get();
                 $visits = Visit::wherein('work_order_id', $workOrderIds)->get();
-//                dd($visits);
                 break;
             case "Vodja PS":
                 $visits = Visit::all();
                 break;
             case "Patronažna sestra":
-                // TODO: dodaj za primere, ko je nadomestna sestra
                 // Finds array of employee_id-s that are absent
-                $workOrderIds = WorkOrder::select('work_order_id')->where('performer_id', $employeeId)->get();
-                $visits = Visit::wherein('work_order_id', $workOrderIds)->get();
+                $visits = Visit::all();
+                $visits = $visits->filter(
+                    function ($visit) use ($employeeId) {
+                        if ($visit->workOrder->performer_id == $employeeId)
+                            return true;
+
+                        if(!is_null($visit->substitution_id)) {
+                           $subsId = Substitution::where('substitution_id', $visit->substitution_id)->first()->employee_substitution;
+                           return $subsId == $employeeId;
+                        }
+                    });
                 break;
             default:
                 // Something went wrong -> user not authorized for this page.
@@ -63,9 +72,17 @@ class VisitController extends Controller {
             // Performer
             $visit->performer = $visit->workOrder->performer->person->name . ' ' . $visit->workOrder->performer->person->surname;
 
-                // Patient
+            // Patient
             $patient = WorkOrder_Patient::where('work_order_id', $workOrder->work_order_id)->first()->patient;
             $visit->patient = $patient->person->name . ' ' . $patient->person->surname;
+
+            // Substitution
+            if ($visit->substitution_id != null) {
+                $subsId = Substitution::where('substitution_id', $visit->substitution_id)->first()->employee_substitution;
+                $employee = Employee::find($subsId);
+                $name = $employee->person->name . ' ' . $employee->person->surname;
+                $visit->substitution = $name;
+            }
         }
 
         return view('visitList')->with([
@@ -130,16 +147,22 @@ class VisitController extends Controller {
 				->format('d.m.Y');
 
 			// Retrieve measurements for this patient.
-			$measurementRel = $visit->measurementRel->where([
-				['visit_id', '=', $visit->visit_id],
-				['patient_id', '=', $pat->patient_id]
-			]);
+			$measurementRel = $visit->measurementRel
+								  ->where('visit_id', '=', $visit->visit_id)
+								  ->where('patient_id', '=', $pat->patient_id);
+			$pat->measurements = [];
 			foreach ($measurementRel as $measurement) {
-				$pat->measurements[] = $measurement->measurement;
-				$pat->measurements[]->value = $measurement->value;
-				$pat->measurements[]->date = Carbon::createFromFormat('Y-m-d',
-													  $measurement->date)
-												   ->format('d.m.Y');
+				$measurement->measurement->value = is_null($measurement->date)
+					? 'Meritev še ni bila opravljena.'
+					: $measurement->value;
+				$measurement->measurement->date = is_null($measurement->date)
+					? null
+					: Carbon::createFromFormat('Y-m-d',
+											   $measurement->date)
+							->format('d.m.Y');
+				$pat->measurements = array_merge($pat->measurements, [
+					$measurement->measurement,
+				]);
 			}
 
 			// Check if work order type is of type mother and newborn.
@@ -159,31 +182,31 @@ class VisitController extends Controller {
 
 		// Check work order type and retrieve material data.
 		switch ($type) {
-			case 'Odvzem krvi':
+			case 'Aplikacija injekcij':
 				$medicines = [];
 				foreach ($workOrder->medicineRel as $relation) {
 					$medicines[] = $relation->medicine;
 				}
 				break;
-			case 'Aplikacija injekcij':
+			case 'Odvzem krvi':
 				// Get number of blood tubes and store them by color.
-				$bloodTubes = $workOrder->bloodTubeRel;
+				$bloodTubesRel = $workOrder->bloodTubeRel;
 
-				foreach ($bloodTubes as $bt) {
+				foreach ($bloodTubesRel as $bt) {
 					$color = $bt->bloodTube->color;
 
 					switch ($color) {
 						case 'Rdeča':
-							$bloodTubes->red = $bt->num_of_tubes;
+							$bloodTubes['red'] = $bt->num_of_tubes;
 							break;
 						case 'Modra':
-							$bloodTubes->blue = $bt->num_of_tubes;
+							$bloodTubes['blue'] = $bt->num_of_tubes;
 							break;
 						case 'Zelena':
-							$bloodTubes->green = $bt->num_of_tubes;
+							$bloodTubes['green'] = $bt->num_of_tubes;
 							break;
 						case 'Rumena':
-							$bloodTubes->yellow = $bt->num_of_tubes;
+							$bloodTubes['yellow'] = $bt->num_of_tubes;
 							break;
 					}
 				}

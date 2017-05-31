@@ -4,7 +4,7 @@ var dates,
     performers,
     visitTypes,
     patients,
-    subistitutions,
+    substitutions,
     visitDone;
 
 var dateFrom = "",
@@ -13,7 +13,7 @@ var dateFrom = "",
     performers = "",
     visitTypes = "",
     patients = "",
-    subistitutions = "";
+    substitutions = "";
 
 $('.datepicker').datepicker({
     format: 'dd.mm.yyyy',
@@ -74,7 +74,7 @@ var table = $('#datatable').DataTable({
         this.api().columns( 7 ).every( function () {
 
             var column = this;
-            var select = $('select[name="subistitutions"]')
+            var select = $('select[name="substitutions"]')
                 .on( 'change', function () {
                     var val = $.fn.dataTable.util.escapeRegex(
                         $(this).val()
@@ -217,8 +217,8 @@ $(document).ready(function(){
     $('select[name=patients]').change(function() {
         patients = $(this).val();
     });
-    $('select[name=subistitutions]').change(function() {
-        subistitutions = $(this).val();
+    $('select[name=substitutions]').change(function() {
+        substitutions = $(this).val();
     });
     $('select[name=visitDone]').change(function() {
         visitDone = $(this).val();
