@@ -4,7 +4,7 @@ function validate() {
             planDate: {
                 validators: {
                     notEmpty: {
-                        message: "Izberite datum prvega obiska"
+                        message: "Izberite datum"
                     },
                     callback: {
                         message: "Datum mora biti večji ali enak današnjemu",

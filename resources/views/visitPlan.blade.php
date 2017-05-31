@@ -17,7 +17,6 @@
 @section('title')
     <title>Planiranje obiskov</title>
 <?php $activeView = 'planObiskov' ?>
-<?php $role = 'Patronažna sestra' ?>
 @endsection
 
 @section('header')
@@ -25,7 +24,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-10">
-                    <h1><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span> Plan obiskov </h1>
+                    <h1><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Ustvari plan </h1>
                 </div>
                 <div class="col-md-2">
                 </div>
