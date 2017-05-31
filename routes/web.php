@@ -244,3 +244,19 @@ Route::get('/nadomeščanja',
 
 Route::post('/nadomeščanja',
     $namespacePrefix['employee'].'SubstitutionController@store');
+
+
+/*
+|--------------------------------------------------------------------------
+| Plan the visits
+|--------------------------------------------------------------------------
+|
+| Get:		display the plan of the visits.		nurse
+| Post:		save the plan of the visits.		nurse
+|
+*/
+Route::get('/nacrt-obiskov/',
+    $namespacePrefix['employee'].'VisitPlanController@index');
+
+Route::post('/nacrt-obiskov',
+    $namespacePrefix['employee'].'VisitPlanController@store');

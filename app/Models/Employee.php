@@ -32,4 +32,12 @@ class Employee extends Model {
 			'institution_id'
 		);
 	}
+
+	public function work_order() {
+        return $this->hasMany(
+            'App\Models\WorkOrder',
+            'work_order_id',
+            'work_order_id'
+        );
+    }
 }
