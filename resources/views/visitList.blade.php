@@ -15,7 +15,7 @@
 
 @section('title')
     <title>Seznam obiskov</title>
-    <?php $activeView = 'seznamDN' ?>
+    <?php $activeView = 'seznamObiskov' ?>
 @endsection
 
 @section('header')
@@ -116,16 +116,16 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label>Nadomestna PS</label>
-                                <select  data-live-search="true" class="form-control selectpicker" name="subistitutions" id="subistitutions" title="Izberite..." >
+                                <label>Zadolžena PS</label>
+                                <select data-live-search="true" class="form-control selectpicker" name="performers" id="performers" title="Izberite..." >
                                     <option value=""></option>
                                 </select>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label>Zadolžena PS</label>
-                                <select data-live-search="true" class="form-control selectpicker" name="performers" id="performers" title="Izberite..." >
+                                <label>Nadomestna PS</label>
+                                <select  data-live-search="true" class="form-control selectpicker" name="substitutions" id="substitutions" title="Izberite..." >
                                     <option value=""></option>
                                 </select>
                             </div>
@@ -172,20 +172,22 @@
                                         <td>
                                             <a href='/obisk/{{$visit->visit_id}}'>Preglej obisk</a>
                                         </td>
-                                        <td id="issued">{{$visit->planned_date}}</td>
-                                        @if($visit->done == 1)
-                                            <td id="done">{{$visit->actual_date}}</td>
-                                        @else
-                                            <td id="notDone">Neopravljen</td>
-                                        @endif
+                                        <td id="issued">{{ \Carbon\Carbon::createFromFormat('Y-m-d', $visit->planned_date)->format('d.m.Y')}}</td>
+                                        <td id="done">
+                                            @php
+                                                echo $visit->done == 0
+                                                ? 'Neopravljen'
+                                                : \Carbon\Carbon::createFromFormat('Y-m-d', $visit->actual_date)->format('d.m.Y');
+                                            @endphp
+                                        </td>
                                         <td id="visitType">{{$visit->workorder->type}}</td>
                                         <td id="prescriber">{{$visit->prescriber}}</td>
                                         <td id="patient">{{$visit->patient}}</td>
                                         <td id="PS">{{$visit->performer}}</td>
                                         <td id="subPS">
-                                            {{--@if ( !empty ($workOrder->substutution ))--}}
-                                                {{--{{$workOrder->substutution->name}}--}}
-                                            {{--@endif--}}
+                                            @if( !empty($visit->substitution_id))
+                                                {{$visit->substitution}}
+                                            @endif
                                         </td>
                                     </tr>
                                 @endforeach

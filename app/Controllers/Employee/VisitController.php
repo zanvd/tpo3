@@ -2,7 +2,9 @@
 
 namespace App\Controllers\Employee;
 
+use App\Models\Employee;
 use App\Models\Patient;
+use App\Models\Substitution;
 use App\Models\Visit;
 use App\Models\WorkOrder;
 use App\Controllers\Controller;
@@ -32,16 +34,23 @@ class VisitController extends Controller {
             case "Zdravnik":
                 $workOrderIds = WorkOrder::select('work_order_id')->where('prescriber_id', $employeeId)->get();
                 $visits = Visit::wherein('work_order_id', $workOrderIds)->get();
-//                dd($visits);
                 break;
             case "Vodja PS":
                 $visits = Visit::all();
                 break;
             case "Patronažna sestra":
-                // TODO: dodaj za primere, ko je nadomestna sestra
                 // Finds array of employee_id-s that are absent
-                $workOrderIds = WorkOrder::select('work_order_id')->where('performer_id', $employeeId)->get();
-                $visits = Visit::wherein('work_order_id', $workOrderIds)->get();
+                $visits = Visit::all();
+                $visits = $visits->filter(
+                    function ($visit) use ($employeeId) {
+                        if ($visit->workOrder->performer_id == $employeeId)
+                            return true;
+
+                        if(!is_null($visit->substitution_id)) {
+                           $subsId = Substitution::where('substitution_id', $visit->substitution_id)->first()->employee_substitution;
+                           return $subsId == $employeeId;
+                        }
+                    });
                 break;
             default:
                 // Something went wrong -> user not authorized for this page.
@@ -63,9 +72,17 @@ class VisitController extends Controller {
             // Performer
             $visit->performer = $visit->workOrder->performer->person->name . ' ' . $visit->workOrder->performer->person->surname;
 
-                // Patient
+            // Patient
             $patient = WorkOrder_Patient::where('work_order_id', $workOrder->work_order_id)->first()->patient;
             $visit->patient = $patient->person->name . ' ' . $patient->person->surname;
+
+            // Substitution
+            if ($visit->substitution_id != null) {
+                $subsId = Substitution::where('substitution_id', $visit->substitution_id)->first()->employee_substitution;
+                $employee = Employee::find($subsId);
+                $name = $employee->person->name . ' ' . $employee->person->surname;
+                $visit->substitution = $name;
+            }
         }
 
         return view('visitList')->with([

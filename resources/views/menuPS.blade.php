@@ -9,6 +9,11 @@
 	@else
 	<a href="/delovni-nalog" class="list-group-item"> <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span> Seznam delovnih nalogov</a>
 	@endif
+	@if ($activeView == "seznamObiskov")
+		<a href="/obisk" class="list-group-item main-color-bg"> <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span> Seznam obiskov</a>
+	@else
+		<a href="/obisk" class="list-group-item"> <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span> Seznam obiskov</a>
+	@endif
 	@if ($activeView == "planObiskov")
 	<a href="/nacrt-obiskov/ustvari" class="list-group-item main-color-bg"> <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span> Plan obiskov</a>
 	@else

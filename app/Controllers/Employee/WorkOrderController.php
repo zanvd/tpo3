@@ -379,7 +379,7 @@ class WorkOrderController extends Controller {
 
 			/** Create first visit **/
 			$vDate = $start_date;
-			$visitId = $this->createVisit($start_date, true, $isFixed == 1, $workOrder->work_order_id);
+			$visitId = $this->createVisit($start_date, true, $isFixed, $workOrder->work_order_id);
 			/** Create measurements for first visit that are same for all visits */
 			switch ($visitSubtype) {
 				case '1':
@@ -433,7 +433,7 @@ class WorkOrderController extends Controller {
 				while (!$this->isBusinessDay($vDate)) {
 					$vDate->addDay();
 				}
-				$visitId = $this->createVisit($vDate, false, false, $workOrder->work_order_id);
+				$visitId = $this->createVisit($vDate, false, $isFixed, $workOrder->work_order_id);
                 switch ($visitSubtype) {
                     //setMeasurements($measurementId, $visitId, $patient_id) {
                     case '1':
