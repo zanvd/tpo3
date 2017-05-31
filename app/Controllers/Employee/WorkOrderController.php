@@ -382,7 +382,6 @@ class WorkOrderController extends Controller {
 			$visitId = $this->createVisit($start_date, true, $isFixed == 1, $workOrder->work_order_id);
 			/** Create measurements for first visit that are same for all visits */
 			switch ($visitSubtype) {
-			    //setMeasurements($measurementId, $visitId, $patient_id) {
 				case '1':
 					/** Obisk nosecnice 1-24 */
                     // First visit only
@@ -450,10 +449,10 @@ class WorkOrderController extends Controller {
                             $this->setMeasurements($k, $visitId, $patient_id);
                         }
                         $newborn = request('newborn');
-                        for ($i = 0; $i < count($newborn); $i++) {
+                        for ($j = 0; $j < count($newborn); $j++) {
                             // Set measurements for every newborn 49-62
                             for ($k = 49; $k < 63; $k++) {
-                                $this->setMeasurements($k, $visitId, $newborn[$i]);
+                                $this->setMeasurements($k, $visitId, $newborn[$j]);
                             }
                         }
                         break;
