@@ -1,19 +1,3 @@
-var filters = [ [], [], [], [], [], [], []] ;
-var dates,
-    prescribers,
-    performers,
-    visitTypes,
-    patients,
-    substitutions,
-    visitDone;
-
-var dateFrom = "",
-    dateTo = "",
-    prescribers = "",
-    performers = "",
-    visitTypes = "",
-    patients = "",
-    substitutions = "";
 
 $('.datepicker').datepicker({
     format: 'dd.mm.yyyy',
@@ -196,32 +180,11 @@ var table = $('#datatable').DataTable({
 
 $(document).ready(function(){
 
-
-
-
-    $('input[name=dateFrom]').change(function() {
+     $('input[name=dateFrom]').change(function() {
         table.draw();
     });
     $('input[name=dateTo]').change(function() {
         table.draw();
-    });
-    $('select[name=prescribers]').change(function() {
-        prescribers = $(this).val();
-    });
-    $('select[name=performers]').change(function() {
-        performers = $(this).val();
-    });
-    $('select[name=visitTypes]').change(function() {
-        visitTypes = $(this).val();
-    });
-    $('select[name=patients]').change(function() {
-        patients = $(this).val();
-    });
-    $('select[name=substitutions]').change(function() {
-        substitutions = $(this).val();
-    });
-    $('select[name=visitDone]').change(function() {
-        visitDone = $(this).val();
     });
 
     $('.btn').click(function(e){

@@ -77,10 +77,11 @@ function joinVisits() {
     }
     removedVisitIDs.val(removedVisits);
     planIDs.val(planID);
-
+    /*
     console.log("visits: " + visitIDs.val());
     console.log("removed: " + removedVisitIDs.val());
     console.log("planID: " + planIDs.val());
+    */
 }
 
 $('.datepicker').datepicker({
@@ -226,11 +227,11 @@ $(document).ready(function(){
             if(String(dataObvezni[i][1]).trim() === String($(this).val()).trim()) {
                 table.row.add(
                      [
-                    "<a href='/obisk/{" + dataObvezni[i][0]+ "}'>Odpri obisk<a>",
+                    "<a href='/obisk/" + dataObvezni[i][0].trim()+ "'>Odpri obisk<a>",
                     dataObvezni[i][1],
                     dataObvezni[i][2],
                     dataObvezni[i][3],
-                    "<a href='/obisk/{" + dataObvezni[i][4]+ "}'>Odpri delovni nalog<a>"
+                    "<a href='/delovni-nalog/" + dataObvezni[i][4].trim()+ "'>Odpri delovni nalog<a>"
                     ])
                 .draw();
                 visitsPt1 +=dataObvezni[i][0].trim() + "-";
@@ -243,11 +244,11 @@ $(document).ready(function(){
             if(String(dataObvezniPlan[i][1]).trim() === String($(this).val()).trim()) {
                 table.row.add(
                      [
-                    "<a href='/obisk/{" + dataObvezniPlan[i][0]+ "}'>Odpri obisk<a>",
+                    "<a href='/obisk/" + dataObvezniPlan[i][0].trim()+ "'>Odpri obisk<a>",
                     dataObvezniPlan[i][1],
                     dataObvezniPlan[i][2],
                     dataObvezniPlan[i][3],
-                    "<a href='/obisk/{" + dataObvezniPlan[i][4]+ "}'>Odpri delovni nalog<a>"
+                    "<a href='/delovni-nalog/" + dataObvezniPlan[i][4].trim()+ "'>Odpri delovni nalog<a>"
                     ])
                 .draw();
                 visitsPt1 +=dataObvezniPlan[i][0].trim() + "-";
@@ -265,11 +266,11 @@ $(document).ready(function(){
                     planVisitID = dataOkvirniPlan[i][0].trim(); 
                     table.row.add(
                          [
-                        "<a href='/obisk/{" + dataOkvirniPlan[i][0]+ "}'>Odpri obisk<a>",
+                        "<a href='/obisk/" + dataOkvirniPlan[i][0].trim()+ "'>Odpri obisk<a>",
                         dataOkvirniPlan[i][1],
                         dataOkvirniPlan[i][2],
                         dataOkvirniPlan[i][3],
-                        "<a href='/obisk/{" + dataOkvirniPlan[i][4]+ "}'>Odpri delovni nalog<a>"
+                        "<a href='/delovni-nalog/" + dataOkvirniPlan[i][4].trim()+ "'>Odpri delovni nalog<a>"
                         ])
                     .draw();
                     planVisitID=""; 
