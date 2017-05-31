@@ -1,3 +1,37 @@
+function validate() {
+    validator = $("#planForm").bootstrapValidator({
+        fields: {
+            planDate: {
+                validators: {
+                    notEmpty: {
+                        message: "Izberite datum prvega obiska"
+                    },
+                    callback: {
+                        message: "Datum mora biti večji ali enak današnjemu",
+                        callback: function (value, validator, $field) {
+                            moment.locale('sl');
+                            var n = moment().format('L');
+                            var ne = moment(n,'L');
+                            moment.locale('sl');
+                            var k = moment(value,'L');
+                            if(!k.isValid()){
+                                return false;
+                            }
+
+                            if(k.diff(ne) >=0) {
+                                return true;
+                            }
+                            return false;
+
+                        }
+                    }
+
+                }
+            }
+        }
+    });
+}
+
 jQuery.fn.dataTableExt.oApi.fnFindCellRowIndexes = function ( oSettings, sSearch, iColumn )
 {
     var
@@ -87,7 +121,9 @@ function joinVisits() {
 $('.datepicker').datepicker({
     format: 'dd.mm.yyyy',
     language: 'sl'
- })
+ }).on('changeDate', function(e) {
+    $('#planForm').bootstrapValidator('revalidateField', 'planDate');
+});
 
 
 
@@ -174,6 +210,8 @@ $("table#obvezni2 tr").each(function(i, v){
 })
 
 $(document).ready(function(){
+    validate();
+    moment.locale('sl');
     
     //dodamo okvirne v trenutni plan ob kliku
     $('#datatable2 tbody').on( 'click', '.okvirni', function () {

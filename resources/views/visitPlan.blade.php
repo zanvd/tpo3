@@ -1,6 +1,8 @@
 @extends('layoutLog')
 
 @section('script')
+    <script src="{{ URL::asset('js/moment-with-locales.js') }}"></script>
+    <script src="{{ URL::asset('js/bootstrapValidator.js') }}"></script>
     <script src="{{ URL::asset('js/bootstrap-datepicker.min.js') }}"></script>
     <script src="{{ URL::asset('js/bootstrap-datepicker.sl.min.js') }}"></script>
     <script src="//cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
