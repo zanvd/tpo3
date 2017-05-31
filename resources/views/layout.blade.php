@@ -32,7 +32,7 @@
         </div>
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav navbar-right">
-            @if( ! empty($name) )
+            @if( !empty($name) && !empty($role) )
             <li><a href="#">{{$name}}</a></li>
             <li><a href="/odjava">Odjava</a></li>
             @else
