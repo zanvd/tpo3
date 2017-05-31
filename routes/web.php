@@ -228,3 +228,19 @@ Route::get('/obisk',
 
 Route::get('/obisk/{visit}',
     $namespacePrefix['employee'].'VisitController@show');
+
+
+/*
+|--------------------------------------------------------------------------
+| Substitution
+|--------------------------------------------------------------------------
+|
+| Get:		display substitutions.	        chief nurse
+| Get:		create new substitution.		chief nurse
+|
+*/
+Route::get('/nadomeščanja',
+    $namespacePrefix['employee'].'SubstitutionController@index');
+
+Route::post('/nadomeščanja',
+    $namespacePrefix['employee'].'SubstitutionController@store');
