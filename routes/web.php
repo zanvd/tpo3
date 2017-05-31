@@ -255,7 +255,7 @@ Route::post('/nadomeščanja',
 | Post:		save the plan of the visits.		nurse
 |
 */
-Route::get('/nacrt-obiskov/',
+Route::get('/nacrt-obiskov/ustvari',
     $namespacePrefix['employee'].'VisitPlanController@index');
 
 Route::post('/nacrt-obiskov',

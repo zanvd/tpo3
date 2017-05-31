@@ -125,7 +125,7 @@
                                 @foreach($okvirniBrezPlana as $visit)
                                     <tr class="okvirni" id="{{$visit->visit_id}}">
                                         <td><a href="/obisk/{{$visit->visit_id}}">Odpri obisk</a></td>
-                                        <td>{{ \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $visit->plannedDate)->format('d.m.Y')}}</td>
+                                        <td>{{ \Carbon\Carbon::createFromFormat('Y-m-d', $visit->plannedDate)->format('d.m.Y')}}</td>
                                         @if($visit->fixedVisit == 0)
                                             <td>Ne</td>
                                         @else
@@ -149,7 +149,7 @@
                                 @foreach($okvirniVPlanu as $visit)
                                     <tr>
                                         <td>{{$visit->visit_id}}</td>
-                                        <td>{{ \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $visit->plannedDate)->format('d.m.Y')}}</td>
+                                        <td>{{ \Carbon\Carbon::createFromFormat('Y-m-d', $visit->plannedDate)->format('d.m.Y')}}</td>
                                         @if($visit->fixedVisit == 0)
                                             <td>Ne</td>
                                         @else
@@ -171,7 +171,7 @@
                                 @foreach($obvezniBrezPlana as $visit)
                                     <tr>
                                         <td>{{$visit->visit_id}}</td>
-                                        <td>{{ \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $visit->plannedDate)->format('d.m.Y')}}</td>
+                                        <td>{{ \Carbon\Carbon::createFromFormat('Y-m-d', $visit->plannedDate)->format('d.m.Y')}}</td>
                                         @if($visit->fixedVisit == 0)
                                             <td>Ne</td>
                                         @else
@@ -192,7 +192,7 @@
                                 @foreach($okvirniVPlanu as $visit)
                                     <tr>
                                         <td>{{$visit->visit_id}}</td>
-                                        <td>{{ \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $visit->plannedDate)->format('d.m.Y')}}</td>
+                                        <td>{{ \Carbon\Carbon::createFromFormat('Y-m-d', $visit->plannedDate)->format('d.m.Y')}}</td>
                                         @if($visit->fixedVisit == 0)
                                             <td>Ne</td>
                                         @else

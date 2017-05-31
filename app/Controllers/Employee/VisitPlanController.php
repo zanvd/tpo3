@@ -42,7 +42,7 @@ class VisitPlanController extends Controller
         $substitutions = Substitution::all()->where('employee_substitution', '=', $employee_id); 
         
         //Poišči vse obiske, ki jih mora opraviti prijavljena sestra in jih še ni opravila
-    	$obiski_sestra = Visit::whereHas('work_order', function($q){
+    	$obiski_sestra = Visit::whereHas('workOrder', function($q){
             global $employee_id;
             $q->where('performer_id', '=', $employee_id);
         })->where('done', '=', '0')->get();
@@ -55,7 +55,7 @@ class VisitPlanController extends Controller
                 $emp_id = $sub->employee_absent;
                 
 
-                $currentSub = Visit::whereHas('work_order', function($q){
+                $currentSub = Visit::whereHas('workOrder', function($q){
                 global $emp_id;
                 $q->where('performer_id', '=', $emp_id);
                 })->where('done', '=', '0')->where('planned_date', '>=', $sub->start_date)->where('planned_date', '<=', $sub->end_date)->get();
