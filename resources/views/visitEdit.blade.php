@@ -51,11 +51,13 @@
 	@endif
 
 	<div class="row">
-		<div class="panel panel-default">
-			<div class="panel-heading main-color-bg">
-				<h3 class="panel-title">Obisk</h3>
-			</div>
-			<div class="panel-body">
+		<ul class="nav nav-pills">
+			<li class="active"><a data-toggle="pill" href="#visit1">Obisk 1</a></li>
+			<li><a data-toggle="pill" href="#visit2">Obisk 2</a></li>
+			<li><a data-toggle="pill" href="#visit3">Obisk 3</a></li>
+		</ul>
+		<div class="tab-content">
+			<div id="visit1" class="tab-pane fade in active">
 				@if (!empty($visit))
 					<form id="visitEditForm" class="article-comment" method="POST" data-toggle="validator" action="/obisk/{{ $visit->visit_id }}">
 						<input type="hidden" name="_method" value="patch" />
@@ -244,22 +246,22 @@
 										<div class="panel-body">
 											<table class="table">
 												<thead>
-													<tr>
-														<th>#</th>
-														<th>Naziv</th>
-														<th>Pakiranje</th>
-														<th>Tip</th>
-													</tr>
+												<tr>
+													<th>#</th>
+													<th>Naziv</th>
+													<th>Pakiranje</th>
+													<th>Tip</th>
+												</tr>
 												</thead>
 												<tbody>
-													@foreach ($medicines as $medicine)
-														<tr>
-															<td>{{ $loop->iteration }}</td>
-															<td>{{ $medicine->medicine_name }}</td>
-															<td>{{ $medicine->medicine_packaging }}</td>
-															<td>{{ $medicine->medicine_type }}</td>
-														</tr>
-													@endforeach
+												@foreach ($medicines as $medicine)
+													<tr>
+														<td>{{ $loop->iteration }}</td>
+														<td>{{ $medicine->medicine_name }}</td>
+														<td>{{ $medicine->medicine_packaging }}</td>
+														<td>{{ $medicine->medicine_type }}</td>
+													</tr>
+												@endforeach
 												</tbody>
 											</table>
 										</div>
@@ -304,6 +306,12 @@
 				@else
 					Podatki o obisku niso bili najdeni.
 				@endif
+			</div>
+			<div id="visit2" class="tab-pane fade in active">
+				Obisk 2
+			</div>
+			<div id="visit3" class="tab-pane fade in active">
+				Obisk 3
 			</div>
 		</div>
 	</div>
