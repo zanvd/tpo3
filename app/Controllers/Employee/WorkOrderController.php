@@ -394,12 +394,13 @@ class WorkOrderController extends Controller {
                     break;
 				case '2':
 					/** Obisk otrocnice in novorojencka  25-48 */
-                    for ($k = 25; $k < 49; $k++) {
+                    for ($k = 26; $k < 49; $k++) {
                         $this->setMeasurements($k, $visitId, $patient_id);
                     }
 					$newborn = request('newborn');
 					for ($i = 0; $i < count($newborn); $i++) {
 						// Set measurements for every newborn 49-62
+                        $this->setMeasurements(25, $visitId, $newborn[$i]));
                         for ($k = 49; $k < 63; $k++) {
                             $this->setMeasurements($k, $visitId, $newborn[$i]);
                         }
@@ -445,7 +446,7 @@ class WorkOrderController extends Controller {
                         break;
                     case '2':
                         /** Obisk otrocnice in novorojencka  25-48 */
-                        for ($k = 25; $k < 49; $k++) {
+                        for ($k = 26; $k < 49; $k++) {
                             $this->setMeasurements($k, $visitId, $patient_id);
                         }
                         $newborn = request('newborn');
