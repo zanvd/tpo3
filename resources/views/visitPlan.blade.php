@@ -43,7 +43,6 @@
 @endsection
 
 @section('content')
-    <!--
     @if( $status = Session::get('status'))
         <div class="alert alert-success" role="alert">{{ $status }}</div>
     @endif
@@ -51,7 +50,7 @@
         @foreach($errors->all() as $error)
             <div class="alert alert-danger">{{ $error }}</div>
         @endforeach
-    @endif-->
+    @endif
     <form class="article-comment" id="planForm" data-toggle="validator" method="POST" name="planForm" action="/nacrt-obiskov">
         {{ csrf_field() }}
     <div class="row">
@@ -132,102 +131,11 @@
                                         @else
                                             <td>Da</td>
                                         @endif
-                                        <td>$visit->visitTitle</td>
-                                        <td><a href="/delovni-nalog/$visit->workOrderId">Odpri delovni nalog</a></td>
+                                        <td>{{$visit->visitTitle}}</td>
+                                        <td><a href="/delovni-nalog/{{$visit->workOrderId}}">Odpri delovni nalog</a></td>
                                     </tr>
                                 @endforeach
                     @endif
-                        <tr class="okvirni" id="1">
-                            <td><a href="#">Odpri obisk</a></td>
-                            <td id="12.02.2017">12.02.2017</td>
-                            <td> Ne</td>
-                            <td> Obisk nosečnice</td>
-                            <td><a href="#">Odpri delovni nalog</a></td>
-                        </tr>
-                        <tr class="okvirni" id="2">
-                            <td><a href="#">Odpri obisk</a></td>
-                            <td id="22.02.2017">22.02.2017</td>
-                            <td> Ne</td>
-                            <td> Odvzem krvi</td>
-                            <td><a href="#">Odpri delovni nalog</a></td>
-                        </tr>
-                        <tr class="okvirni" id="3" >
-                            <td><a href="#">Odpri obisk</a></td>
-                            <td id="23.02.2017">23.02.2017</td>
-                            <td> Ne</td>
-                            <td> Obisk nosečnice</td>
-                            <td><a href="#">Odpri delovni nalog</a></td>
-                        </tr>
-                        <tr class="okvirni" id="4">
-                            <td><a href="#">Odpri obisk</a></td>
-                            <td id="31.02.2017">31.02.2017</td>
-                            <td> Ne</td>
-                            <td> Odvzem krvi</td>
-                            <td><a href="#">Odpri delovni nalog</a></td>
-                        </tr>
-                        <tr class="okvirni" id="5">
-                            <td><a href="#">Odpri obisk</a></td>
-                            <td id="12.03.2017">12.03.2017</td>
-                            <td> Ne</td>
-                            <td> Odvzem krvi</td>
-                            <td><a href="#">Odpri delovni nalog</a></td>
-                        </tr>
-                        <tr class="okvirni" id="6">
-                            <td><a href="#">Odpri obisk</a></td>
-                            <td id="12.03.2017">12.03.2017</td>
-                            <td> Ne</td>
-                            <td> OOdvzem krvi</td>
-                            <td><a href="#">Odpri delovni nalog</a></td>
-                        </tr>
-                        <tr class="okvirni" id="7">
-                            <td><a href="#">Odpri obisk</a></td>
-                            <td id="12.04.2017">12.04.2017</td>
-                            <td> Ne</td>
-                            <td> Odvzem krvi</td>
-                            <td><a href="#">Odpri delovni nalog</a></td>
-                        </tr>
-                        <tr class="okvirni" id="8">
-                            <td><a href="#">Odpri obisk</a></td>
-                            <td id="12.04.2017">12.04.2017</td>
-                            <td> Ne</td>
-                            <td> Obisk nosečnice</td>
-                            <td><a href="#">Odpri delovni nalog</a></td>
-                        </tr>
-                        <tr class="okvirni" id="9">
-                            <td><a href="#">Odpri obisk</a></td>
-                            <td id="12.04.2017">12.04.2017</td>
-                            <td> Ne</td>
-                            <td> Odvzem krvi</td>
-                            <td><a href="#">Odpri delovni nalog</a></td>
-                        </tr>
-                        <tr class="okvirni" id="10">
-                            <td><a href="#">Odpri obisk</a></td>
-                            <td id="18.04.2017">18.04.2017</td>
-                            <td> Ne</td>
-                            <td> Odvzem krvi</td>
-                            <td><a href="#">Odpri delovni nalog</a></td>
-                        </tr>
-                        <tr class="okvirni" id="11">
-                            <td><a href="#">Odpri obisk</a></td>
-                            <td id="10.04.2017">10.04.2017</td>
-                            <td> Ne</td>
-                            <td> Obisk nosečnice</td>
-                            <td><a href="#">Odpri delovni nalog</a></td>
-                        </tr>
-                        <tr class="okvirni" id="12">
-                            <td><a href="#">Odpri obisk</a></td>
-                            <td id="21.04.2017">21.04.2017</td>
-                            <td> Ne</td>
-                            <td> Odvzem krvi</td>
-                            <td><a href="#">Odpri delovni nalog</a></td>
-                        </tr>
-                        <tr class="okvirni" id="13">
-                            <td><a href="#">Odpri obisk</a></td>
-                            <td id="13.02.2017">13.02.2017</td>
-                            <td> Ne</td>
-                            <td> Obisk nosečnice</td>
-                            <td><a href="#">Odpri delovni nalog</a></td>
-                        </tr>
                     </tbody>
                 </table>
                 </div>
@@ -237,64 +145,65 @@
         <div class="row hidden">
                 <div class="col-md-12">
                     <table id="okvirni2">
-                        <tr>
-                            <td> 41 </td>
-                            <td> 16.02.2017 </td>
-                            <td> Ne </td>
-                            <td> Okvirni plan</td>
-                            <td> 21</td>
-                            <td> 12</td>
-                        </tr>
-                        <tr>
-                            <td> 51 </td>
-                            <td> 17.02.2017 </td>
-                            <td> Ne </td>
-                            <td> Okvirni plan</td>
-                            <td> 23</td>
-                            <td> 13</td>
-                        </tr>
+                    @if( ! empty($okvirniVPlanu) )
+                                @foreach($okvirniVPlanu as $visit)
+                                    <tr>
+                                        <td>{{$visit->visit_id}}</td>
+                                        <td>{{ \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $visit->plannedDate)->format('d.m.Y')}}</td>
+                                        @if($visit->fixedVisit == 0)
+                                            <td>Ne</td>
+                                        @else
+                                            <td>Da</td>
+                                        @endif
+                                        <td>{{$visit->visitTitle}}</td>
+                                        <td>{{$visit->workOrderId}}</td>
+                                        <td>{{$visit->planID}}</td>
+                                    </tr>
+                                @endforeach
+                    @endif
                     </table>
                 </div>
         </div>
         <div class="row hidden">
                 <div class="col-md-12">
                     <table id="obvezni">
-                        <tr>
-                            <td> 61 </td>
-                            <td> 15.02.2017 </td>
-                            <td> Da </td>
-                            <td> Obvezni</td>
-                            <td> 21</td>
-                        </tr>
-                        <tr>
-                            <td> 71 </td>
-                            <td> 17.02.2017 </td>
-                            <td> Da </td>
-                            <td> Obvezni</td>
-                            <td> 23</td>
-                        </tr>
+                    @if( ! empty($obvezniBrezPlana) )
+                                @foreach($obvezniBrezPlana as $visit)
+                                    <tr>
+                                        <td>{{$visit->visit_id}}</td>
+                                        <td>{{ \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $visit->plannedDate)->format('d.m.Y')}}</td>
+                                        @if($visit->fixedVisit == 0)
+                                            <td>Ne</td>
+                                        @else
+                                            <td>Da</td>
+                                        @endif
+                                        <td>{{$visit->visitTitle}}</td>
+                                        <td>{{$visit->workOrderId}}</td>
+                                    </tr>
+                                @endforeach
+                    @endif
                     </table>
                 </div>
         </div>
         <div class="row hidden">
                 <div class="col-md-12">
                     <table id="obvezni2">
-                        <tr>
-                            <td> 81 </td>
-                            <td> 15.02.2017 </td>
-                            <td> Da </td>
-                            <td> Obvezni plan</td>
-                            <td> 24</td>
-                            <td> 12</td>
-                        </tr>
-                        <tr>
-                            <td> 91 </td>
-                            <td> 17.02.2017 </td>
-                            <td> Da </td>
-                            <td> Obvezni plan</td>
-                            <td> 23</td>
-                            <td> 13</td>
-                        </tr>
+                    @if( ! empty($obvezniVPlanu) )
+                                @foreach($okvirniVPlanu as $visit)
+                                    <tr>
+                                        <td>{{$visit->visit_id}}</td>
+                                        <td>{{ \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $visit->plannedDate)->format('d.m.Y')}}</td>
+                                        @if($visit->fixedVisit == 0)
+                                            <td>Ne</td>
+                                        @else
+                                            <td>Da</td>
+                                        @endif
+                                        <td>{{$visit->visitTitle}}</td>
+                                        <td>{{$visit->workOrderId}}</td>
+                                        <td>{{$visit->planID}}</td>
+                                    </tr>
+                                @endforeach
+                    @endif
                     </table>
                 </div>
         </div>
