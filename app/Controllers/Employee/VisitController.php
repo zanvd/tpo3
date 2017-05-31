@@ -76,16 +76,22 @@ class VisitController extends Controller {
 				->format('d.m.Y');
 
 			// Retrieve measurements for this patient.
-			$measurementRel = $visit->measurementRel->where([
-				['visit_id', '=', $visit->visit_id],
-				['patient_id', '=', $pat->patient_id]
-			]);
+			$measurementRel = $visit->measurementRel
+								  ->where('visit_id', '=', $visit->visit_id)
+								  ->where('patient_id', '=', $pat->patient_id);
+			$pat->measurements = [];
 			foreach ($measurementRel as $measurement) {
-				$pat->measurements[] = $measurement->measurement;
-				$pat->measurements[]->value = $measurement->value;
-				$pat->measurements[]->date = Carbon::createFromFormat('Y-m-d',
-													  $measurement->date)
-												   ->format('d.m.Y');
+				$measurement->measurement->value = is_null($measurement->date)
+					? 'Meritev še ni bila opravljena.'
+					: $measurement->value;
+				$measurement->measurement->date = is_null($measurement->date)
+					? null
+					: Carbon::createFromFormat('Y-m-d',
+											   $measurement->date)
+							->format('d.m.Y');
+				$pat->measurements = array_merge($pat->measurements, [
+					$measurement->measurement,
+				]);
 			}
 
 			// Check if work order type is of type mother and newborn.
@@ -105,31 +111,31 @@ class VisitController extends Controller {
 
 		// Check work order type and retrieve material data.
 		switch ($type) {
-			case 'Odvzem krvi':
+			case 'Aplikacija injekcij':
 				$medicines = [];
 				foreach ($workOrder->medicineRel as $relation) {
 					$medicines[] = $relation->medicine;
 				}
 				break;
-			case 'Aplikacija injekcij':
+			case 'Odvzem krvi':
 				// Get number of blood tubes and store them by color.
-				$bloodTubes = $workOrder->bloodTubeRel;
+				$bloodTubesRel = $workOrder->bloodTubeRel;
 
-				foreach ($bloodTubes as $bt) {
+				foreach ($bloodTubesRel as $bt) {
 					$color = $bt->bloodTube->color;
 
 					switch ($color) {
 						case 'Rdeča':
-							$bloodTubes->red = $bt->num_of_tubes;
+							$bloodTubes['red'] = $bt->num_of_tubes;
 							break;
 						case 'Modra':
-							$bloodTubes->blue = $bt->num_of_tubes;
+							$bloodTubes['blue'] = $bt->num_of_tubes;
 							break;
 						case 'Zelena':
-							$bloodTubes->green = $bt->num_of_tubes;
+							$bloodTubes['green'] = $bt->num_of_tubes;
 							break;
 						case 'Rumena':
-							$bloodTubes->yellow = $bt->num_of_tubes;
+							$bloodTubes['yellow'] = $bt->num_of_tubes;
 							break;
 					}
 				}
