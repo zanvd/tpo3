@@ -29,7 +29,14 @@ $namespacePrefix = [
 
 // Landing page.
 Route::get('/', function () {
-		return view('landing');
+		return auth()->check()
+			? view('landing')
+				->with([
+					'role'	=> auth()->user()->userRole->user_role_title,
+					'name'	=> auth()->user()->person->name . ' '
+								. auth()->user()->person->surname
+				])
+			: view('landing');
 });
 
 /*
@@ -221,6 +228,8 @@ Route::get('/profil',
 |
 | Get:		display the visit list page.	doctor, chief nurse, nurse
 | Get:		display requested visit.		doctor, chief nurse, nurse
+| Get:		display edit page for visit.	nurse
+| Get:		update the visit with data.		nurse
 |
 */
 Route::get('/obisk',
@@ -228,3 +237,9 @@ Route::get('/obisk',
 
 Route::get('/obisk/{visit}',
     $namespacePrefix['employee'].'VisitController@show');
+
+Route::get('obisk/{visit}/uredi',
+	$namespacePrefix['employee'].'VisitController@edit');
+
+Route::patch('obisk/{visit}',
+		   $namespacePrefix['employee'].'VisitController@update');

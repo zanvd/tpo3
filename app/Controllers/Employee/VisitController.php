@@ -15,8 +15,12 @@ use Illuminate\Support\Facades\DB;
 class VisitController extends Controller {
 
 	public function __construct() {
-		// Medical personal can access visit functionality.
-		$this->middleware('role:Zdravnik|Vodja PS|Patronažna sestra');
+		// Medical personal can view visits.
+		$this->middleware('role:Zdravnik|Vodja PS|Patronažna sestra')
+			 ->except(['edit', 'update']);
+		// Nurses can edit visit data.
+		$this->middleware('role:Patronažna sestra')
+			 ->only(['edit', 'update']);
 	}
 
 	/**
@@ -105,6 +109,61 @@ class VisitController extends Controller {
 	 * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
 	 */
 	public function show (Visit $visit) {
+		// Retrieve necessary data and display visit details view.
+		return view('visit', $this->getVisitData($visit))
+		->with([
+			'name'		=> auth()->user()->person->name . ' '
+							. auth()->user()->person->surname,
+			'role'		=> auth()->user()->userRole->user_role_title,
+			'lastLogin'	=> $this->lastLogin(auth()->user())
+		]);
+	}
+
+	/**
+	 * Display page to edit visit.
+	 *
+	 * @param Visit $visit
+	 *
+	 * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+	 */
+	public function edit (Visit $visit) {
+		// Retrieve necessary data and display visit details view.
+		return view('visitEdit', $this->getVisitData($visit))
+		->with([
+			'visit'		=> $visit,
+			'name'		=> auth()->user()->person->name . ' '
+							. auth()->user()->person->surname,
+			'role'		=> auth()->user()->userRole->user_role_title,
+			'lastLogin'	=> $this->lastLogin(auth()->user())
+		]);
+	}
+
+	/**
+	 * Update visit with provided data.
+	 *
+	 * @param Visit $visit
+	 *
+	 * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+	 */
+	public function update (Visit $visit) {
+		return view('visit')
+		->with([
+			'status'	=> 'Obisk uspešno posodobljen.',
+			'name'		=> auth()->user()->person->name . ' '
+							. auth()->user()->person->surname,
+			'role'		=> auth()->user()->userRole->user_role_title,
+			'lastLogin'	=> $this->lastLogin(auth()->user())
+		]);
+	}
+
+	/**
+	 * Get data necessary for displaying visit details.
+	 *
+	 * @param Visit $visit
+	 *
+	 * @return array
+	 */
+	private function getVisitData (Visit $visit) {
 		// Retrieve visit's work order.
 		$workOrder = WorkOrder::where('work_order_id', $visit->work_order_id)->first();
 		// Get work order type.
@@ -112,27 +171,27 @@ class VisitController extends Controller {
 		$workOrder->type = $type;
 		// Format performer.
 		$workOrder->performer = $workOrder->performer->employee_id . ' '
-			. $workOrder->performer->person->name . ' '
-			. $workOrder->performer->person->surname;
+								. $workOrder->performer->person->name . ' '
+								. $workOrder->performer->person->surname;
 		// Retrieve all visits under this work order.
 		$visits = $workOrder->visit;
 
 		$patients = DB::table('WorkOrder_Patient')
-			->join('WorkOrder AS Wo', function ($join) use ($workOrder) {
-				$join->on(
-					'WorkOrder_Patient.work_order_id',
-					'=',
-					'Wo.work_order_id'
-				)
-					->where('Wo.work_order_id', '=', $workOrder->work_order_id);
-			})
-			->join('Patient As Pat',
-				'WorkOrder_Patient.patient_id',
-				'=',
-				'Pat.patient_id')
-			->select('Pat.*')
-			->get()
-			->toArray(); // Return array instead of Collection.
+					  ->join('WorkOrder AS Wo', function ($join) use ($workOrder) {
+						  $join->on(
+							  'WorkOrder_Patient.work_order_id',
+							  '=',
+							  'Wo.work_order_id'
+						  )
+							   ->where('Wo.work_order_id', '=', $workOrder->work_order_id);
+					  })
+					  ->join('Patient As Pat',
+							 'WorkOrder_Patient.patient_id',
+							 '=',
+							 'Pat.patient_id')
+					  ->select('Pat.*')
+					  ->get()
+					  ->toArray(); // Return array instead of Collection.
 
 		// DB returns stdObjects but we require Eloquent Models.
 		// Cast stdObject to Patient Model.
@@ -143,13 +202,13 @@ class VisitController extends Controller {
 			$pat->person->region = $pat->person->region->region_title;
 
 			$pat->birth_date = Carbon::createFromFormat('Y-m-d',
-				$pat->birth_date)
-				->format('d.m.Y');
+														$pat->birth_date)
+									 ->format('d.m.Y');
 
 			// Retrieve measurements for this patient.
 			$measurementRel = $visit->measurementRel
-								  ->where('visit_id', '=', $visit->visit_id)
-								  ->where('patient_id', '=', $pat->patient_id);
+				->where('visit_id', '=', $visit->visit_id)
+				->where('patient_id', '=', $pat->patient_id);
 			$pat->measurements = [];
 			foreach ($measurementRel as $measurement) {
 				$measurement->measurement->value = is_null($measurement->date)
@@ -219,7 +278,7 @@ class VisitController extends Controller {
 								   . $visit->substitution->employeeSubstitution->person->name . ' '
 								   . $visit->substitution->employeeSubstitution->person->surname;
 
-		return view('visit', compact(
+		return compact(
 			'visit',
 			'workOrder',
 			'patient',
@@ -227,11 +286,6 @@ class VisitController extends Controller {
 			'medicines',
 			'bloodTubes',
 			'visits'
-		))->with([
-			'name'		=> auth()->user()->person->name . ' '
-							. auth()->user()->person->surname,
-			'role'		=> auth()->user()->userRole->user_role_title,
-			'lastLogin'	=> $this->lastLogin(auth()->user())
-		]);
+		);
 	}
 }
