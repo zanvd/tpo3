@@ -149,42 +149,22 @@
 															@foreach ($patient->measurements as $measurement)
 																<div class="panel panel-default">
 																	<div class="panel-body">
-																		<em>{{ $measurement->description }}:</em>
+																		<em>{{ $measurement['description'] }}:</em>
 																		<ul>
-																			@if ($measurement->input[0]->type == 'radio')
-																				{{  $measurement->value }}<br />
-																				@foreach ($measurement->input as $input)
-																					@if ($input->type == 'text')
-																						{{  $input->input_name }}: {{ $measurement->value}}<br />
-																					@endif
-																				@endforeach
-																			@else
-																				@foreach ($measurement->input as $input)
-																					@php
-																						switch ($input->type) {
-																							case 'radio':
-																								break;
-																							case 'number':
-																							case 'text':
-																								echo $input->input_name . ': ' . $measurement->value . '<br />';
-																								break;
-																							case 'date':
-																								echo $input->input_name . ': ' . is_null($measurement->value)
-																										? 'Meritev še ni bila opravljena.<br />'
-																										: \Carbon\Carbon::createFromFormat('Y-m-d',
-																															$measurement->value)
-																											->format('d.m.Y') . '<br />';
-																								break;
-																							case 'select':
-																								echo '<li>' . $measurement->value . '</li>';
-																								break;
-																							default:
-																								echo 'Izbrani obisk nima meritev<br />';
-																								break;
-																						}
-																					@endphp
-																				@endforeach
-																			@endif
+																			@foreach ($measurement as $input)
+																				@if ($loop->count == 1)
+																					Meritev še ni bila opravljena.
+																				@endif
+																				@if ($loop->first)
+																					@continue
+																				@elseif($input->type == 'radio')
+																					{{ $input->value }}<br />
+																				@elseif ($input->type == 'select')
+																					<li>{{ $input->value }}</li>
+																				@else
+																					{{ $input->input_name }}: {{ $input->value }}<br />
+																				@endif
+																			@endforeach
 																		</ul>
 																	</div>
 																</div>
@@ -243,48 +223,28 @@
 															@foreach ($child->measurements as $measurement)
 																<div class="panel panel-default">
 																	<div class="panel-body">
-																		<em>{{ $measurement->description }}:</em>
+																		<em>{{ $measurement['description'] }}:</em>
 																		<ul>
-																			@if ($measurement->input[0]->type == 'radio')
-																			{{  $measurement->value }}<br />
-																				@foreach ($measurement->input as $input)
-																					@if ($input->type == 'text')
-																					{{  $input->input_name }}: {{ $measurement->value}}<br />
-																					@endif
-																				@endforeach
-																			@else
-																				@foreach ($measurement->input as $input)
-																					@php
-																						switch ($input->type) {
-																							case 'radio':
-																								break;
-																							case 'number':
-																							case 'text':
-																								echo $input->input_name . ': ' . $measurement->value . '<br />';
-																								break;
-																							case 'date':
-																								echo $input->input_name . ': ' . is_null($measurement->value)
-																										? 'Meritev še ni bila opravljena.<br />'
-																										: \Carbon\Carbon::createFromFormat('Y-m-d',
-																															$measurement->value)
-																											->format('d.m.Y') . '<br />';
-																								break;
-																							case 'select':
-																								echo '<li>' . $measurement->value . '</li>';
-																								break;
-																							default:
-																								echo 'Izbrani obisk nima meritev<br />';
-																								break;
-																						}
-																					@endphp
-																				@endforeach
-																			@endif
+																			@foreach ($measurement as $input)
+																				@if ($loop->count == 1)
+																					Meritev še ni bila opravljena.
+																				@endif
+																				@if ($loop->first)
+																					@continue
+																				@elseif($input->type == 'radio')
+																					{{ $input->value }}<br />
+																				@elseif ($input->type == 'select')
+																					<li>{{ $input->value }}</li>
+																				@else
+																					{{ $input->input_name }}: {{ $input->value }}<br />
+																				@endif
+																			@endforeach
 																		</ul>
 																	</div>
 																</div>
 															@endforeach
 														@else
-															Podakti o meritvah niso bili najdeni.
+															Podatki o meritvah niso bili najdeni.
 														@endif
 													</div>
 												</div>

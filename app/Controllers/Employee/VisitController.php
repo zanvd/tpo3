@@ -4,15 +4,15 @@ namespace App\Controllers\Employee;
 
 use App\Models\BloodTube;
 use App\Models\Employee;
+use App\Models\Input;
+use App\Models\Measurement;
 use App\Models\Medicine;
-use App\Models\Patient;
 use App\Models\Substitution;
 use App\Models\Visit;
 use App\Models\WorkOrder;
 use App\Controllers\Controller;
 use App\Models\WorkOrder_Patient;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
 
 class VisitController extends Controller {
 
@@ -112,7 +112,7 @@ class VisitController extends Controller {
 	 */
 	public function show (Visit $visit) {
 		// Retrieve necessary data and display visit details view.
-		return view('visit', $this->getVisitDetailsData($visit))
+		return view('visit', $this->getVisitDetailsData($visit, false))
 		->with([
 			'visit'		=> $visit,
 			'name'		=> auth()->user()->person->name . ' '
@@ -130,8 +130,9 @@ class VisitController extends Controller {
 	 * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
 	 */
 	public function edit (Visit $visit) {
+		dd($this->getVisitDetailsData($visit, true));
 		// Retrieve necessary data and display visit details view.
-		return view('visitEdit', $this->getVisitDetailsData($visit))
+		return view('visitEdit', $this->getVisitDetailsData($visit, true))
 		->with([
 			'visit'		=> $visit,
 			'name'		=> auth()->user()->person->name . ' '
@@ -163,20 +164,22 @@ class VisitController extends Controller {
 	 * Get details about given Visit.
 	 *
 	 * @param Visit $visit
+	 * @param bool	$edit
 	 *
 	 * @return array
 	 */
-	private function getVisitDetailsData (Visit $visit) {
+	private function getVisitDetailsData (Visit $visit, $edit) {
 		// Get work order with performer.
 		$workOrder = WorkOrder::getWorkOrderWithPerformer($visit->work_order_id);
 		// Get work order type.
 		$type = $workOrder->visitSubtype->visit_subtype_title;
+		$workOrder->type = $type;
 
 		// Get patients for this work order.
 		$patients = WorkOrder_Patient::getPatientsForWorkOrder($workOrder);
 
 		// Get modified data about patients.
-		$patients = $this->modifyPatientsData($patients, $visit, $type);
+		$patients = $this->modifyPatientsData($patients, $visit, $type, $edit);
 		// Store data about patient and possible newborns.
 		$patient = $patients[0];
 		$children = $patients[1];
@@ -217,13 +220,14 @@ class VisitController extends Controller {
 	/**
 	 * Retrieve data for patients with measurements included.
 	 *
-	 * @param       $patients
-	 * @param Visit $visit
-	 * @param       $type
+	 * @param mixed		$patients
+	 * @param Visit 	$visit
+	 * @param string	$type
+	 * @param bool		$edit
 	 *
 	 * @return array
 	 */
-	private function modifyPatientsData ($patients, Visit $visit, $type) {
+	private function modifyPatientsData ($patients, Visit $visit, $type, $edit) {
 		$mainPatient = [];
 		$children = [];
 
@@ -239,20 +243,51 @@ class VisitController extends Controller {
 			$inputRel = $visit->inputRel
 				->where('patient_id', '=', $patient->patient_id);
 
-			$patient->measurements = [];
-			foreach ($inputRel as $input) {
-				$input->input->value = is_null($input->input_value)
-					? 'Meritev še ni bila opravljena.'
-					: $input->input_value;
-				$input->input->date = is_null($input->input_date)
+			$measurements = [];
+			foreach ($inputRel as $relation) {
+				$mid = $relation->input->measurement_id;
+				if (!array_key_exists($mid, $measurements)) {
+					$measurements[$mid] = [];
+					$measurements[$mid]['description'] = $relation->input->measurement->description;
+				}
+
+				// Check for select and radio button inputs.
+				if ($relation->input->type == 'radio'
+						|| $relation->input->type == 'select') {
+					// If input is not selected or empty, don't store it.
+					if ($relation->input_value == 'no'
+							|| is_null($relation->input_value)) continue;
+
+					$relation->input->value = $relation->name;
+				} elseif ($relation->input->type == 'date') {
+					$relation->input->value = is_null($relation->input_value)
+						? 'Meritev še ni bila opravljena.'
+						: \Carbon\Carbon::createFromFormat(
+								'Y-m-d',
+								$relation->input_value
+							)->format('d.m.Y');
+				} elseif ($relation->input->type == 'number') {
+					// Get min and max values.
+					$relation->input = $this->inputSwitch($relation->input);
+
+					$relation->input->value = is_null($relation->input_value)
+						? 'Meritev še ni bila opravljena.'
+						: $relation->input_value;
+				} else {
+					$relation->input->value = is_null($relation->input_value)
+						? 'Meritev še ni bila opravljena.'
+						: $relation->input_value;
+				}
+
+				$relation->input->date = is_null($relation->input_date)
 					? null
 					: Carbon::createFromFormat('Y-m-d',
-											   $input->input_date)
+											   $relation->input_date)
 							->format('d.m.Y');
-				$patient->measurements = array_merge($patient->measurements, [
-					$input->input,
-				]);
+
+				$measurements[$mid][] = $relation->input;
 			}
+			$patient->measurements = $measurements;
 
 			// Check if work order type is of type mother and newborn.
 			if ($type == 'Obisk novorojenčka in otročnice') {
@@ -270,5 +305,58 @@ class VisitController extends Controller {
 		}
 
 		return [$mainPatient, $children];
+	}
+
+	/**
+	 * @param Input $input
+	 *
+	 * @return Input
+	 */
+	private function inputSwitch (Input $input) {
+		switch ($input->input_name) {
+			case 'Sistolični (mmHg)':
+				$input->min = 40;
+				$input->max = 250;
+				break;
+			case 'Diastolični (mmHg)':
+				$input->min = 20;
+				$input->max = 130;
+				break;
+			case 'Udarcev na minuto':
+				$input->min = 30;
+				$input->max = 220;
+				break;
+			case 'Vdihov na minuto':
+				$input->min = 5;
+				$input->max = 100;
+				break;
+			case 'st C':
+				$input->min = 33;
+				$input->max = 43;
+				break;
+			case 'kg':
+				$input->min = 4;
+				$input->max = 400;
+				break;
+			case 'g':
+			case 'Porodna teža otroka (g)':
+				$input->min = 1200;
+				$input->max = 6000;
+				break;
+			case 'cm':
+			case 'Porodna višina otroka (cm)':
+				$input->min = 20;
+				$input->max = 70;
+				break;
+			case 'mmol/L':
+				$input->min = 3.0;
+				$input->max = 50;
+				break;
+			case '%':
+				$input->min = 3.0;
+				$input->max = 50;
+				break;
+		}
+		return $input;
 	}
 }
