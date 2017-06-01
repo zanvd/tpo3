@@ -220,9 +220,12 @@ class VisitPlanController extends Controller {
 
         foreach($plans as $plan) {
             $plan->visits = Visit::where('plan_id', $plan->plan_id)->get();
-        }
 
-        dd($plans);
+            foreach($plan->visits as $visit) {
+                $visit->visit_type = WorkOrder::where('work_order_id', $visit->work_order_id)->first()->visitSubtype->visit_subtype_title;
+            }
+        }
+        
         return view('planList', [
             'plans'         => $plans,
             'name'          => auth()->user()->person->name . ' '
