@@ -198,5 +198,6 @@
                 </div>
             </div>
         </div>
+        <input id="employeeName" class="hidden" value="{{$name}}">
     </div>
 @endsection

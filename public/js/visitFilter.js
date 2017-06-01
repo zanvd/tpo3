@@ -167,6 +167,10 @@ var table = $('#datatable').DataTable({
             column.data().unique().sort().each( function ( d, j ) {
 
                 select.append( '<option value="'+d+'">'+d+'</option>' )
+
+                if( d.trim() === $('#employeeName').val().trim()){
+                        employeeHasWorkOrder = true;
+                    }
             } );
         } );
         this.api().columns( 3 ).every( function () {
@@ -191,7 +195,15 @@ var table = $('#datatable').DataTable({
     }
 });
 
+var employeeHasWorkOrder;
+
+var employeeName = $('#employeeName').val().trim();
+
 $(document).ready(function(){
+
+    if(employeeHasWorkOrder){
+        $('select[name=prescribers]').val(employeeName).change();
+    }
 
      $('input[name=dateFrom]').change(function() {
         table.draw();

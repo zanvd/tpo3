@@ -97,9 +97,9 @@ var table = $('#datatable').DataTable({
                     } );
                 
                 column.data().unique().sort().each( function ( d, j ) {
-                    console.log(d);
+                    //console.log(d);
                     var tmp = d.split(/<br>/);
-                    console.log(tmp);
+                    //console.log(tmp);
                     if(tmp.length > 1) {
                         var i;
                         for (i in tmp){
@@ -164,8 +164,12 @@ var table = $('#datatable').DataTable({
                     } );
                 
                 column.data().unique().sort().each( function ( d, j ) {
+                    select.append( '<option value="'+d.trim()+'">'+d.trim()+'</option>' )
+                    //console.log(d.trim());
                     
-                    select.append( '<option value="'+d+'">'+d+'</option>' )
+                    if( d.trim() === $('#employeeName').val().trim()){
+                        employeeHasWorkOrder = true;
+                    }
                 } );
             } );
             this.api().columns( 2 ).every( function () {
@@ -190,9 +194,15 @@ var table = $('#datatable').DataTable({
         }
     });
 
-$(document).ready(function(){
-    
+var employeeHasWorkOrder;
 
+var employeeName = $('#employeeName').val().trim();
+
+$(document).ready(function(){
+
+    if(employeeHasWorkOrder){
+        $('select[name=prescribers]').val(employeeName).change();
+    }
 
 
     $('input[name=dateFrom]').change(function() {
