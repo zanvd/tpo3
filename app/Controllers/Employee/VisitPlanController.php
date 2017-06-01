@@ -169,7 +169,6 @@ class VisitPlanController extends Controller
         DB::beginTransaction();
 
         try{
-            
             //Razčlenimo seznam 
             $nizNovih = request('visitIDs');
 
@@ -181,13 +180,14 @@ class VisitPlanController extends Controller
 
             $seznamNovih = explode('-', $nizNovih);
             //Ustvarimo nov plan, če še ne obstaja.
+            
             $planId = request('planID');
-            if(empty ($planID)){
-                $plan = new Plan();
 
+            if(empty ($planId)){
+                $plan = new Plan();
+                
                 $planDate = request('planDate');
-                $fDate = \DateTime::createFromFormat(
-                'd.m.Y', $planDate)->format('Y-m-d');
+                $fDate = \DateTime::createFromFormat('d.m.Y', $planDate)->format('Y-m-d');
                 $planDate = new Carbon($fDate);
 
                 $nurseId = auth()->user()->person->employee->employee_id;
@@ -196,7 +196,7 @@ class VisitPlanController extends Controller
                 $plan->nurse_id = $nurseId;
 
                 $plan->save();
-                $planId = $plan->id;
+                $planId = $plan->plan_id;
             }
 
 
@@ -239,5 +239,17 @@ class VisitPlanController extends Controller
         return redirect('/nacrt-obiskov')->with([
             'status' => 'Načrt obiskov uspešno shranjen.'
         ]);
+    }
+
+    public function showPlans(){
+        $plani = Plan::where('nurse_id', '=', $employee_id)->where('plan_date', '>=', $todayDate)->get();
+
+        return view('visitPlan', [
+            'plani' => $plani,
+            'name'          => auth()->user()->person->name . ' '
+                                 . auth()->user()->person->surname,
+            'role'          => auth()->user()->userRole->user_role_title,
+            'lastLogin'     => $this->lastLogin(auth()->user())
+            ]);
     }
 }
