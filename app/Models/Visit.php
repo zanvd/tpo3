@@ -32,13 +32,13 @@ class Visit extends Model {
 	}
 
 	/**
-	 * One Visit has many Measurements.
+	 * One Visit has many Inputs.
 	 *
 	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
 	 */
-	public function measurementRel () {
+	public function inputRel () {
 		return $this->hasMany(
-			'App\Models\Visit_Measurement',
+			'App\Models\Visit_Input',
 			'visit_id',
 			'visit_id'
 		);
