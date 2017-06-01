@@ -103,7 +103,9 @@ var table = $('#datatable').DataTable({
                     if(tmp.length > 1) {
                         var i;
                         for (i in tmp){
-                            select.append( '<option value="'+tmp[i].trim()+'">'+tmp[i].trim()+'</option>' )
+                            if($("#subistitutions option[value='" + tmp[i].trim() + "']").length == 0){
+                                select.append( '<option value="'+tmp[i].trim()+'">'+tmp[i].trim()+'</option>' )
+                            }
                         }
 
                     }
