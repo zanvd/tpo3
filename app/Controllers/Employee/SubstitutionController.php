@@ -11,6 +11,7 @@ use App\Models\User;
 use App\Models\Visit;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Input;
 
 class SubstitutionController extends Controller {
 
@@ -138,7 +139,7 @@ class SubstitutionController extends Controller {
 
 			// Let the user know about the failure and ask to try again.
 			return redirect()->back()->withErrors([
-				'message' => 'Napaka pri shranjevanju nadomeščanja.'
+				'message' => 'Napaka pri shranjevanju nadomeščanja. Preverite, da ni nadomestna sestra v danem intervalu tudi odsotna.'
 			]);
 		}
 		// Everything is fine. Commit changes to database.
