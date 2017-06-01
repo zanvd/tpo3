@@ -112,7 +112,7 @@ class VisitController extends Controller {
 	 */
 	public function show (Visit $visit) {
 		// Retrieve necessary data and display visit details view.
-		return view('visitEdit', $this->getVisitDetailsData($visit))
+		return view('visit', $this->getVisitDetailsData($visit))
 		->with([
 			'visit'		=> $visit,
 			'name'		=> auth()->user()->person->name . ' '
