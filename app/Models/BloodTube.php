@@ -8,4 +8,34 @@ class BloodTube extends Model {
     protected $primaryKey = 'blood_tube_id';
 
 	public $incrementing = false;
+
+	/**
+	 * Get number of Blood Tubes by color for given Work Order.
+	 *
+	 * @param WorkOrder_BloodTube $wob
+	 *
+	 * @return array
+	 */
+	public static function getBloodTubesByColor (WorkOrder_BloodTube $wob) {
+		$bloodTubes = [];
+		foreach ($wob as $bloodTube) {
+			$color = $bloodTube->bloodTube->color;
+
+			switch ($color) {
+				case 'Rdeča':
+					$bloodTubes['red'] = $bloodTube->num_of_tubes;
+					break;
+				case 'Modra':
+					$bloodTubes['blue'] = $bloodTube->num_of_tubes;
+					break;
+				case 'Zelena':
+					$bloodTubes['green'] = $bloodTube->num_of_tubes;
+					break;
+				case 'Rumena':
+					$bloodTubes['yellow'] = $bloodTube->num_of_tubes;
+					break;
+			}
+		}
+		return $bloodTubes;
+	}
 }
