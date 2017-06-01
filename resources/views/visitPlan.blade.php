@@ -57,13 +57,13 @@
     <div class="row">
     <div class="panel panel-default">
         <div class="panel-heading main-color-bg">
-            <h3 class="panel-title">Ustvari nov plan </h3>
+            <h3 class="panel-title">Ustvari nov plan</h3>
         </div>
         <div class="panel-body">
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label>Datum obiska </label>
+                        <label>Plan za dan:</label>
                         <div class='input-group date'>
                             <input type='text' name="planDate" id="planDate" placeholder="" class="form-control date datepicker" />
                             <span class="input-group-addon">

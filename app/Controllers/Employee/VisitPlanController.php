@@ -3,62 +3,43 @@
 namespace App\Controllers\Employee;
 
 use Illuminate\Support\Facades\DB;
-use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
-use Illuminate\Http\Request;
 use App\Controllers\Controller;
 use App\Models\Visit;
 use App\Models\Patient;
 use App\Models\Plan;
 use App\Models\WorkOrder;
-use App\Models\WorkOrder_Patient;
-use App\Models\Person;
-use App\Models\Employee;
-use App\Models\User;
 use App\Models\Substitution;
 use Carbon\Carbon;
 
-
-
-class VisitPlanController extends Controller
-{
+class VisitPlanController extends Controller {
     
 	public function __construct () {
         // Only nurses can access
-        $this->middleware('role:Patronažna sestra')
-            ->except(['index', 'show']);
+        $this->middleware('role:Patronažna sestra');
     }   
 
     public function index(){
 
     	$todayDate = date("Y-m-d");
-    	
-        //ID sestre, ki je prijavljena v sistem.
-        global $employee_id;
-        $employee_id = auth()->user()->person->employee->employee_id;
+        $employeeId = auth()->user()->person->employee->employee_id;
 
         //poišče vsa nadomeščanja, ki jih bo opravljala ta sestra
-        $substitutions = Substitution::all()->where('employee_substitution', '=', $employee_id); 
+        $substitutions = Substitution::where('employee_substitution', $employeeId)->get();
         
         //Poišči vse obiske, ki jih mora opraviti prijavljena sestra in jih še ni opravila
-    	$obiski_sestra = Visit::whereHas('workOrder', function($q){
-            global $employee_id;
-            $q->where('performer_id', '=', $employee_id);
-        })->where('done', '=', '0')->get();
+    	$obiski_sestra = Visit::whereHas('workOrder', function($workOrder) use ($employeeId){
+            $workOrder->where('performer_id', $employeeId);
+        })->where('done', '0')->get();
 
         //Poišči vse obiske, ki jih morajo opraviti sestre, ki jih nadomešča prijavljena sestra v času teh nadomeščanj in še niso bili orpavljeni
         $obiski_nadomescanje = collect();
         if(sizeof($substitutions)> 0){
             foreach ($substitutions as $sub) {
-                global $emp_id;
-                $emp_id = $sub->employee_absent;
-                
+                $empId = $sub->employee_absent;
 
-                $currentSub = Visit::whereHas('workOrder', function($q){
-                global $emp_id;
-                $q->where('performer_id', '=', $emp_id);
-                })->where('done', '=', '0')->where('planned_date', '>=', $sub->start_date)->where('planned_date', '<=', $sub->end_date)->get();
+                $currentSub = Visit::whereHas('workOrder', function($q) use ($empId){
+                    $q->where('performer_id', $empId);
+                })->where('done', '0')->where('planned_date', '>=', $sub->start_date)->where('planned_date', '<=', $sub->end_date)->get();
                 
                 foreach($currentSub as $cs){
                     $obiski_nadomescanje->push($cs);
@@ -71,7 +52,7 @@ class VisitPlanController extends Controller
         $obiski_vsi = $obiski_sestra->merge($obiski_nadomescanje)->sortBy('planned_date');
 
         foreach($obiski_vsi as $obisk){
-            $workOrder = WorkOrder::where('work_order_id', '=', $obisk->work_order_id)->first();
+            $workOrder = WorkOrder::where('work_order_id', $obisk->work_order_id)->first();
             $patients = DB::table('WorkOrder_Patient')
                 ->join('WorkOrder AS Wo', function ($join) use ($workOrder) {
                     $join->on(
@@ -92,12 +73,10 @@ class VisitPlanController extends Controller
                 $patients = Patient::castStdToEloquent($patients);
 
             // Set visit_subtype object
-            
             $obisk->visitTitle = $workOrder->visitSubtype->visit_subtype_title;
             unset($workOrder->visit_subtype_id);
-
             
-            $obisk->patients = $patients;
+//            $obisk->patients = $patients;
             $obisk->workOrderId = $obisk->work_order_id;
             $obisk->fixedVisit = $obisk->fixed_visit;
             $obisk->plannedDate = $obisk->planned_date;
@@ -129,7 +108,7 @@ class VisitPlanController extends Controller
             }
         }
 
-        $plani = Plan::where('nurse_id', '=', $employee_id)->where('plan_date', '>=', $todayDate)->get();
+        $plani = Plan::where('nurse_id', '=', $employeeId)->where('plan_date', '>=', $todayDate)->get();
 
 
         //Vrnemo vse potrebne spremenljivke
@@ -166,15 +145,15 @@ class VisitPlanController extends Controller
     public function store(){
 
         //Start transaction
-        DB::beginTransaction();
-
-        try{
+//        DB::beginTransaction();
+//
+//        try{
             //Razčlenimo seznam 
             $nizNovih = request('visitIDs');
 
-            if(empty($nizNovih)){
+            if (empty($nizNovih)){
                 return redirect()->back()->withErrors([
-                'message' => 'Načrt obiskov ne vsebuje obiskov. Prosim dodajte obisk v željeni načrt, če ga želite shraniti'
+                'message' => 'V planu ni obiskov. Prosim dodajte obisk v željeni plan, če ga želite shraniti'
                 ]);
             }
 
@@ -182,25 +161,21 @@ class VisitPlanController extends Controller
             //Ustvarimo nov plan, če še ne obstaja.
             
             $planId = request('planID');
-
-            if(empty ($planId)){
+            if($planId == null){
                 $plan = new Plan();
                 
-                $planDate = request('planDate');
-                $fDate = \DateTime::createFromFormat('d.m.Y', $planDate)->format('Y-m-d');
-                $planDate = new Carbon($fDate);
+                $planDate = Carbon::createFromFormat('d.m.Y',
+                    request('planDate')) ->format('Y-m-d');
 
                 $nurseId = auth()->user()->person->employee->employee_id;
 
                 $plan->plan_date = $planDate;
                 $plan->nurse_id = $nurseId;
 
+//                dd($plan);
                 $plan->save();
                 $planId = $plan->plan_id;
             }
-
-
-            
 
             foreach($seznamNovih as $visitID){
                 $visit = Visit::where('visit_id', $visitID)->first();
@@ -213,43 +188,43 @@ class VisitPlanController extends Controller
             
             foreach($seznamOdstranjenih as $visitID){
                 $visit = Visit::where('visit_id', $visitID)->first();
-                $visit->plan_id = NULL;
+                $visit->plan_id = null;
                 $visit->save();
             }
-
-
-        }
-        catch (\Exception $e) {
-            // Log exception.
-            error_log(print_r('Error when saving a visit-plan: ' .
-                $e, true));
-
-            // Rollback everything.
-            DB::rollback();
-
-            // Let the user know about the failure and ask to try again.
-            return redirect()->back()->withErrors([
-                'message' => 'Napaka pri shranjevanju načrta obiskov ' .
-                    'ali zapisa, povezanega z njim. Prosimo, poskusite znova.'
-            ]);
-        }
-
-        DB::commit();
+//        }
+//        catch (\Exception $e) {
+//            // Log exception.
+//            error_log(print_r('Error when saving a visit-plan: ' .
+//                $e, true));
+//
+//            // Rollback everything.
+//            DB::rollback();
+//
+//            // Let the user know about the failure and ask to try again.
+//            return redirect()->back()->withErrors([
+//                'message' => 'Napaka pri shranjevanju načrta obiskov ' .
+//                    'ali zapisa, povezanega z njim. Prosimo, poskusite znova.'
+//            ]);
+//        }
+//
+//        DB::commit();
 
         return redirect('/nacrt-obiskov')->with([
             'status' => 'Načrt obiskov uspešno shranjen.'
         ]);
     }
 
-    public function showPlans(){
-        $plani = Plan::where('nurse_id', '=', $employee_id)->where('plan_date', '>=', $todayDate)->get();
+    public function showPlans() {
+        $employeeId = auth()->user()->person->employee->employee_id;
+
+        $plani = Plan::where('nurse_id', '=', $employeeId)->where('plan_date', '>=', date("Y-m-d"))->get();
 
         return view('visitPlan', [
-            'plani' => $plani,
+            'plani'         => $plani,
             'name'          => auth()->user()->person->name . ' '
                                  . auth()->user()->person->surname,
             'role'          => auth()->user()->userRole->user_role_title,
             'lastLogin'     => $this->lastLogin(auth()->user())
-            ]);
+        ]);
     }
 }
