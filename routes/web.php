@@ -66,10 +66,10 @@ Route::get('/odjava', $namespacePrefix['auth'].'LoginController@destroy');
 |
 */
 Route::get('/pozabljeno-geslo',
-		   $namespacePrefix['auth'].'ForgotPasswordController@index');
+		   $namespacePrefix['auth'].'ForgotPasswordController@edit');
 
-Route::post('/pozabljeno-geslo',
-			$namespacePrefix['auth'].'ForgotPasswordController@store');
+Route::put('/pozabljeno-geslo',
+			$namespacePrefix['auth'].'ForgotPasswordController@update');
 
 /*
 |--------------------------------------------------------------------------

@@ -25,7 +25,7 @@ class ForgotPasswordController extends Controller {
 	 *
 	 * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
 	 */
-	public function index () {
+	public function edit () {
 		return view('forgotten');
 	}
 
@@ -36,7 +36,7 @@ class ForgotPasswordController extends Controller {
 	 *
 	 * @return \Illuminate\Http\RedirectResponse
 	 */
-	public function store (Request $request) {
+	public function update (Request $request) {
 		return $this->sendResetLinkEmail($request);
 	}
 }
