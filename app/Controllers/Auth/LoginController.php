@@ -104,6 +104,13 @@ class LoginController extends Controller {
                     ]);
                 break;
             case 'Patronažna sestra':
+				return $this->redirectTo('/delovni-nalog')
+						->with([
+							'name' => $user->person->name,
+							'role' => $role,
+							'lastLogin' => $lastLogin
+						]);
+				break;
             case 'Uslužbenec ZD':
                 return $this->redirectTo('/spremeni-geslo')
                     ->with([
