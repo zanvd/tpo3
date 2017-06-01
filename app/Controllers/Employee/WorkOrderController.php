@@ -4,13 +4,14 @@ namespace App\Controllers\Employee;
 
 use App\Models\DependentPatient;
 use App\Models\FreeDays;
+use App\Models\Input;
 use App\Models\User;
 use App\Models\Employee;
 use App\Models\Patient;
 use App\Models\Medicine;
 use App\Controllers\Controller;
 use App\Models\Visit;
-use App\Models\Visit_Measurement;
+use App\Models\Visit_Input;
 use App\Models\VisitSubtype;
 use App\Models\WorkOrder;
 use App\Models\WorkOrder_BloodTube;
@@ -667,12 +668,19 @@ class WorkOrderController extends Controller {
 	}
 
 	protected function setMeasurements($measurementId, $visitId, $patient_id) {
-		$measurement = new Visit_Measurement();
-		$measurement->measurement_id = $measurementId;
-		$measurement->visit_id = $visitId;
-		$measurement->patient_id = $patient_id;
-		$measurement->save();
+        $inputs = Input::where('measurement_id', $measurementId)->get();
+        foreach ($inputs as $input) {
+            $this->createVisitInput($input->input_id, $visitId, $patient_id);
+        }
 	}
+
+	protected function createVisitInput($inputId, $visitId, $patient_id) {
+        $input = new Visit_Input();
+        $input->input_id = $inputId;
+        $input->visit_id = $visitId;
+        $input->patient_id = $patient_id;
+        $input->save();
+    }
 
 	protected function createVisit($vDate, $isFirst, $isFixed, $workOrderId) {
 		$visit = new Visit();
