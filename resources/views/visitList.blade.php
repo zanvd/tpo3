@@ -23,7 +23,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-10">
-                    <h1><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>Seznam obiskov</h1>
+                    <h1><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span> Seznam obiskov</h1>
                 </div>
                 <div class="col-md-2">
                 </div>
@@ -53,7 +53,7 @@
     @endif
 
     <div class="row">
-        <div class="panel panel-primary filterable">
+        <div class="panel panel-default filterable">
             <div class="panel-heading main-color-bg">
                 <div class="row">
                     <div class="col-md-12">

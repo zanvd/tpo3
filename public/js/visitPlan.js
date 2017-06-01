@@ -1,3 +1,37 @@
+function validate() {
+    validator = $("#planForm").bootstrapValidator({
+        fields: {
+            planDate: {
+                validators: {
+                    notEmpty: {
+                        message: "Izberite datum"
+                    },
+                    callback: {
+                        message: "Datum mora biti večji ali enak današnjemu",
+                        callback: function (value, validator, $field) {
+                            moment.locale('sl');
+                            var n = moment().format('L');
+                            var ne = moment(n,'L');
+                            moment.locale('sl');
+                            var k = moment(value,'L');
+                            if(!k.isValid()){
+                                return false;
+                            }
+
+                            if(k.diff(ne) >=0) {
+                                return true;
+                            }
+                            return false;
+
+                        }
+                    }
+
+                }
+            }
+        }
+    });
+}
+
 jQuery.fn.dataTableExt.oApi.fnFindCellRowIndexes = function ( oSettings, sSearch, iColumn )
 {
     var
@@ -77,16 +111,19 @@ function joinVisits() {
     }
     removedVisitIDs.val(removedVisits);
     planIDs.val(planID);
-
+    /*
     console.log("visits: " + visitIDs.val());
     console.log("removed: " + removedVisitIDs.val());
     console.log("planID: " + planIDs.val());
+    */
 }
 
 $('.datepicker').datepicker({
     format: 'dd.mm.yyyy',
     language: 'sl'
- })
+ }).on('changeDate', function(e) {
+    $('#planForm').bootstrapValidator('revalidateField', 'planDate');
+});
 
 
 
@@ -173,6 +210,8 @@ $("table#obvezni2 tr").each(function(i, v){
 })
 
 $(document).ready(function(){
+    validate();
+    moment.locale('sl');
     
     //dodamo okvirne v trenutni plan ob kliku
     $('#datatable2 tbody').on( 'click', '.okvirni', function () {
@@ -226,11 +265,11 @@ $(document).ready(function(){
             if(String(dataObvezni[i][1]).trim() === String($(this).val()).trim()) {
                 table.row.add(
                      [
-                    "<a href='/obisk/{" + dataObvezni[i][0]+ "}'>Odpri obisk<a>",
+                    "<a href='/obisk/" + dataObvezni[i][0].trim()+ "'>Odpri obisk<a>",
                     dataObvezni[i][1],
                     dataObvezni[i][2],
                     dataObvezni[i][3],
-                    "<a href='/obisk/{" + dataObvezni[i][4]+ "}'>Odpri delovni nalog<a>"
+                    "<a href='/delovni-nalog/" + dataObvezni[i][4].trim()+ "'>Odpri delovni nalog<a>"
                     ])
                 .draw();
                 visitsPt1 +=dataObvezni[i][0].trim() + "-";
@@ -243,11 +282,11 @@ $(document).ready(function(){
             if(String(dataObvezniPlan[i][1]).trim() === String($(this).val()).trim()) {
                 table.row.add(
                      [
-                    "<a href='/obisk/{" + dataObvezniPlan[i][0]+ "}'>Odpri obisk<a>",
+                    "<a href='/obisk/" + dataObvezniPlan[i][0].trim()+ "'>Odpri obisk<a>",
                     dataObvezniPlan[i][1],
                     dataObvezniPlan[i][2],
                     dataObvezniPlan[i][3],
-                    "<a href='/obisk/{" + dataObvezniPlan[i][4]+ "}'>Odpri delovni nalog<a>"
+                    "<a href='/delovni-nalog/" + dataObvezniPlan[i][4].trim()+ "'>Odpri delovni nalog<a>"
                     ])
                 .draw();
                 visitsPt1 +=dataObvezniPlan[i][0].trim() + "-";
@@ -265,11 +304,11 @@ $(document).ready(function(){
                     planVisitID = dataOkvirniPlan[i][0].trim(); 
                     table.row.add(
                          [
-                        "<a href='/obisk/{" + dataOkvirniPlan[i][0]+ "}'>Odpri obisk<a>",
+                        "<a href='/obisk/" + dataOkvirniPlan[i][0].trim()+ "'>Odpri obisk<a>",
                         dataOkvirniPlan[i][1],
                         dataOkvirniPlan[i][2],
                         dataOkvirniPlan[i][3],
-                        "<a href='/obisk/{" + dataOkvirniPlan[i][4]+ "}'>Odpri delovni nalog<a>"
+                        "<a href='/delovni-nalog/" + dataOkvirniPlan[i][4].trim()+ "'>Odpri delovni nalog<a>"
                         ])
                     .draw();
                     planVisitID=""; 

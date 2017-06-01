@@ -149,7 +149,7 @@
 												@foreach ($workOrder->substitutions as $substitution)
 												{{ $substitution }}
 												@if (!$loop->last)
-												<br />
+												<br>
 												@endif
 												@endforeach
 											@endif

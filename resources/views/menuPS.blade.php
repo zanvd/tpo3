@@ -15,9 +15,14 @@
 		<a href="/obisk" class="list-group-item"> <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span> Seznam obiskov</a>
 	@endif
 	@if ($activeView == "planObiskov")
-	<a href="/nacrt-obiskov/ustvari" class="list-group-item main-color-bg"> <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span> Plan obiskov</a>
+	<a href="/nacrt-obiskov/ustvari" class="list-group-item main-color-bg"> <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Ustvari plan</a>
 	@else
-	<a href="/nacrt-obiskov/ustvari" class="list-group-item"> <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span> Plan obiskov</a>
+	<a href="/nacrt-obiskov/ustvari" class="list-group-item"> <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Ustvari plan</a>
+	@endif
+	@if ($activeView == "pregledPlanov")
+	<a href="/nacrt-obiskov" class="list-group-item main-color-bg"> <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span> Pregled planov</a>
+	@else
+	<a href="/nacrt-obiskov" class="list-group-item"> <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span> Pregled planov</a>
 	@endif
 	@if ($activeView == "spremeniGeslo")
 	<a href="/spremeni-geslo" class="list-group-item main-color-bg"> <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> Sprememba gesla</a>

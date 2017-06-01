@@ -3,7 +3,9 @@
 @section('script')
     <script src="{{ URL::asset('js/moment-with-locales.js') }}"></script>
     <script src="{{ URL::asset('js/bootstrap-datepicker.min.js') }}"></script>
-    <script src="{{ URL::asset('js/bootstrap-datepicker.sl.min.js') }}"></script>đ
+    <script src="{{ URL::asset('js/bootstrap-datepicker.sl.min.js') }}"></script>
+    <script src="{{ URL::asset('js/bootstrapValidator.js') }}"></script>
+    <script src="{{ URL::asset('js/substitutionValidate.js') }}"></script>
 @endsection
 
 @section('css')
@@ -68,10 +70,10 @@
                             @foreach($substitutions as $substitution)
                                 <tr>
                                     <td>#{{$loop->iteration}}</td>
-                                    <td id="absent">{{$substitution->absent}}</td>
-                                    <td id="subs">{{$substitution->subs}}</td>
-                                    <td id="startDate">{{ \Carbon\Carbon::createFromFormat('Y-m-d', $substitution->start_date)->format('d.m.Y')}}</td>
-                                    <td id="endDate">{{ \Carbon\Carbon::createFromFormat('Y-m-d', $substitution->end_date)->format('d.m.Y')}}</td>
+                                    <td>{{$substitution->absent}}</td>
+                                    <td>{{$substitution->subs}}</td>
+                                    <td>{{ \Carbon\Carbon::createFromFormat('Y-m-d', $substitution->start_date)->format('d.m.Y')}}</td>
+                                    <td>{{ \Carbon\Carbon::createFromFormat('Y-m-d', $substitution->end_date)->format('d.m.Y')}}</td>
                                 </tr>
                             @endforeach
                         @endif
@@ -79,43 +81,56 @@
                     </table>
                 </div>
                 <div class="text-center">
-                    <button class="btn btn-primary">Novo nadomeščanje</button>
+                    <button class="btn btn-primary" id="newSub">Novo nadomeščanje</button>
                 </div>
                 <br/>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Odsotna sestra</label>
-                            <select data-live-search="true" class="form-control selectpicker" name="absent" id="absent" title="Izberite..." >
-                                <option value=""></option>
-                            </select>
+                <div class="hidden" id="createNew">
+                    <form class="article-comment" id="newSubstitutionForm" method="POST" data-toggle="validator" action="/nadomeščanja" >
+                        {{ csrf_field() }}
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Odsotna sestra</label>
+                                    <select data-live-search="true" class="form-control selectpicker" name="absent" id="absent" title="Izberite..." required>
+                                        @if( ! empty($sisters) )
+                                            @foreach($sisters as $key => $value)
+                                                <option value="{{ $key}}">{{ $value }}</option>
+                                            @endforeach
+                                        @endif
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Nadomestna sestra</label>
+                                    <select data-live-search="true" class="form-control selectpicker" name="present" id="present" title="Izberite..." required>
+                                        @if( ! empty($sisters) )
+                                            @foreach($sisters as $key => $value)
+                                                <option value="{{ $key}}">{{ $value }}</option>
+                                            @endforeach
+                                        @endif
+                                    </select>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Nadomestna sestra</label>
-                            <select data-live-search="true" class="form-control selectpicker" name="present" id="present" title="Izberite..." >
-                                <option value=""></option>
-                            </select>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Odsotna od</label>
+                                    <input class="form-control date datepicker" type="text" name="dateFrom" id="dateFrom" placeholder="Vnesite datum...">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Odsotna do</label>
+                                    <input class="form-control date datepicker" type="text" name="dateTo" id="dateTo" placeholder="Vnesite datum...">
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Odsotna od</label>
-                            <input type="text" placeholder="Vnesite datum..." name="dateFrom" id="dateFrom" class="form-control date datepicker">
+                        <div class="text-center">
+                            <button class="btn btn-primary" type="submit">Shrani</button>
                         </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Odsotna do</label>
-                            <input type="text" placeholder="Vnesite datum..." name="dateTo" id="dateTo" class="form-control date datepicker">
-                        </div>
-                    </div>
-                </div>
-                <div class="text-center">
-                    <button class="btn btn-primary">Shrani</button>
+                    </form>
                 </div>
             </div>
         </div>

@@ -1,23 +1,24 @@
-var filters = [ [], [], [], [], [], [], []] ;
-var dates,
-    prescribers,
-    preformers,
-    visitTypes,
-    patients,
-    subistitutions;
-
-var dateFrom = "",
-    dateTo = "",
-    prescribers = "",
-    preformers = "",
-    visitTypes = "",
-    patients = "",
-    subistitutions = "";
 
 $('.datepicker').datepicker({
     format: 'dd.mm.yyyy',
     language: 'sl'
  })
+
+jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+"date-uk-pre": function ( a ) {
+    var ukDatea = a.split('.');
+    return (ukDatea[2] + ukDatea[1] + ukDatea[0]) * 1;
+},
+
+"date-uk-asc": function ( a, b ) {
+    return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+},
+
+"date-uk-desc": function ( a, b ) {
+    return ((a < b) ? 1 : ((a > b) ? -1 : 0));
+}
+
+} );
 
 $.fn.dataTable.ext.search.push(
     function( settings, data, dataIndex ) {
@@ -39,9 +40,10 @@ $.fn.dataTable.ext.search.push(
             var arrMax = maxStr.split('.');
             var max = new Date(arrMax[2],arrMax[1],arrMax[0]);
         }
+        /*
         console.log(min + " " + date2);
         console.log(min > date2);
-
+        */
 
         if ( ( isNaN( min ) && isNaN( max ) ) ||
              ( isNaN( min ) && date2 <= max ) ||
@@ -67,8 +69,18 @@ var table = $('#datatable').DataTable({
             "paginate": {
               "previous": "Prejšnja",
               "next": "Naslednja",
-            }
+            },
+
         },
+        "aoColumns": [
+            { "bSortable": false },
+            { "sType": "date-uk" },
+            { "bSortable": true },
+            { "bSortable": true },
+            { "bSortable": true },
+            { "bSortable": true },
+            { "bSortable": true }
+        ],
         initComplete: function () {
             this.api().columns( 6 ).every( function () {
 
@@ -80,12 +92,23 @@ var table = $('#datatable').DataTable({
                         );
  
                         column
-                            .search( val ? '^'+val+'$' : '', true, false )
+                            .search(val)
                             .draw();
                     } );
                 
                 column.data().unique().sort().each( function ( d, j ) {
-                    select.append( '<option value="'+d+'">'+d+'</option>' )
+                    console.log(d);
+                    var tmp = d.split(/<br>/);
+                    console.log(tmp);
+                    if(tmp.length > 1) {
+                        var i;
+                        for (i in tmp){
+                            select.append( '<option value="'+tmp[i]+'">'+tmp[i]+'</option>' )
+                        }
+
+                    }
+                    else 
+                        select.append( '<option value="'+d+'">'+d+'</option>' )
                 } );
             } );
             this.api().columns( 5 ).every( function () {

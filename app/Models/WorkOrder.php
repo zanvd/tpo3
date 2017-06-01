@@ -84,4 +84,23 @@ class WorkOrder extends Model {
 			'work_order_id'
 		);
 	}
+
+	/**
+	 * Get Work Order data by given ID.
+	 * Store additional information about performer.
+	 *
+	 * @param $workOrderId
+	 *
+	 * @return \App\Models\WorkOrder
+	 */
+	public static function getWorkOrderWithPerformer ($workOrderId) {
+		$workOrder = WorkOrder::find($workOrderId);
+
+		// Store performer data.
+		$workOrder->performer = $workOrder->performer->employee_id . ' '
+								. $workOrder->performer->person->name . ' '
+								. $workOrder->performer->person->surname;
+
+		return $workOrder;
+	}
 }
