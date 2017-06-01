@@ -33,7 +33,7 @@ class ResetPasswordController extends Controller {
 	 * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
 	 */
 	public function index ($email = null, $token = null) {
-		return view('reset')->with([
+		return view('resetPassword')->with([
 			'token' => $token,
 			'email' => $email
 		]);
@@ -57,9 +57,9 @@ class ResetPasswordController extends Controller {
 	 */
 	protected function rules() {
 		return [
-			'token' => 'required',
-			'email' => 'required|email',
-			'password' => 'required|confirmed|min:8|max:64',
+			'token'		=> 'required',
+			'email'		=> 'required|email',
+			'password'	=> 'required|confirmed|min:8|max:64',
 		];
 	}
 }
