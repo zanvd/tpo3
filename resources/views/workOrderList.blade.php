@@ -147,9 +147,10 @@
                                         <td id="subPS">
 											@if (!empty($workOrder->substitutions))
 												@foreach ($workOrder->substitutions as $substitution)
-												{{ $substitution }}
 												@if (!$loop->last)
-												<br>
+                                                        {{ $substitution }}<br>
+                                                @else
+                                                        {{ $substitution }}
 												@endif
 												@endforeach
 											@endif

@@ -92,7 +92,7 @@ var table = $('#datatable').DataTable({
                         );
  
                         column
-                            .search(val)
+                            .search(val.toString())
                             .draw();
                     } );
                 
@@ -103,7 +103,7 @@ var table = $('#datatable').DataTable({
                     if(tmp.length > 1) {
                         var i;
                         for (i in tmp){
-                            select.append( '<option value="'+tmp[i]+'">'+tmp[i]+'</option>' )
+                            select.append( '<option value="'+tmp[i].trim()+'">'+tmp[i].trim()+'</option>' )
                         }
 
                     }
