@@ -165,7 +165,8 @@ var table = $('#datatable').DataTable({
                 
                 column.data().unique().sort().each( function ( d, j ) {
                     select.append( '<option value="'+d.trim()+'">'+d.trim()+'</option>' )
-                    //console.log(d.trim() + " " + employeeName);
+                    //console.log(d.trim());
+                    
                     if( d.trim() === $('#employeeName').val().trim()){
                         employeeHasWorkOrder = true;
                     }
