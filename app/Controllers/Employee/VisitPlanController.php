@@ -161,9 +161,8 @@ class VisitPlanController extends Controller {
             $seznamNovih = explode('-', $nizNovih);
             //Ustvarimo nov plan, če še ne obstaja.
             
-            $planId = request('planID');
-            dd($planId);
-            if($planId == null){
+            $planId = request('planIDs');
+            if ($planId == null){
                 $plan = new Plan();
                 
                 $planDate = Carbon::createFromFormat('d.m.Y',
@@ -175,7 +174,6 @@ class VisitPlanController extends Controller {
                 $plan->nurse_id = $nurseId;
 
                 $plan->save();
-//                dd($plan);
                 $planId = $plan->plan_id;
             }
 
@@ -185,10 +183,11 @@ class VisitPlanController extends Controller {
                 $visit->save();
             }
 
-            $nizOdstranjenih = request('deletedVisitIDs');
+            $nizOdstranjenih = request('removedVisitIDs');
+            $seznamOdstranjenih = explode('-', $nizOdstranjenih);
 
-            for ($i = 0; $i < count($nizOdstranjenih); $i++){
-                $visit = Visit::where('visit_id', $nizOdstranjenih[$i])->first();
+            for ($i = 0; $i < count($seznamOdstranjenih) - 1; $i++){
+                $visit = Visit::where('visit_id', $seznamOdstranjenih[$i])->first();
                 $visit->plan_id = null;
                 $visit->save();
             }
@@ -217,12 +216,15 @@ class VisitPlanController extends Controller {
 
     public function showPlans() {
         $employeeId = auth()->user()->person->employee->employee_id;
+        $plans = Plan::where('nurse_id', '=', $employeeId)->where('plan_date', '>=', date("Y-m-d"))->get();
 
-        $plani = Plan::where('nurse_id', '=', $employeeId)->where('plan_date', '>=', date("Y-m-d"))->get();
+        foreach($plans as $plan) {
+            $plan->visits = Visit::where('plan_id', $plan->plan_id)->get();
+        }
 
-//        dd($plani);
+        dd($plans);
         return view('planList', [
-            'plani'         => $plani,
+            'plans'         => $plans,
             'name'          => auth()->user()->person->name . ' '
                                  . auth()->user()->person->surname,
             'role'          => auth()->user()->userRole->user_role_title,

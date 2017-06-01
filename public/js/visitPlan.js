@@ -96,9 +96,6 @@ function updateVisits(){
     });
     visitsPt2 = visitsPt2.slice(0, -1);
 
-    if(removedVisits.length > 0){
-        removedVisits = removedVisits.slice(0, -1);
-    }
     joinVisits();
 }
 
@@ -109,13 +106,14 @@ function joinVisits() {
     else {
         visitIDs.val(visitsPt1 + visitsPt2);
     }
+
     removedVisitIDs.val(removedVisits);
     planIDs.val(planID);
-    /*
+
     console.log("visits: " + visitIDs.val());
     console.log("removed: " + removedVisitIDs.val());
     console.log("planID: " + planIDs.val());
-    */
+
 }
 
 $('.datepicker').datepicker({
@@ -212,7 +210,7 @@ $("table#obvezni2 tr").each(function(i, v){
 $(document).ready(function(){
     validate();
     moment.locale('sl');
-    
+    console.log(dataObvezniPlan);
     //dodamo okvirne v trenutni plan ob kliku
     $('#datatable2 tbody').on( 'click', '.okvirni', function () {
         table2.row($(this)).remove().draw();
@@ -301,6 +299,7 @@ $(document).ready(function(){
             for(i=0; i<dataOkvirniPlan.length ; i++) {
                 
                 if(String(dataOkvirniPlan[i][6]).trim() === String($(this).val()).trim()) {
+                    planID = dataOkvirniPlan[i][5];
                     planVisitID = dataOkvirniPlan[i][0].trim(); 
                     table.row.add(
                          [
@@ -318,6 +317,8 @@ $(document).ready(function(){
         
 
         joinVisits();
+        console.log(planIDs.val());
+        console.log(removedVisitIDs.val());
 
 
 

@@ -141,14 +141,6 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Stanje obiska</label>
-                                <select data-live-search="true" class="form-control selectpicker" name="visitDone" id="visitDone" title="Izberite..." >
-                                    <option value=""></option>
-                                </select>
-                            </div>
-                        </div>
                     </div>
 
                     <div class="row col-md-12" style="margin-top: 10px;">

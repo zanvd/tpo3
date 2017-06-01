@@ -191,20 +191,20 @@
                 <div class="col-md-12">
                     <table id="obvezni2">
                     @if( ! empty($obvezniVPlanu) )
-                                @foreach($okvirniVPlanu as $visit)
-                                    <tr>
-                                        <td>{{$visit->visit_id}}</td>
-                                        <td>{{ \Carbon\Carbon::createFromFormat('Y-m-d', $visit->plannedDate)->format('d.m.Y')}}</td>
-                                        @if($visit->fixedVisit == 0)
-                                            <td>Ne</td>
-                                        @else
-                                            <td>Da</td>
-                                        @endif
-                                        <td>{{$visit->visitTitle}}</td>
-                                        <td>{{$visit->workOrderId}}</td>
-                                        <td>{{$visit->planID}}</td>
-                                    </tr>
-                                @endforeach
+                        @foreach($obvezniVPlanu as $visit)
+                            <tr>
+                                <td>{{$visit->visit_id}}</td>
+                                <td>{{ \Carbon\Carbon::createFromFormat('Y-m-d', $visit->plannedDate)->format('d.m.Y')}}</td>
+                                @if($visit->fixedVisit == 0)
+                                    <td>Ne</td>
+                                @else
+                                    <td>Da</td>
+                                @endif
+                                <td>{{$visit->visitTitle}}</td>
+                                <td>{{$visit->workOrderId}}</td>
+                                <td>{{$visit->planID}}</td>
+                            </tr>
+                        @endforeach
                     @endif
                     </table>
                 </div>
