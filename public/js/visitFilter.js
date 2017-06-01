@@ -4,6 +4,23 @@ $('.datepicker').datepicker({
     language: 'sl'
 });
 
+jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+"date-uk-pre": function ( a ) {
+    var ukDatea = a.split('.');
+    return (ukDatea[2] + ukDatea[1] + ukDatea[0]) * 1;
+},
+
+"date-uk-asc": function ( a, b ) {
+    return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+},
+
+"date-uk-desc": function ( a, b ) {
+    return ((a < b) ? 1 : ((a > b) ? -1 : 0));
+}
+
+} );
+
+
 $.fn.dataTable.ext.search.push(
     function( settings, data, dataIndex ) {
         var minStr = $('input[name=dateFrom]').val();
@@ -93,6 +110,16 @@ var table = $('#datatable').DataTable({
             "next": "Naslednja"
         }
     },
+    "aoColumns": [
+        { "bSortable": false },
+        { "sType": "date-uk" },
+        { "bSortable": false },
+        { "bSortable": true },
+        { "bSortable": true },
+        { "bSortable": true },
+        { "bSortable": true },
+        { "bSortable": true }
+    ],
     initComplete: function () {
         this.api().columns( 7 ).every( function () {
 
