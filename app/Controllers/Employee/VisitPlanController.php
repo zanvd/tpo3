@@ -92,6 +92,8 @@ class VisitPlanController extends Controller {
         foreach($obiski_vsi as $obisk){
             if($obisk->fixed_visit == 0){
                 if(!empty ($obisk->plan_id)){
+                    $date = Plan::where('plan_id', $obisk->plan_id)->first()->plan_date;
+                    $obisk->plan_date = $date;
                     $okvirni_v_planu->push($obisk);
                 }
                 else{
@@ -108,20 +110,19 @@ class VisitPlanController extends Controller {
             }
         }
 
-        $plani = Plan::where('nurse_id', '=', $employeeId)->where('plan_date', '>=', $todayDate)->get();
-
+        $plani = Plan::where('nurse_id', $employeeId)->where('plan_date', '>=', $todayDate)->get();
 
         //Vrnemo vse potrebne spremenljivke
         return view('visitPlan', [
-            'obvezniBrezPlana' => $obvezni_brez_plana, 
-            'obvezniVPlanu' =>$obvezni_v_planu, 
-            'okvirniVPlanu' => $okvirni_v_planu, 
-            'okvirniBrezPlana' => $okvirni_brez_plana, 
-            'plani' => $plani,
-            'name'          => auth()->user()->person->name . ' '
-                                 . auth()->user()->person->surname,
-            'role'          => auth()->user()->userRole->user_role_title,
-            'lastLogin'     => $this->lastLogin(auth()->user())
+            'obvezniBrezPlana'  => $obvezni_brez_plana,
+            'obvezniVPlanu'     => $obvezni_v_planu,
+            'okvirniVPlanu'     => $okvirni_v_planu,
+            'okvirniBrezPlana'  => $okvirni_brez_plana,
+            'plani'             => $plani,
+            'name'              => auth()->user()->person->name . ' '
+                                    . auth()->user()->person->surname,
+            'role'              => auth()->user()->userRole->user_role_title,
+            'lastLogin'         => $this->lastLogin(auth()->user())
             ]);
 
 
@@ -145,9 +146,9 @@ class VisitPlanController extends Controller {
     public function store(){
 
         //Start transaction
-//        DB::beginTransaction();
-//
-//        try{
+        DB::beginTransaction();
+
+        try{
             //Razčlenimo seznam 
             $nizNovih = request('visitIDs');
 
@@ -161,6 +162,7 @@ class VisitPlanController extends Controller {
             //Ustvarimo nov plan, če še ne obstaja.
             
             $planId = request('planID');
+            dd($planId);
             if($planId == null){
                 $plan = new Plan();
                 
@@ -172,8 +174,8 @@ class VisitPlanController extends Controller {
                 $plan->plan_date = $planDate;
                 $plan->nurse_id = $nurseId;
 
-//                dd($plan);
                 $plan->save();
+//                dd($plan);
                 $planId = $plan->plan_id;
             }
 
@@ -184,30 +186,29 @@ class VisitPlanController extends Controller {
             }
 
             $nizOdstranjenih = request('deletedVisitIDs');
-            $seznamOdstranjenih = explode('-', $nizOdstranjenih);
-            
-            foreach($seznamOdstranjenih as $visitID){
-                $visit = Visit::where('visit_id', $visitID)->first();
+
+            for ($i = 0; $i < count($nizOdstranjenih); $i++){
+                $visit = Visit::where('visit_id', $nizOdstranjenih[$i])->first();
                 $visit->plan_id = null;
                 $visit->save();
             }
-//        }
-//        catch (\Exception $e) {
-//            // Log exception.
-//            error_log(print_r('Error when saving a visit-plan: ' .
-//                $e, true));
-//
-//            // Rollback everything.
-//            DB::rollback();
-//
-//            // Let the user know about the failure and ask to try again.
-//            return redirect()->back()->withErrors([
-//                'message' => 'Napaka pri shranjevanju načrta obiskov ' .
-//                    'ali zapisa, povezanega z njim. Prosimo, poskusite znova.'
-//            ]);
-//        }
-//
-//        DB::commit();
+        }
+        catch (\Exception $e) {
+            // Log exception.
+            error_log(print_r('Error when saving a visit-plan: ' .
+                $e, true));
+
+            // Rollback everything.
+            DB::rollback();
+
+            // Let the user know about the failure and ask to try again.
+            return redirect()->back()->withErrors([
+                'message' => 'Napaka pri shranjevanju načrta obiskov ' .
+                    'ali zapisa, povezanega z njim. Prosimo, poskusite znova.'
+            ]);
+        }
+
+        DB::commit();
 
         return redirect('/nacrt-obiskov')->with([
             'status' => 'Načrt obiskov uspešno shranjen.'
@@ -219,7 +220,8 @@ class VisitPlanController extends Controller {
 
         $plani = Plan::where('nurse_id', '=', $employeeId)->where('plan_date', '>=', date("Y-m-d"))->get();
 
-        return view('visitPlan', [
+//        dd($plani);
+        return view('planList', [
             'plani'         => $plani,
             'name'          => auth()->user()->person->name . ' '
                                  . auth()->user()->person->surname,
