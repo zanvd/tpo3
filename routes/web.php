@@ -258,5 +258,8 @@ Route::post('/nadomeščanja',
 Route::get('/nacrt-obiskov/ustvari',
     $namespacePrefix['employee'].'VisitPlanController@index');
 
+Route::get('/nacrt-obiskov',
+    $namespacePrefix['employee'].'VisitPlanController@showPlans');
+
 Route::post('/nacrt-obiskov',
     $namespacePrefix['employee'].'VisitPlanController@store');
