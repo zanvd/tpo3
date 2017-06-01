@@ -159,6 +159,7 @@
                                         <td>{{$visit->visitTitle}}</td>
                                         <td>{{$visit->workOrderId}}</td>
                                         <td>{{$visit->planID}}</td>
+                                        <td>{{ \Carbon\Carbon::createFromFormat('Y-m-d', $visit->plan_date)->format('d.m.Y')}}</td>
                                     </tr>
                                 @endforeach
                     @endif

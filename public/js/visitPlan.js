@@ -296,11 +296,11 @@ $(document).ready(function(){
         }
         
         //ce obstaja plan za ta datum nafilamo se vse okvirne za ta datum
-        if( planID != "") {
+        
             i = 0;
             for(i=0; i<dataOkvirniPlan.length ; i++) {
                 
-                if(String(dataOkvirniPlan[i][5]).trim() === String(planID).trim()) {
+                if(String(dataOkvirniPlan[i][6]).trim() === String($(this).val()).trim()) {
                     planVisitID = dataOkvirniPlan[i][0].trim(); 
                     table.row.add(
                          [
@@ -315,7 +315,7 @@ $(document).ready(function(){
                 }
             }
             updateVisits();
-        }
+        
 
         joinVisits();
 
