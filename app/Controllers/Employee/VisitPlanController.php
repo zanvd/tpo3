@@ -151,8 +151,9 @@ class VisitPlanController extends Controller {
         try{
             //Razčlenimo seznam 
             $nizNovih = request('visitIDs');
+            $nizOdstranjenih = request('removedVisitIDs');
 
-            if (empty($nizNovih)){
+            if (is_null($nizOdstranjenih) && empty($nizNovih)){
                 return redirect()->back()->withErrors([
                 'message' => 'V planu ni obiskov. Prosim dodajte obisk v željeni plan, če ga želite shraniti'
                 ]);
@@ -177,13 +178,15 @@ class VisitPlanController extends Controller {
                 $planId = $plan->plan_id;
             }
 
-            foreach($seznamNovih as $visitID){
-                $visit = Visit::where('visit_id', $visitID)->first();
-                $visit->plan_id = $planId;
-                $visit->save();
+//            dd($seznamNovih);
+            if ($seznamNovih[0] != "") {
+                foreach($seznamNovih as $visitID){
+                    $visit = Visit::where('visit_id', $visitID)->first();
+                    $visit->plan_id = $planId;
+                    $visit->save();
+                }
             }
 
-            $nizOdstranjenih = request('removedVisitIDs');
             $seznamOdstranjenih = explode('-', $nizOdstranjenih);
 
             for ($i = 0; $i < count($seznamOdstranjenih) - 1; $i++){
@@ -191,6 +194,16 @@ class VisitPlanController extends Controller {
                 $visit->plan_id = null;
                 $visit->save();
             }
+
+            $plan = Plan::where('plan_id', $planId)->first();
+            $visitsInPlan = Visit::where('plan_id', $planId)->get();
+            $deleted = false;
+            if (count($visitsInPlan) == 0) {
+                $deleted = true;
+                $plan->delete();
+            }
+
+
         }
         catch (\Exception $e) {
             // Log exception.
@@ -209,6 +222,12 @@ class VisitPlanController extends Controller {
 
         DB::commit();
 
+        if ($deleted) {
+            return redirect('/nacrt-obiskov')->with([
+                'status' => 'Načrt obiskov izbrisan.'
+            ]);
+        }
+
         return redirect('/nacrt-obiskov')->with([
             'status' => 'Načrt obiskov uspešno shranjen.'
         ]);
@@ -225,7 +244,6 @@ class VisitPlanController extends Controller {
                 $visit->visit_type = WorkOrder::where('work_order_id', $visit->work_order_id)->first()->visitSubtype->visit_subtype_title;
             }
         }
-        
         return view('planList', [
             'plans'         => $plans,
             'name'          => auth()->user()->person->name . ' '
