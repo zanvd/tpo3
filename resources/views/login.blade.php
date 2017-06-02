@@ -42,6 +42,9 @@
                     <label for="formPassword">Geslo</label>
                     <input class="form-control" type="password" placeholder="Vnestie geslo..." name="password" id="formPassword" required>
                   </div>
+				  <div class="form-group">
+					  <a href="/pozabljeno-geslo">Pozabljeno geslo</a>
+				  </div>
                   <button class="btn btn-primary" type="submit">Prijava</button>
                 </form>
               </div>
