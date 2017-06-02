@@ -63,20 +63,35 @@
                             <th>Nadomestna sestra</th>
                             <th>Odsotna od</th>
                             <th>Odsotna do</th>
+                            <th>Konec odsotnosti</th>
                         </tr>
                         </thead>
                         <tbody>
-                        @if( ! empty($substitutions) )
-                            @foreach($substitutions as $substitution)
-                                <tr>
-                                    <td>#{{$loop->iteration}}</td>
-                                    <td>{{$substitution->absent}}</td>
-                                    <td>{{$substitution->subs}}</td>
-                                    <td>{{ \Carbon\Carbon::createFromFormat('Y-m-d', $substitution->start_date)->format('d.m.Y')}}</td>
-                                    <td>{{ \Carbon\Carbon::createFromFormat('Y-m-d', $substitution->end_date)->format('d.m.Y')}}</td>
-                                </tr>
-                            @endforeach
-                        @endif
+                            @if( ! empty($substitutions) )
+                                @foreach($substitutions as $substitution)
+                                    <tr>
+                                        <td>#{{$loop->iteration}}</td>
+                                        <td>{{$substitution->absent}}</td>
+                                        <td>{{$substitution->subs}}</td>
+                                        <td>{{ \Carbon\Carbon::createFromFormat('Y-m-d', $substitution->start_date)->format('d.m.Y')}}</td>
+                                        <td>{{ \Carbon\Carbon::createFromFormat('Y-m-d', $substitution->end_date)->format('d.m.Y')}}</td>
+                                        @if($substitution->canceled == 1)
+                                            <td>Preklicano</td>
+                                        @elseif($substitution->finished == 1)
+                                            <td>Zaključeno</td>
+                                        @else
+                                            <td>
+                                                <form class="article-comment" id="newSubstitutionForm" method="POST" action="/nadomeščanja/končaj">
+                                                    {{ csrf_field() }}
+                                                    <button class="btn btn-basic" id="finishSub" name="finishSub" value="{{$substitution->substitution_id}}" type="submit">
+                                                        Zaključi nadomeščanje
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        @endif
+                                    </tr>
+                                @endforeach
+                            @endif
                         </tbody>
                     </table>
                 </div>

@@ -15,6 +15,8 @@ class CreateSubstitutionTable extends Migration {
 			$table->increments('substitution_id');
 			$table->date('start_date');
 			$table->date('end_date');
+			$table->boolean('finished')->default(false);
+			$table->boolean('canceled')->default(false);
 			$table->unsignedInteger('employee_absent');
 			$table->unsignedInteger('employee_substitution');
 

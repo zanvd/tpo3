@@ -242,7 +242,7 @@ Route::get('obisk/{visit}/uredi',
 	$namespacePrefix['employee'].'VisitController@edit');
 
 Route::patch('obisk/{visit}',
-		   $namespacePrefix['employee'].'VisitController@update');
+    $namespacePrefix['employee'].'VisitController@update');
 
 /*
 |--------------------------------------------------------------------------
@@ -258,6 +258,9 @@ Route::get('/nadomeščanja',
 
 Route::post('/nadomeščanja',
     $namespacePrefix['employee'].'SubstitutionController@store');
+
+Route::post('/nadomeščanja/končaj',
+    $namespacePrefix['employee'].'SubstitutionController@end');
 
 
 /*

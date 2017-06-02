@@ -150,4 +150,62 @@ class SubstitutionController extends Controller {
 		]);
 
 	}
+
+    public function end() {
+
+//        TODO: če je nadomeščanje zaključeno pred končnim datumom, spremeni končni datum
+//        TODO: ko je nadomeščanje končano, poiščemo obiske, kjer je odsotna sestra primarna
+//        TODO: - če niso opravljeni, jih vrnemo prvotni sestri
+//        TODO: po vrnitvi odsotne sestre, se pri nadomeščanju označi, da je zaključeno
+
+        $subId = request('finishSub');
+        $substitution = Substitution::where('substitution_id', $subId)->first();
+
+        // Start Transaction.
+        DB::beginTransaction();
+
+        // Try updating or deleting substitution and updating visits data and relating in the database.
+        try {
+            // If substitution is finished before it begins, cancel it
+            $today = date('Y-m-d');
+            if ($substitution->end_date > $today && $substitution->start_date > $today) {
+                $substitution->canceled = 1;
+            }
+
+            // If substitution was started but finished before end_date, change the end_date
+            if ($substitution->start_date < $today && $substitution->end_date > $today) {
+                $substitution->end_date = $today;
+            }
+
+            // Return undone visits to absent nurse and remove them from plan of substitute nurse
+            $undoneOfAbsent = Visit::where('substitution_id', $subId)->where('done', 0)->get();
+            foreach ($undoneOfAbsent as $visit) {
+                $visit->substitution_id = null;
+                $visit->plan_id = null;
+                $visit->save();
+            }
+            $substitution->finished = 1;
+            $substitution->save();
+
+        } catch (\Exception $e) {
+            // Log exception.
+            error_log(print_r('Error when finishing substitution or relating recordings: ' .
+                $e, true));
+
+            // Rollback everything.
+            DB::rollback();
+
+            // Let the user know about the failure and ask to try again.
+            return redirect()->back()->withErrors([
+                'message' => 'Napaka pri zaključku nadomeščanja.'
+            ]);
+        }
+        // Everything is fine. Commit changes to database.
+        DB::commit();
+
+        return redirect('/nadomeščanja')->with([
+            'status' => 'Nadomeščanje končano'
+        ]);
+
+    }
 }
