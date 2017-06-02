@@ -76,9 +76,9 @@
                                         <td>{{ \Carbon\Carbon::createFromFormat('Y-m-d', $substitution->start_date)->format('d.m.Y')}}</td>
                                         <td>{{ \Carbon\Carbon::createFromFormat('Y-m-d', $substitution->end_date)->format('d.m.Y')}}</td>
                                         @if($substitution->canceled == 1)
-                                            <td>Preklicano</td>
+                                            <td class="text-warning">Preklicano</td>
                                         @elseif($substitution->finished == 1)
-                                            <td>Zaključeno</td>
+                                            <td class="text-success">Zaključeno</td>
                                         @else
                                             <td>
                                                 <form class="article-comment" id="newSubstitutionForm" method="POST" action="/nadomeščanja/končaj">
