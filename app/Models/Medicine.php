@@ -10,12 +10,12 @@ class Medicine extends Model {
 	/**
 	 * Get all Medicines for given Work Order.
 	 *
-	 * @param WorkOrder_Medicine $wom
+	 * @param $wom
 	 *
 	 * @return array
 	 *
 	 */
-	public static function getMedicinesForWorkOrder (WorkOrder_Medicine $wom) {
+	public static function getMedicinesForWorkOrder ($wom) {
 		$medicines = [];
 		foreach ($wom as $relation) {
 			$medicines[] = $relation->medicine;
