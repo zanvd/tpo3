@@ -47,6 +47,7 @@
 				<h3 class="panel-title">Obisk</h3>
 			</div>
 			<div class="panel-body">
+				{{-- Visit --}}
 				<div class="row">
 					<div class="col-md-12">
 						<div class="panel panel-default">
@@ -91,6 +92,8 @@
 						</div>
 					</div>
 				</div>
+				{{-- Visit End --}}
+				{{-- Patient --}}
 				@if (!empty($patient))
 					<div class="row">
 						<div class="col-md-12">
@@ -132,6 +135,8 @@
 												<b>Okoliš:</b> {{ $patient->person->region }}
 											</div>
 										</div>
+									@else
+										Podatki o pacientu niso bili najdeni.
 									@endif
 									<div class="row">
 										<div class="col-md-12">
@@ -147,27 +152,33 @@
 													<div class="panel-body">
 														@if (!empty($patient->measurements))
 															@foreach ($patient->measurements as $measurement)
-																<div class="panel panel-default">
-																	<div class="panel-body">
-																		<em>{{ $measurement['description'] }}:</em>
-																		<ul>
-																			@foreach ($measurement as $input)
-																				@if ($loop->count == 1)
-																					Meritev še ni bila opravljena.
-																				@endif
-																				@if ($loop->first)
-																					@continue
-																				@elseif($input->type == 'radio')
-																					{{ $input->value }}<br />
-																				@elseif ($input->type == 'select')
-																					<li>{{ $input->value }}</li>
-																				@else
-																					{{ $input->input_name }}: {{ $input->value }}<br />
-																				@endif
-																			@endforeach
-																		</ul>
+																@if ($loop->iteration % 2 == 1 || $loop->last)
+																	<div class="row">
+																@endif
+																	<div class="col-md-6">
+																		<fieldset>
+																			<legend style="font-size: 15px; font-weight: bold;">{{ $measurement['description'] }}</legend>
+																			<div class="form-group">
+																				@foreach ($measurement as $input)
+																					@if ($loop->count == 1)
+																						Meritev še ni bila opravljena.
+																					@endif
+																					@if ($loop->first)
+																						@continue
+																					@elseif($input->type == 'radio')
+																						{{ $input->value }}<br />
+																					@elseif ($input->type == 'select')
+																						<li>{{ $input->value }}</li>
+																					@else
+																						{{ $input->input_name }}: {{ $input->value }}<br />
+																					@endif
+																				@endforeach
+																			</div>
+																		</fieldset>
 																	</div>
-																</div>
+																@if ($loop->iteration % 2 == 0 || $loop->last)
+																	</div>
+																@endif
 															@endforeach
 														@else
 															Podatki o meritvah niso bili najdeni.
@@ -182,6 +193,8 @@
 						</div>
 					</div>
 				@endif
+				{{-- Patient End --}}
+				{{-- Children --}}
 				@if (!empty($children))
 					<div class="row">
 						<div class="col-md-12">
@@ -221,27 +234,33 @@
 													<div class="panel-body">
 														@if (!empty($child->measurements))
 															@foreach ($child->measurements as $measurement)
-																<div class="panel panel-default">
-																	<div class="panel-body">
-																		<em>{{ $measurement['description'] }}:</em>
-																		<ul>
-																			@foreach ($measurement as $input)
-																				@if ($loop->count == 1)
-																					Meritev še ni bila opravljena.
-																				@endif
-																				@if ($loop->first)
-																					@continue
-																				@elseif($input->type == 'radio')
-																					{{ $input->value }}<br />
-																				@elseif ($input->type == 'select')
-																					<li>{{ $input->value }}</li>
-																				@else
-																					{{ $input->input_name }}: {{ $input->value }}<br />
-																				@endif
-																			@endforeach
-																		</ul>
+																@if ($loop->iteration % 2 == 1 || $loop->last)
+																	<div class="row">
+																		@endif
+																		<div class="col-md-6">
+																			<fieldset>
+																				<legend style="font-size: 15px; font-weight: bold;">{{ $measurement['description'] }}</legend>
+																				<div class="form-group">
+																					@foreach ($measurement as $input)
+																						@if ($loop->count == 1)
+																							Meritev še ni bila opravljena.
+																						@endif
+																						@if ($loop->first)
+																							@continue
+																						@elseif($input->type == 'radio')
+																							{{ $input->value }}<br />
+																						@elseif ($input->type == 'select')
+																							<li>{{ $input->value }}</li>
+																						@else
+																							{{ $input->input_name }}: {{ $input->value }}<br />
+																						@endif
+																					@endforeach
+																				</div>
+																			</fieldset>
+																		</div>
+																		@if ($loop->iteration % 2 == 0 || $loop->last)
 																	</div>
-																</div>
+																@endif
 															@endforeach
 														@else
 															Podatki o meritvah niso bili najdeni.

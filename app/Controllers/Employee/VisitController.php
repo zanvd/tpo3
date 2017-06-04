@@ -5,7 +5,6 @@ namespace App\Controllers\Employee;
 use App\Models\BloodTube;
 use App\Models\Employee;
 use App\Models\Input;
-use App\Models\Measurement;
 use App\Models\Medicine;
 use App\Models\Substitution;
 use App\Models\Visit;
@@ -130,7 +129,7 @@ class VisitController extends Controller {
 	 * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
 	 */
 	public function edit (Visit $visit) {
-		dd($this->getVisitDetailsData($visit, true));
+		// dd($this->getVisitDetailsData($visit, true)['children']);
 		// Retrieve necessary data and display visit details view.
 		return view('visitEdit', $this->getVisitDetailsData($visit, true))
 		->with([
@@ -254,11 +253,14 @@ class VisitController extends Controller {
 				// Check for select and radio button inputs.
 				if ($relation->input->type == 'radio'
 						|| $relation->input->type == 'select') {
-					// If input is not selected or empty, don't store it.
-					if ($relation->input_value == 'no'
-							|| is_null($relation->input_value)) continue;
+					// If input is not selected or empty and we are not editing,
+					// don't store it.
+					if (!$edit && ($relation->input_value == 'no'
+							|| is_null($relation->input_value))) continue;
 
-					$relation->input->value = $relation->name;
+					$relation->input->value = is_null($relation->input_value)
+						? 'no'
+						: $relation->name;
 				} elseif ($relation->input->type == 'date') {
 					$relation->input->value = is_null($relation->input_value)
 						? 'Meritev še ni bila opravljena.'
@@ -330,29 +332,31 @@ class VisitController extends Controller {
 				$input->min = 5;
 				$input->max = 100;
 				break;
-			case 'st C':
+			case 'Telesna temperatura (°C)':
 				$input->min = 33;
 				$input->max = 43;
 				break;
-			case 'kg':
+			case 'Telesna teža (kg)':
+			case 'Trenutna telesna teža (kg)':
+			case 'Telesna teža pred nosečnostjo (kg)':
 				$input->min = 4;
 				$input->max = 400;
 				break;
-			case 'g':
 			case 'Porodna teža otroka (g)':
+			case 'Trenutna telesna teža (g)':
 				$input->min = 1200;
 				$input->max = 6000;
 				break;
-			case 'cm':
 			case 'Porodna višina otroka (cm)':
+			case 'Trenutna telesna višina (cm)':
 				$input->min = 20;
 				$input->max = 70;
 				break;
-			case 'mmol/L':
+			case 'Krvni sladkor (mmol/L)':
 				$input->min = 3.0;
 				$input->max = 50;
 				break;
-			case '%':
+			case 'Oksigenacija SpO2 (%)':
 				$input->min = 3.0;
 				$input->max = 50;
 				break;

@@ -1,7 +1,7 @@
 @extends('layoutLog')
 
 @section('title')
-<title>Ustvari profil</title>
+<title>Sprememba gesla</title>
 <?php $activeView = 'spremeniGeslo' ?>
 @endsection
 
