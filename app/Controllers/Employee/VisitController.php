@@ -130,7 +130,7 @@ class VisitController extends Controller {
 	 * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
 	 */
 	public function edit (Visit $visit) {
-		dd($this->getVisitDetailsData($visit, true));
+		//dd($this->getVisitDetailsData($visit, true));
 		// Retrieve necessary data and display visit details view.
 		return view('visitEdit', $this->getVisitDetailsData($visit, true))
 		->with([
