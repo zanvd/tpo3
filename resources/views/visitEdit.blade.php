@@ -1,6 +1,8 @@
 @extends('layoutLog')
 
 @section('script')
+	<script src="{{ URL::asset('js/moment-with-locales.js') }}"></script>
+	<script src="{{ URL::asset('js/bootstrapValidator.js') }}"></script>
 	<script src="{{ URL::asset('js/bootstrap-datepicker.min.js') }}"></script>
 	<script src="{{ URL::asset('js/bootstrap-datepicker.sl.min.js') }}"></script>
 	<script src="{{ URL::asset('js/visit.js') }}"></script>
@@ -51,17 +53,20 @@
 	@endif
 
 	<div class="row">
-		<ul class="nav nav-pills">
-			<li class="active"><a data-toggle="pill" href="#visit1">Obisk 1</a></li>
-			<li><a data-toggle="pill" href="#visit2">Obisk 2</a></li>
-			<li><a data-toggle="pill" href="#visit3">Obisk 3</a></li>
+		<ul class="nav nav-tabs">
+			@foreach ($visits as $vis)
+				<li @if (!is_array($vis)) class="active" @php($visitNum = $loop->iteration) @endif>
+					<a data-toggle="tab" href="#visit{{ $loop->iteration }}">{{ $loop->iteration }}. Obisk @if (!is_array($vis)) <span class="glyphicon glyphicon-pencil"></span> @endif </a>
+				</li>
+			@endforeach
 		</ul>
 		<div class="tab-content">
-			<div id="visit1" class="tab-pane fade in active">
+			<div id="visit{{ $visitNum }}" class="tab-pane fade in active">
 				@if (!empty($visit))
-					<form id="visitEditForm" class="article-comment" method="POST" data-toggle="validator" action="/obisk/{{ $visit->visit_id }}">
+					<form id="visitEditForm" class="article-comment" method="POST" data-toggle="validator" action="/obisk/{{ $visit->visit_id }}" onsubmit="return confirmDate(this)">
 						<input type="hidden" name="_method" value="patch" />
 						{{ csrf_field() }}
+						{{-- Visit --}}
 						<div class="row">
 							<div class="col-md-12">
 								<div class="panel panel-default">
@@ -81,7 +86,7 @@
 												</div>
 												<div class="col-md-6 form-group">
 													<b>Datum izvedbe:</b>
-													<input type="text" id="actualDate" name="actualDate" class="form-control date datepicker" value="@if ($visit->done == 1) {{ \Carbon\Carbon::createFromFormat('Y-m-d', $visit->actual_date)->format('d.m.Y') }} @endif" placeholder="Vnesite datum..." />
+													<input type="text" id="actualDate" name="actualDate" class="form-control date datepicker" value="@if ($visit->done == 1) {{ \Carbon\Carbon::createFromFormat('Y-m-d', $visit->actual_date)->format('d.m.Y') }} @endif" placeholder="Vnesite datum..." required />
 												</div>
 											</div>
 											<div class="row">
@@ -102,7 +107,8 @@
 								</div>
 							</div>
 						</div>
-						{{-- Pacient --}}
+						{{-- Visit End --}}
+						{{-- Patient --}}
 						<div class="row">
 							<div class="col-md-12">
 								<div class="panel panel-default">
@@ -160,30 +166,53 @@
 														<div class="panel-body">
 															@if (!empty($patient->measurements))
 																@foreach ($patient->measurements as $measurement)
-																	<em>{{ $measurement['description'] }}:</em>
-																	<ul>
-																		@foreach ($measurement as $input)
-																			@if ($loop->first)
-																				@continue
-																			@elseif ($input->type == 'radio')
-																				<input type="radio" name="R-{{ $patient->patient_id }}-{{ $input->measurement_id }}" value="{{ $input->input_id }}" class="form-control" @if ($input->value == 'yes') checked @endif @if ($input->required) required @endif />
-																			@elseif ($input->type == 'select')
-																				@if ($loop->iteration == 2)
-																					<select data-live-search="true" class="form-control selectpicker" name="S-{{ $patient->patient_id }}-{{$input->measurement_id}}[]" multiple @if ($input->required) required @endif >
-																						@endif
-																						<option value="{{ $input->input_id }}" @if ($input->value == 'yes') selected @endif>{{ $value->name }}</option>
-																						@if ($loop->remaining == 1)
-																					</select>
+																	@if ($loop->iteration % 2 == 1)
+																		<div class="row">
+																	@endif
+																		<div class="col-md-6">
+																			<fieldset>
+																				@php($number = false)
+																				@if (count($measurement) == 2 && $measurement[0]->type == 'number')
+																					@php($number = true)
+																					<legend style="font-size: 15px; font-weight: bold;">{{ $measurement[0]->input_name }}</legend>
+																				@else
+																					<legend style="font-size: 15px; font-weight: bold;">{{ $measurement['description'] }}</legend>
 																				@endif
-																			@elseif ($input->type == 'number')
-																				{{ $input->input_name }}: <input type="number" name="{{ $patient->patient_id }}-{{ $input->input_id }}" class="form-control" value="{{ $input->value }}" min="{{ $input->min }}" max="{{ $input->max }}" @if ($input->required) required @endif />
-																			@elseif ($input->type == 'date')
-																				{{ $input->input_name }}: <input type="text" name="{{ $patient->patient_id }}-{{ $input->input_id }}" class="form-control date datepicker" value="@if ($input->value != 'Meritev še ni bila opravljena.'){{ \Carbon\Carbon::createFromFormat('Y-m-d', $input->value)->format('d.m.Y') }}@endif" @if ($input->required) required @endif />
-																			@elseif ($input->type == 'text')
-																				{{ $input->input_name }}: <input type="text" name="{{ $patient->patient_id }}-{{ $input->input_id }}" class="form-control" value="{{ $input->value }}" @if ($input->required) required @endif />
-																			@endif
-																		@endforeach
-																	</ul>
+																				<div class="form-group">
+																					@foreach ($measurement as $input)
+																						@if ($loop->first)
+																							@continue
+																						@elseif ($input->type == 'radio')
+																							@if ($loop->iteration == 2)
+																								<div class="form-control flex-parent">
+																							@endif
+																									<div class="flex-child">{{ $input->input_name }}</div>
+																									<input type="radio" name="R-{{ $patient->patient_id }}-{{ $input->measurement_id }}" value="{{ $input->input_id }}" class="flex-child" @if ($input->value != 'no') checked @endif @if ($input->required) required @endif />
+																							@if ($loop->last || $loop->remaining == 1 && end($measurement)->type != 'radio')
+																								</div>
+																							@endif
+																						@elseif ($input->type == 'select')
+																							@if ($loop->iteration == 2)
+																								<select data-live-search="true" class="form-control selectpicker" name="S-{{ $patient->patient_id }}-{{$input->measurement_id}}[]" multiple @if ($input->required) required @endif >
+																							@endif
+																									<option value="{{ $input->input_id }}" @if ($input->value != 'no') selected @endif>{{ $input->input_name }}</option>
+																							@if ($loop->remaining == 1)
+																								</select>
+																							@endif
+																						@elseif ($input->type == 'number')
+																							@if (!$number) {{ $input->input_name }}: @endif <input type="number" name="{{ $patient->patient_id }}-{{ $input->input_id }}" class="form-control" value="{{ $input->value }}" min="{{ $input->min }}" max="{{ $input->max }}" @if ($input->required) required @endif />
+																						@elseif ($input->type == 'date')
+																							{{ $input->input_name }}: <input type="text" name="{{ $patient->patient_id }}-{{ $input->input_id }}" class="form-control date datepicker" value="{{ $input->value }}" @if ($input->required) required @endif />
+																						@elseif ($input->type == 'text')
+																							{{ $input->input_name }}: <input type="text" name="{{ $patient->patient_id }}-{{ $input->input_id }}" class="form-control" value="{{ $input->value }}" @if ($input->required) required @endif />
+																						@endif
+																					@endforeach
+																				</div>
+																			</fieldset>
+																		</div>
+																	@if ($loop->iteration % 2 == 0 || $loop->last)
+																		</div>
+																	@endif
 																@endforeach
 															@else
 																Podatki o meritvah niso bili najdeni.
@@ -238,30 +267,54 @@
 																<div class="panel-body">
 																	@if (!empty($child->measurements))
 																		@foreach ($child->measurements as $measurement)
-																			<em>{{ $measurement['description'] }}:</em>
-																			<ul>
-																				@foreach ($measurement as $input)
-																					@if ($loop->first)
-																						@continue
-																					@elseif ($input->type == 'radio')
-																						<input type="radio" name="R-{{ $child->patient_id }}-{{ $input->measurement_id }}" value="{{ $input->input_id }}" class="form-control" @if ($input->value == 'yes') checked @endif @if ($input->required) required @endif />
-																					@elseif ($input->type == 'select')
-																						@if ($loop->iteration == 2)
-																							<select data-live-search="true" class="form-control selectpicker" name="S-{{ $child->patient_id }}-{{$input->measurement_id}}[]" multiple @if ($input->required) required @endif >
+																			@if ($loop->iteration % 2 == 1	)
+																				<div class="row">
+																			@endif
+																				<div class="col-md-6">
+																					<fieldset>
+																							@php($number = false)
+																							@if (count($measurement) == 2 && $measurement[0]->type == 'number')
+																								@php($number = true)
+																								<legend style="font-size: 15px; font-weight: bold;">{{ $measurement[0]->input_name }}</legend>
+																							@else
+																								<legend style="font-size: 15px; font-weight: bold;">{{ $measurement['description'] }}</legend>
+																							@endif
+																						<div class="form-group">
+																							@foreach ($measurement as $input)
+																								@if ($loop->first)
+																									@continue
+																								@elseif ($input->type == 'radio')
+																									@if ($loop->iteration == 2)
+																										<div class="form-control flex-parent">
+																									@endif
+																									<div class="flex-child">{{ $input->input_name }}</div>
+																									<input type="radio" name="R-{{ $child->patient_id }}-{{ $input->measurement_id }}" value="{{ $input->input_id }}" class="flex-child" @if ($input->value != 'no') checked @endif @if ($input->required) required @endif />
+																									@if ($loop->last || $loop->remaining == 1 && end($measurement)->type != 'radio')
+																										</div>
+																									@endif
+																								@elseif ($input->type == 'select')
+																									@if ($loop->iteration == 2)
+																										<input type="text" name="childId-{{ $loop->parent->parent->iteration }}" class="hidden" value="{{ $child->patient_id }}" />
+																										<select data-live-search="true" class="form-control selectpicker" name="S-{{ $child->patient_id }}-{{$input->measurement_id}}[]" multiple @if ($input->required) required @endif >
+																									@endif
+																											<option value="{{ $input->input_id }}" @if ($input->value != 'no') selected @endif>{{ $input->input_name }}</option>
+																									@if ($loop->remaining == 1)
+																										</select>
+																									@endif
+																								@elseif ($input->type == 'number')
+																									@if (!$number) {{ $input->input_name }}: @endif <input type="number" name="{{ $child->patient_id }}-{{ $input->input_id }}" class="form-control" value="{{ $input->value }}" min="{{ $input->min }}" max="{{ $input->max }}" @if ($input->required) required @endif />
+																								@elseif ($input->type == 'date')
+																									{{ $input->input_name }}: <input type="text" name="{{ $child->patient_id }}-{{ $input->input_id }}" class="form-control date datepicker" value="{{ $input->value }}" @if ($input->required) required @endif />
+																								@elseif ($input->type == 'text')
+																									{{ $input->input_name }}: <input type="text" name="{{ $child->patient_id }}-{{ $input->input_id }}" class="form-control" value="{{ $input->value }}" @if ($input->required) required @endif />
 																								@endif
-																								<option value="{{ $input->input_id }}" @if ($input->value == 'yes') selected @endif>{{ $value->name }}</option>
-																								@if ($loop->remaining == 1)
-																							</select>
-																						@endif
-																					@elseif ($input->type == 'number')
-																						{{ $input->input_name }}: <input type="number" name="{{ $child->patient_id }}-{{ $input->input_id }}" class="form-control" value="{{ $input->value }}" min="{{ $input->min }}" max="{{ $input->max }}" @if ($input->required) required @endif />
-																					@elseif ($input->type == 'date')
-																						{{ $input->input_name }}: <input type="text" name="{{ $child->patient_id }}-{{ $input->input_id }}" class="form-control date datepicker" value="@if ($input->value != 'Meritev še ni bila opravljena.'){{ \Carbon\Carbon::createFromFormat('Y-m-d', $input->value)->format('d.m.Y') }}@endif" @if ($input->required) required @endif />
-																					@elseif ($input->type == 'text')
-																						{{ $input->input_name }}: <input type="text" name="{{ $child->patient_id }}-{{ $input->input_id }}" class="form-control" value="{{ $input->value }}" @if ($input->required) required @endif />
-																					@endif
-																				@endforeach
-																			</ul>
+																							@endforeach
+																						</div>
+																					</fieldset>
+																				</div>
+																			@if ($loop->iteration % 2 == 0 || $loop->last)
+																				</div>
+																			@endif
 																		@endforeach
 																	@else
 																		Podatki o meritvah niso bili najdeni.
@@ -347,16 +400,26 @@
 							</div>
 						@endif
 						{{-- Blood Tubes End --}}
-						<button class="btn btn-primary" type="submit">Shrani</button>
+						<div class="pull-right col-md-3">
+							<a class="btn btn-danger pull-right col-md-offset-1" href="/obisk/{{ $visit->visit_id }}">Prekliči</a>
+							<button class="btn btn-success pull-right" type="submit">Shrani</button>
+						</div>
 					</form>
 				@else
 					Podatki o obisku niso bili najdeni.
 				@endif
 			</div>
 			@foreach ($visits as $vis)
-				@if ($visit->visit_id != $vis->visit_id)
-					<div id="visit2" class="tab-pane fade in">
-						Obisk 2
+				@if (is_array($vis))
+					<div id="visit{{ $loop->iteration }}" class="tab-pane fade">
+						@include('visitLayout', [
+							'visit'		=> $vis['visit'],
+							'workOrder'	=> $vis['workOrder'],
+							'patient'	=> $vis['patient'],
+							'children'	=> $vis['children'],
+							'visits'	=> [],
+							'noEdit'	=> true
+						])
 					</div>
 				@endif
 			@endforeach

@@ -15,7 +15,7 @@ class CreateVisitInputTable extends Migration {
 			$table->unsignedInteger('visit_id');
 			$table->unsignedInteger('input_id');
 			$table->unsignedInteger('patient_id');
-			$table->unsignedInteger('input_value')->nullable();
+			$table->text('input_value')->nullable();
 			$table->date('input_date')->nullable();
 
 			$table->foreign('visit_id')->references('visit_id')->on('Visit');

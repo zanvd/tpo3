@@ -19,6 +19,7 @@
 		<div class="jumbotron">
 			<form class="article-comment" id="resetForm" method="POST" name="resetForm" action="/ponastavi-geslo">
 				{{ csrf_field() }}
+				<input type="hidden" name="_method" value="put">
 				<h2>Ponastavi geslo</h2>
 				<p>Vnesite novo geslo.</p>
 				<div class="col-md-6">

@@ -5,14 +5,15 @@ namespace App\Controllers\Employee;
 use App\Models\BloodTube;
 use App\Models\Employee;
 use App\Models\Input;
-use App\Models\Measurement;
 use App\Models\Medicine;
 use App\Models\Substitution;
 use App\Models\Visit;
+use App\Models\Visit_Input;
 use App\Models\WorkOrder;
 use App\Controllers\Controller;
 use App\Models\WorkOrder_Patient;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class VisitController extends Controller {
 
@@ -127,12 +128,25 @@ class VisitController extends Controller {
 	 *
 	 * @param Visit $visit
 	 *
-	 * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+	 * @return \Illuminate\Http\RedirectResponse|\Illuminate\View\View
 	 */
 	public function edit (Visit $visit) {
-		dd($this->getVisitDetailsData($visit, true));
-		// Retrieve necessary data and display visit details view.
-		return view('visitEdit', $this->getVisitDetailsData($visit, true))
+		// Data for done visit can be modified only at the day of the visit
+		// or one day after.
+		if ($visit->done && $visit->actual_date != Carbon::today()->format('Y-m-d')
+				&& $visit->actual_date != Carbon::yesterday()->format('Y-m-d'))
+			return back()->withErrors([
+				'message'	=> 'Vnos je možen zgolj na dan obiska ali en dan po.'
+			]);
+		// Retrieve necessary data.
+		$data = $this->getVisitDetailsData($visit, true);
+		// Go through other visits and get their data.
+		foreach ($data['visits'] as $key => $vis) {
+			if ($vis->visit_id == $visit->visit_id) continue;
+			$data['visits'][$key] = $this->getVisitDetailsData($vis, false);
+		}
+
+		return view('visitEdit', $data)
 		->with([
 			'visit'		=> $visit,
 			'name'		=> auth()->user()->person->name . ' '
@@ -147,17 +161,163 @@ class VisitController extends Controller {
 	 *
 	 * @param Visit $visit
 	 *
-	 * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+	 * @return \Illuminate\Http\RedirectResponse|\Illuminate\View\View
 	 */
 	public function update (Visit $visit) {
-		return view('visit')
-		->with([
-			'status'	=> 'Obisk uspešno posodobljen.',
-			'name'		=> auth()->user()->person->name . ' '
-							. auth()->user()->person->surname,
-			'role'		=> auth()->user()->userRole->user_role_title,
-			'lastLogin'	=> $this->lastLogin(auth()->user())
-		]);
+		// Get input data from request.
+		$request = request()->except(['_method', '_token']);
+
+		DB::beginTransaction();
+
+		try {
+			// Set visit to done.
+			$visit->done = true;
+
+			$selects = preg_grep('/S-.*-58/', array_keys($request));
+			if (empty($selects)) {
+				for ($childId = 1; $childId <= count($selects); $childId++) {
+					for ($i = 76; $i < 83; $i++) {
+						// Update input.
+						DB::table('Visit_Input')->where(
+							[
+								'visit_id'   => $visit->visit_id,
+								'patient_id' => $request['childId-' . $childId],
+								'input_id'   => $i
+							]
+						)
+						  ->update(
+							  [
+								  'input_value' => 'no',
+								  'input_date'  => Carbon::createFromFormat('d.m.Y', $request['actualDate'])->toDateString()
+							  ]
+						  );
+					}
+				}
+			}
+
+			// Iterate over it and update visit data.
+			foreach ($request as $key => $data) {
+				if ($key == 'actualDate')
+					$visit->actual_date = Carbon::createFromFormat('d.m.Y', $data)->toDateString();
+				else if (!is_null($data)){
+					// Get patient and input id.
+					// String of type: '[R/S-]pid-mid'
+					$ids = explode('-', $key);
+
+					// Check if input is of type radio or select.
+					if (count($ids) == 3) {
+						// Iterate over inputs of this measurement and set value
+						// based on selection.
+						$multiInputs = Input::where('measurement_id', $ids[2])->get();
+						foreach ($multiInputs as $multiInput) {
+							// Check if not radio or select type.
+							if ($multiInput->type != 'radio'
+									&& $multiInput->type != 'select')
+								continue;
+
+							// Get all keys that have input id for value.
+							if ($ids[0] == 'S') {
+								// Check if input is selected.
+								$data = !empty(array_keys($request[$key],
+										$multiInput->input_id))
+									? 'yes'
+									:'no';
+							}
+							else {
+								$keys = array_keys($request, $multiInput->input_id);
+								// Check if any found key is a correct one.
+								$data = in_array($key, $keys)
+									? 'yes'
+									:'no';
+							}
+
+							// Store date.
+							$inputDate = is_null($multiInput->input_date)
+								? $visit->actual_date
+								: $multiInput->input_date;
+
+							// Update input.
+							DB::table('Visit_Input')->where([
+								'visit_id'		=> $visit->visit_id,
+								'patient_id'	=> $ids[1],
+								'input_id'		=> $multiInput->input_id
+							])
+							->update([
+								'input_value'	=> $data,
+								'input_date'	=> $inputDate
+							]);
+						}
+					} elseif ($ids[0] == 'childId') {
+						continue;
+					} else {
+						// Get input object.
+						$input = Visit_Input::where([
+							'visit_id' 		=> $visit->visit_id,
+							'patient_id'	=> $ids[0],
+							'input_id'		=> $ids[1]
+						])->first();
+
+						// Store date.
+						$inputDate = is_null($input->input_date)
+							? $visit->actual_date
+							: $input->input_date;
+
+						/*/ Update input.
+						Visit_Input::where([
+							'visit_id'		=> $visit->visit_id,
+							'patient_id'	=> $ids[1],
+							'input_id'		=> $input->input_id
+						])->update([
+							'input_value'	=> $data,
+							'input_date'	=> $inputDate
+						]);*/
+						DB::table('Visit_Input')->where([
+							'visit_id'		=> $visit->visit_id,
+							'patient_id'	=> $ids[0],
+							'input_id'		=> $input->input_id
+						])->update([
+							'input_value'	=> (string)$data,
+							'input_date'	=> $inputDate
+						]);
+					}
+				}
+			}
+
+			// Save updated visit.
+			$visit->save();
+
+		} catch (\Exception $e) {
+			error_log(print_r('Error updating visit: ' . $e, true));
+
+			DB::rollback();
+
+			return back()->withErrors([
+				'message'	=> 'Napaka pri posodabljanju obiska.'
+			])
+			->with($this->getVisitDetailsData($visit, true))
+			->with([
+				'name'		=> auth()->user()->person->name . ' '
+								 . auth()->user()->person->surname,
+				'role'		=> auth()->user()->userRole->user_role_title,
+				'lastLogin'	=> $this->lastLogin(auth()->user())
+			]);
+		}
+
+		DB::commit();
+
+		// Refresh visit object.
+		$visit = Visit::find($visit->visit_id);
+
+		// Retrieve necessary data and display visit details view.
+		return view('visit', $this->getVisitDetailsData($visit, false))
+			->with([
+				'status'	=> 'Obisk uspešno posodobljen.',
+				'visit'		=> $visit,
+				'name'		=> auth()->user()->person->name . ' '
+								. auth()->user()->person->surname,
+				'role'		=> auth()->user()->userRole->user_role_title,
+				'lastLogin'	=> $this->lastLogin(auth()->user())
+			]);
 	}
 
 	/**
@@ -254,28 +414,28 @@ class VisitController extends Controller {
 				// Check for select and radio button inputs.
 				if ($relation->input->type == 'radio'
 						|| $relation->input->type == 'select') {
-					// If input is not selected or empty, don't store it.
-					if ($relation->input_value == 'no'
-							|| is_null($relation->input_value)) continue;
+					// If input is not selected or empty and we are not editing,
+					// don't store it.
+					if (!$edit && ($relation->input_value == 'no'
+							|| is_null($relation->input_value))) continue;
 
-					$relation->input->value = $relation->name;
+					$relation->input->value = is_null($relation->input_value)
+						? 'no'
+						: $relation->input_value;
 				} elseif ($relation->input->type == 'date') {
 					$relation->input->value = is_null($relation->input_value)
-						? 'Meritev še ni bila opravljena.'
-						: \Carbon\Carbon::createFromFormat(
-								'Y-m-d',
-								$relation->input_value
-							)->format('d.m.Y');
+						? ''
+						: $relation->input_value;
 				} elseif ($relation->input->type == 'number') {
 					// Get min and max values.
 					$relation->input = $this->inputSwitch($relation->input);
 
 					$relation->input->value = is_null($relation->input_value)
-						? 'Meritev še ni bila opravljena.'
+						? ''
 						: $relation->input_value;
 				} else {
 					$relation->input->value = is_null($relation->input_value)
-						? 'Meritev še ni bila opravljena.'
+						? ''
 						: $relation->input_value;
 				}
 
@@ -330,29 +490,31 @@ class VisitController extends Controller {
 				$input->min = 5;
 				$input->max = 100;
 				break;
-			case 'st C':
+			case 'Telesna temperatura (°C)':
 				$input->min = 33;
 				$input->max = 43;
 				break;
-			case 'kg':
+			case 'Telesna teža (kg)':
+			case 'Trenutna telesna teža (kg)':
+			case 'Telesna teža pred nosečnostjo (kg)':
 				$input->min = 4;
 				$input->max = 400;
 				break;
-			case 'g':
 			case 'Porodna teža otroka (g)':
+			case 'Trenutna telesna teža (g)':
 				$input->min = 1200;
 				$input->max = 6000;
 				break;
-			case 'cm':
 			case 'Porodna višina otroka (cm)':
+			case 'Trenutna telesna višina (cm)':
 				$input->min = 20;
 				$input->max = 70;
 				break;
-			case 'mmol/L':
+			case 'Krvni sladkor (mmol/L)':
 				$input->min = 3.0;
 				$input->max = 50;
 				break;
-			case '%':
+			case 'Oksigenacija SpO2 (%)':
 				$input->min = 3.0;
 				$input->max = 50;
 				break;

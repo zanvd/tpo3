@@ -12,11 +12,11 @@ class BloodTube extends Model {
 	/**
 	 * Get number of Blood Tubes by color for given Work Order.
 	 *
-	 * @param WorkOrder_BloodTube $wob
+	 * @param $wob
 	 *
 	 * @return array
 	 */
-	public static function getBloodTubesByColor (WorkOrder_BloodTube $wob) {
+	public static function getBloodTubesByColor ($wob) {
 		$bloodTubes = [];
 		foreach ($wob as $bloodTube) {
 			$color = $bloodTube->bloodTube->color;

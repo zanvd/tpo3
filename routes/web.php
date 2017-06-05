@@ -82,11 +82,11 @@ Route::put('/pozabljeno-geslo',
 */
 Route::get('/ponastavi-geslo/{email}/{token}', [
 	'as' => 'password.reset',
-	'uses'=> $namespacePrefix['auth'].'ResetPasswordController@index'
+	'uses'=> $namespacePrefix['auth'].'ResetPasswordController@edit'
 ]);
 
-Route::post('/ponastavi-geslo',
-			$namespacePrefix['auth'].'ResetPasswordController@store');
+Route::put('/ponastavi-geslo',
+			$namespacePrefix['auth'].'ResetPasswordController@update');
 
 /*
 |--------------------------------------------------------------------------
