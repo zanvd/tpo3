@@ -1,6 +1,8 @@
 @extends('layoutLog')
 
 @section('script')
+	<script src="{{ URL::asset('js/moment-with-locales.js') }}"></script>
+	<script src="{{ URL::asset('js/bootstrapValidator.js') }}"></script>
 	<script src="{{ URL::asset('js/bootstrap-datepicker.min.js') }}"></script>
 	<script src="{{ URL::asset('js/bootstrap-datepicker.sl.min.js') }}"></script>
 	<script src="{{ URL::asset('js/visit.js') }}"></script>
@@ -61,7 +63,7 @@
 		<div class="tab-content">
 			<div id="visit{{ $visitNum }}" class="tab-pane fade in active">
 				@if (!empty($visit))
-					<form id="visitEditForm" class="article-comment" method="POST" data-toggle="validator" action="/obisk/{{ $visit->visit_id }}">
+					<form id="visitEditForm" class="article-comment" method="POST" data-toggle="validator" action="/obisk/{{ $visit->visit_id }}" onsubmit="return confirmDate(this)">
 						<input type="hidden" name="_method" value="patch" />
 						{{ csrf_field() }}
 						{{-- Visit --}}
