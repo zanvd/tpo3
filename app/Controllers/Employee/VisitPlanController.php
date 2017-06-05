@@ -2,6 +2,7 @@
 
 namespace App\Controllers\Employee;
 
+use App\Models\Plan_Material;
 use Illuminate\Support\Facades\DB;
 use App\Controllers\Controller;
 use App\Models\Visit;
@@ -148,7 +149,7 @@ class VisitPlanController extends Controller {
         //Start transaction
         DB::beginTransaction();
 
-        try{
+        try {
             //Razčlenimo seznam 
             $nizNovih = request('visitIDs');
             $nizOdstranjenih = request('removedVisitIDs');
@@ -165,34 +166,97 @@ class VisitPlanController extends Controller {
             $planId = request('planIDs');
             if ($planId == null){
                 $plan = new Plan();
-                
-                $planDate = Carbon::createFromFormat('d.m.Y',
+                $plan->plan_date = Carbon::createFromFormat('d.m.Y',
                     request('planDate')) ->format('Y-m-d');
-
-                $nurseId = auth()->user()->person->employee->employee_id;
-
-                $plan->plan_date = $planDate;
-                $plan->nurse_id = $nurseId;
-
+                $plan->nurse_id = auth()->user()->person->employee->employee_id;;
                 $plan->save();
+
                 $planId = $plan->plan_id;
             }
 
-//            dd($seznamNovih);
+            // Adding visits and materials to plan
             if ($seznamNovih[0] != "") {
                 foreach($seznamNovih as $visitID){
                     $visit = Visit::where('visit_id', $visitID)->first();
+                    $planNull = false;
+                    if ($visit->plan_id == null) {
+                        $planNull = true;
+                    }
                     $visit->plan_id = $planId;
                     $visit->save();
+                    $visit->type = $visit->workOrder->visitSubtype->visit_subtype_id;
+
+                    if ($visit->type == 4 && $planNull) {    // Aplikacija injekcij
+                        $medicine = $visit->workOrder->medicineRel;
+
+                        foreach ($medicine as $item) {
+                            if (is_null(Plan_Material::where('plan_id', $planId)->where('material_id', $item->medicine_id)->first())) {
+                                $planMaterial = new Plan_Material();
+                                $planMaterial->plan_id = $planId;
+                                $planMaterial->material_id = $item->medicine_id;
+                                $planMaterial->material_quantity = 1;
+                                $planMaterial->save();
+                            } else {
+                                $planMaterial = Plan_Material::where('plan_id', $planId)->where('material_id', $item->medicine_id)->first();
+                                $planMaterial->material_quantity = $planMaterial->material_quantity + 1;
+                                \DB::table('Plan_Material')->where('plan_id', $planId)->where('material_id', $item->medicine_id)
+                                    ->update(array('material_quantity' => $planMaterial->material_quantity));
+                            }
+                        }
+                    }
+
+                    if ($visit->type == 5 && $planNull) {    // Odvzem krvi
+                        $tubes = $visit->workOrder->bloodTubeRel;
+                        foreach ($tubes as $item) {
+                            if (is_null(Plan_Material::where('plan_id', $planId)->where('material_id', $item->blood_tube_id)->first())) {
+                                $planMaterial = new Plan_Material();
+                                $planMaterial->plan_id = $planId;
+                                $planMaterial->material_id = $item->blood_tube_id;
+                                $planMaterial->material_quantity = $item->num_of_tubes;
+                                $planMaterial->save();
+                            } else {
+                                $planMaterial = Plan_Material::where('plan_id', $planId)->where('material_id', $item->blood_tube_id)->first();
+                                $planMaterial->material_quantity = $planMaterial->material_quantity + $item->num_of_tubes;
+                                \DB::table('Plan_Material')->where('plan_id', $planId)->where('material_id', $item->blood_tube_id)
+                                    ->update(array('material_quantity' => $planMaterial->material_quantity));
+                            }
+                        }
+                    }
+
                 }
             }
 
+            // Removing visits and material from plan
             $seznamOdstranjenih = explode('-', $nizOdstranjenih);
-
             for ($i = 0; $i < count($seznamOdstranjenih) - 1; $i++){
                 $visit = Visit::where('visit_id', $seznamOdstranjenih[$i])->first();
                 $visit->plan_id = null;
                 $visit->save();
+
+                // TODO: remove material
+                $visit->type = $visit->workOrder->visitSubtype->visit_subtype_id;
+
+                if ($visit->type == 4) {    // Aplikacija injekcij
+                    $medicine = $visit->workOrder->medicineRel;
+
+                    foreach ($medicine as $item) {
+                        $planMaterial = Plan_Material::where('plan_id', $planId)->where('material_id', $item->medicine_id)->first();
+                        $planMaterial->material_quantity = $planMaterial->material_quantity - 1;
+                        \DB::table('Plan_Material')->where('plan_id', $planId)->where('material_id', $item->medicine_id)
+                            ->update(array('material_quantity' => $planMaterial->material_quantity));
+                    }
+                }
+
+                if ($visit->type == 5) {    // Odvzem krvi
+                    $tubes = $visit->workOrder->bloodTubeRel;
+                    //num_of_tubes
+                    foreach ($tubes as $item) {
+                        $planMaterial = Plan_Material::where('plan_id', $planId)->where('material_id', $item->blood_tube_id)->first();
+                        $planMaterial->material_quantity = $planMaterial->material_quantity - $item->num_of_tubes;
+                        \DB::table('Plan_Material')->where('plan_id', $planId)->where('material_id', $item->blood_tube_id)
+                            ->update(array('material_quantity' => $planMaterial->material_quantity));
+                    }
+                }
             }
 
             $plan = Plan::where('plan_id', $planId)->first();
@@ -203,9 +267,7 @@ class VisitPlanController extends Controller {
                 $plan->delete();
             }
 
-
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             // Log exception.
             error_log(print_r('Error when saving a visit-plan: ' .
                 $e, true));
@@ -235,21 +297,29 @@ class VisitPlanController extends Controller {
 
     public function showPlans() {
         $employeeId = auth()->user()->person->employee->employee_id;
-        $plans = Plan::where('nurse_id', '=', $employeeId)->where('plan_date', '>=', date("Y-m-d"))->get();
+        $plans = Plan::where('nurse_id', '=', $employeeId)->where('plan_date', '>=', date("Y-m-d"))->get()->sortby('plan_date');
 
         foreach($plans as $plan) {
             $plan->visits = Visit::where('plan_id', $plan->plan_id)->get();
 
             foreach($plan->visits as $visit) {
-                $visit->visit_type = WorkOrder::where('work_order_id', $visit->work_order_id)->first()->visitSubtype->visit_subtype_title;
+                $type = WorkOrder::where('work_order_id', $visit->work_order_id)->first()->visitSubtype;
+                $visit->visit_type = $type->visit_subtype_title;
             }
+
+            $material = Plan_Material::where('plan_id', $plan->plan_id)->get();
+            foreach ($material as $item) {
+                $item->name = $item->material->material_title;
+            }
+            $plan->material = $material;
         }
+
         return view('planList', [
-            'plans'         => $plans,
-            'name'          => auth()->user()->person->name . ' '
-                                 . auth()->user()->person->surname,
-            'role'          => auth()->user()->userRole->user_role_title,
-            'lastLogin'     => $this->lastLogin(auth()->user())
+            'plans'             => $plans,
+            'name'              => auth()->user()->person->name . ' '
+                                    . auth()->user()->person->surname,
+            'role'              => auth()->user()->userRole->user_role_title,
+            'lastLogin'         => $this->lastLogin(auth()->user())
         ]);
     }
 }

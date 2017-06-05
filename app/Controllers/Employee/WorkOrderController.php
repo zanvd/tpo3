@@ -15,6 +15,7 @@ use App\Models\Visit_Input;
 use App\Models\VisitSubtype;
 use App\Models\WorkOrder;
 use App\Models\WorkOrder_BloodTube;
+use App\Models\WorkOrder_Material;
 use App\Models\WorkOrder_Patient;
 use App\Models\WorkOrder_Medicine;
 use Illuminate\Support\Facades\Auth;
@@ -350,6 +351,7 @@ class WorkOrderController extends Controller {
 				$medicine = request('medicine');
 				for ($i = 0; $i < count($medicine); $i++) {
 					$this->setMedicine($medicine[$i], $workOrder->work_order_id);
+					$this->setMaterial($medicine[$i], 1, $workOrder->work_order_id);
 				}
 			}
 
@@ -358,21 +360,26 @@ class WorkOrderController extends Controller {
 				/** Odvzem krvi */
 				if (request('red') != null && request('red') > 0) {
 					$this->setNumOfBloodTubes(996, request('red'), $workOrder->work_order_id);
+					$this->setMaterial(996, request('red'), $workOrder->work_order_id);
+
 				} else {
                     $this->setNumOfBloodTubes(996, 0, $workOrder->work_order_id);
                 }
 				if (request('blue') != null && request('blue') > 0) {
 					$this->setNumOfBloodTubes(997, request('blue'), $workOrder->work_order_id);
+					$this->setMaterial(997, request('blue'), $workOrder->work_order_id);
 				} else {
                     $this->setNumOfBloodTubes(997, 0, $workOrder->work_order_id);
                 }
 				if (request('yellow') != null && request('yellow') > 0) {
 					$this->setNumOfBloodTubes(998, request('yellow'), $workOrder->work_order_id);
+					$this->setMaterial(998, request('yellow'), $workOrder->work_order_id);
 				} else {
                     $this->setNumOfBloodTubes(998, 0, $workOrder->work_order_id);
                 }
 				if (request('green') != null && request('green') > 0) {
 					$this->setNumOfBloodTubes(999, request('green'), $workOrder->work_order_id);
+					$this->setMaterial(999, request('green'), $workOrder->work_order_id);
 				} else {
                     $this->setNumOfBloodTubes(999, 0, $workOrder->work_order_id);
                 }
@@ -666,6 +673,14 @@ class WorkOrderController extends Controller {
 		$tube->work_order_id = $workOrderId;
 		$tube->save();
 	}
+
+    protected function setMaterial($materialId, $quantity, $workOrderId) {
+        $material = new WorkOrder_Material();
+        $material->material_id = $materialId;
+        $material->material_quantity = $quantity;
+        $material->work_order_id = $workOrderId;
+        $material->save();
+    }
 
 	protected function setMeasurements($measurementId, $visitId, $patient_id) {
         $inputs = Input::where('measurement_id', $measurementId)->get();

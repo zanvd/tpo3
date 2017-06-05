@@ -7,6 +7,8 @@ class Medicine extends Model {
 
     protected $primaryKey = 'medicine_id';
 
+    public $incrementing = false;
+
 	/**
 	 * Get all Medicines for given Work Order.
 	 *
