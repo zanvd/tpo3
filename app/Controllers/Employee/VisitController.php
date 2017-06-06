@@ -11,6 +11,7 @@ use App\Models\Visit;
 use App\Models\Visit_Input;
 use App\Models\WorkOrder;
 use App\Controllers\Controller;
+use App\Models\WorkOrder_BloodTube;
 use App\Models\WorkOrder_Patient;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -173,6 +174,7 @@ class VisitController extends Controller {
 			// Set visit to done.
 			$visit->done = true;
 
+			// Unselect inputs if none found.
 			$selects = preg_grep('/S-.*-58/', array_keys($request));
 			if (empty($selects)) {
 				for ($childId = 1; $childId <= count($selects); $childId++) {
@@ -195,7 +197,7 @@ class VisitController extends Controller {
 				}
 			}
 
-			// Iterate over it and update visit data.
+			// Iterate over request and update visit data.
 			foreach ($request as $key => $data) {
 				if ($key == 'actualDate')
 					$visit->actual_date = Carbon::createFromFormat('d.m.Y', $data)->toDateString();
@@ -204,8 +206,31 @@ class VisitController extends Controller {
 					// String of type: '[R/S-]pid-mid'
 					$ids = explode('-', $key);
 
+					// Check if it's a medicine input.
+					if ($ids[0] == 'M') {
+						DB::table('WorkOrder_Medicine')
+							->where('work_order_id', $visit->work_order_id)
+							->where('medicine_id', $ids[1])
+							->update([
+								'taken'	=> true
+							]);
+					}
+					// Check if it's a blood tube input.
+					else if ($ids[0] == 'tube') {
+						// Get current number of tubes and subtract new.
+						$tubeNum = WorkOrder_BloodTube::where([
+							['work_order_id', $visit->work_order_id],
+							['blood_tube_id', $ids[1]]
+						])->first()->num_of_tubes - $data;
+						DB::table('WorkOrder_BloodTube')
+							->where('work_order_id', $visit->work_order_id)
+							->where('blood_tube_id', $ids[1])
+							->update([
+								'num_of_tubes'	=> $tubeNum
+							]);
+					}
 					// Check if input is of type radio or select.
-					if (count($ids) == 3) {
+					else if (count($ids) == 3) {
 						// Iterate over inputs of this measurement and set value
 						// based on selection.
 						$multiInputs = Input::where('measurement_id', $ids[2])->get();
@@ -247,7 +272,7 @@ class VisitController extends Controller {
 								'input_date'	=> $inputDate
 							]);
 						}
-					} elseif ($ids[0] == 'childId') {
+					} else if ($ids[0] == 'childId') {
 						continue;
 					} else {
 						// Get input object.
@@ -262,15 +287,6 @@ class VisitController extends Controller {
 							? $visit->actual_date
 							: $input->input_date;
 
-						/*/ Update input.
-						Visit_Input::where([
-							'visit_id'		=> $visit->visit_id,
-							'patient_id'	=> $ids[1],
-							'input_id'		=> $input->input_id
-						])->update([
-							'input_value'	=> $data,
-							'input_date'	=> $inputDate
-						]);*/
 						DB::table('Visit_Input')->where([
 							'visit_id'		=> $visit->visit_id,
 							'patient_id'	=> $ids[0],

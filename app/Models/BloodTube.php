@@ -18,21 +18,25 @@ class BloodTube extends Model {
 	 */
 	public static function getBloodTubesByColor ($wob) {
 		$bloodTubes = [];
-		foreach ($wob as $bloodTube) {
-			$color = $bloodTube->bloodTube->color;
+		foreach ($wob as $relation) {
+			$color = $relation->bloodTube->color;
 
 			switch ($color) {
 				case 'Rdeča':
-					$bloodTubes['red'] = $bloodTube->num_of_tubes;
+					$bloodTubes['red'] = $relation->num_of_tubes;
+					$bloodTubes['redId'] = $relation->blood_tube_id;
 					break;
 				case 'Modra':
-					$bloodTubes['blue'] = $bloodTube->num_of_tubes;
+					$bloodTubes['blue'] = $relation->num_of_tubes;
+					$bloodTubes['blueId'] = $relation->blood_tube_id;
 					break;
 				case 'Zelena':
-					$bloodTubes['green'] = $bloodTube->num_of_tubes;
+					$bloodTubes['green'] = $relation->num_of_tubes;
+					$bloodTubes['greenId'] = $relation->blood_tube_id;
 					break;
 				case 'Rumena':
-					$bloodTubes['yellow'] = $bloodTube->num_of_tubes;
+					$bloodTubes['yellow'] = $relation->num_of_tubes;
+					$bloodTubes['yellowId'] = $relation->blood_tube_id;
 					break;
 			}
 		}

@@ -51,7 +51,7 @@ var yesterdays = false;
 function confirmDate(form) {
 	console.log(valid + " " + yesterdays);
 	if (valid && yesterdays)
-        return confirm('Datum je včerajšnji. Nadaljuj z shranjeanjem?');
+        return confirm('Datum je včerajšnji. Nadaljuj s shranjevanjem?');
     
 }
 /**

@@ -248,7 +248,7 @@
 			@if (!empty($medicines))
 				<div class="row">
 					<div class="col-md-12">
-						<div class="panel panel-default">
+						<div class="panel panel-success">
 							<div class="panel-heading">
 								<h3 class="panel-title"><span class="glyphicon glyphicon-plus"></span> Zdravila</h3>
 							</div>
@@ -260,6 +260,7 @@
 										<th>Naziv</th>
 										<th>Pakiranje</th>
 										<th>Tip</th>
+										<th>Porabljeno</th>
 									</tr>
 									</thead>
 									<tbody>
@@ -269,6 +270,7 @@
 											<td>{{ $medicine->medicine_name }}</td>
 											<td>{{ $medicine->medicine_packaging }}</td>
 											<td>{{ $medicine->medicine_type }}</td>
+											<td align="center">@if ($medicine->taken) <span class="glyphicon glyphicon-ok" style="color: green;" ></span> @else <span class="glyphicon glyphicon-remove" style="color: red" ></span> @endif</td>
 										</tr>
 									@endforeach
 									</tbody>
@@ -281,25 +283,25 @@
 			@if (!empty($bloodTubes))
 				<div class="row">
 					<div class="col-md-12">
-						<div class="panel panel-default">
+						<div class="panel panel-danger">
 							<div class="panel-heading">
 								<h3 class="panel-title"><span class="glyphicon glyphicon-tint"></span> Epruvete</h3>
 							</div>
 							<div class="panel-body">
 								<div class="row">
 									<div class="col-md-6 form-group">
-										<b>Rdečih epruvet:</b> {{ $bloodTubes['red'] }}
+										<label style="color:#ff5050">Rdečih epruvet:</label> {{ $bloodTubes['red'] }}
 									</div>
 									<div class="col-md-6 form-group">
-										<b>Modrih epruvet:</b> {{ $bloodTubes['blue'] }}
+										<label style="color:#cccc00">Rumenih epruvet:</label> {{ $bloodTubes['yellow'] }}
 									</div>
 								</div>
 								<div class="row">
 									<div class="col-md-6 form-group">
-										<b>Zelenih epruvet:</b> {{ $bloodTubes['green'] }}
+										<label style="color:#0099ff">Modrih epruvet:</label> {{ $bloodTubes['blue'] }}
 									</div>
 									<div class="col-md-6 form-group">
-										<b>Rumenih epruvet:</b> {{ $bloodTubes['yellow'] }}
+										<label style="color:#009933; margin-right: 10px;">Zelenih epruvet:</label> {{ $bloodTubes['green'] }}
 									</div>
 								</div>
 							</div>

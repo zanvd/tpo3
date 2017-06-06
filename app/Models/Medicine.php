@@ -20,6 +20,7 @@ class Medicine extends Model {
 	public static function getMedicinesForWorkOrder ($wom) {
 		$medicines = [];
 		foreach ($wom as $relation) {
+			$relation->medicine->taken = $relation->taken;
 			$medicines[] = $relation->medicine;
 		}
 		return $medicines;

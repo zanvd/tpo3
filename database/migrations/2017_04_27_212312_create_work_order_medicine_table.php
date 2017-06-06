@@ -14,6 +14,7 @@ class CreateWorkOrderMedicineTable extends Migration {
 		Schema::create('WorkOrder_Medicine', function (Blueprint $table) {
 			$table->unsignedInteger('medicine_id');
 			$table->unsignedInteger('work_order_id');
+			$table->boolean('taken')->default(false);
 
 			$table->foreign('medicine_id')->references('medicine_id')->on('Medicine');
 			$table->foreign('work_order_id')->references('work_order_id')->on('WorkOrder');

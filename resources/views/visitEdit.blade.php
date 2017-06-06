@@ -338,7 +338,7 @@
 						@if (!empty($medicines))
 							<div class="row">
 								<div class="col-md-12">
-									<div class="panel panel-default">
+									<div class="panel panel-success">
 										<div class="panel-heading">
 											<h3 class="panel-title"><span class="glyphicon glyphicon-plus"></span> Zdravila</h3>
 										</div>
@@ -350,6 +350,7 @@
 													<th>Naziv</th>
 													<th>Pakiranje</th>
 													<th>Tip</th>
+													<th>Porabljeno</th>
 												</tr>
 												</thead>
 												<tbody>
@@ -359,6 +360,7 @@
 														<td>{{ $medicine->medicine_name }}</td>
 														<td>{{ $medicine->medicine_packaging }}</td>
 														<td>{{ $medicine->medicine_type }}</td>
+														<td align="center"><input type="checkbox" name="M-{{ $medicine->medicine_id }}" @if ($medicine->taken) checked disabled @endif /></td>
 													</tr>
 												@endforeach
 												</tbody>
@@ -373,25 +375,29 @@
 						@if (!empty($bloodTubes))
 							<div class="row">
 								<div class="col-md-12">
-									<div class="panel panel-default">
+									<div class="panel panel-danger">
 										<div class="panel-heading">
 											<h3 class="panel-title"><span class="glyphicon glyphicon-tint"></span> Epruvete</h3>
 										</div>
 										<div class="panel-body">
 											<div class="row">
 												<div class="col-md-6 form-group">
-													<b>Rdečih epruvet:</b> {{ $bloodTubes['red'] }}
+													<label style="color:#ff5050">Rdečih epruvet:</label>
+													<input type="number" name="tube-{{ $bloodTubes['redId'] }}" min="0" max="{{ $bloodTubes['red'] }}" value="0" style="width: 60px;" /> (na voljo: {{ $bloodTubes['red'] }})
 												</div>
 												<div class="col-md-6 form-group">
-													<b>Modrih epruvet:</b> {{ $bloodTubes['blue'] }}
+													<label style="color:#cccc00">Rumenih epruvet:</label>
+													<input type="number" name="tube-{{ $bloodTubes['yellowId'] }}" min="0" max="{{ $bloodTubes['yellow'] }}" value="0" style="width: 60px;" /> (na voljo: {{ $bloodTubes['yellow'] }})
 												</div>
 											</div>
 											<div class="row">
 												<div class="col-md-6 form-group">
-													<b>Zelenih epruvet:</b> {{ $bloodTubes['green'] }}
+													<label style="color:#0099ff">Modrih epruvet:</label>
+													<input type="number" name="tube-{{ $bloodTubes['blueId'] }}" min="0" max="{{ $bloodTubes['blue'] }}" value="0" style="width: 60px;" /> (na voljo: {{ $bloodTubes['blue'] }})
 												</div>
 												<div class="col-md-6 form-group">
-													<b>Rumenih epruvet:</b> {{ $bloodTubes['yellow'] }}
+													<label style="color:#009933">Zelenih epruvet:</label>
+													<input type="number" name="tube-{{ $bloodTubes['greenId'] }}" min="0" max="{{ $bloodTubes['green'] }}" value="0" style="width: 60px; margin-left: 10px;" /> (na voljo: {{ $bloodTubes['green'] }})
 												</div>
 											</div>
 										</div>
