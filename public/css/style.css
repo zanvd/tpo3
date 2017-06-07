@@ -104,6 +104,10 @@ body {
   flex: 1;
 }
 
+.navbar-default {
+  border-color: transparent;
+  border-radius: 0px;}
+
 @media (max-width: 767px) {
   .navbar-default .navbar-nav .open .dropdown-menu > li > a {
     color: #8d8d8d;
