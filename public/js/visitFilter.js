@@ -27,7 +27,7 @@ $.fn.dataTable.ext.search.push(
         var maxStr = $('input[name=dateTo]').val();
         var min,max;
 
-        var date = data[1] || 0; 
+        var date = data[2] || 0; 
 
         var arrDate = date.toString().split('.');
 
@@ -60,7 +60,7 @@ $.fn.dataTable.ext.search.push(
         var maxStr = $('input[name=dateToD]').val();
         var min,max;
 
-        var date = data[2] || 0; 
+        var date = data[3] || 0; 
 
         date = date.toString().trim();
         if( (minStr.length != 0 || maxStr.length !=0) && date === "Neopravljen") {
@@ -112,6 +112,7 @@ var table = $('#datatable').DataTable({
     },
     "aoColumns": [
         { "bSortable": false },
+        { "bSortable": false },
         { "sType": "date-uk" },
         { "bSortable": false },
         { "bSortable": true },
@@ -120,8 +121,14 @@ var table = $('#datatable').DataTable({
         { "bSortable": true },
         { "bSortable": true }
     ],
+    "columnDefs": [ {
+            "searchable": false,
+            "orderable": false,
+            "targets": 0
+    } ],
+    "order": [[ 1, 'asc' ]],
     initComplete: function () {
-        this.api().columns( 7 ).every( function () {
+        this.api().columns( 8 ).every( function () {
 
             var column = this;
             var select = $('select[name="substitutions"]')
@@ -139,7 +146,7 @@ var table = $('#datatable').DataTable({
                 select.append( '<option value="'+d+'">'+d+'</option>' )
             } );
         } );
-        this.api().columns( 6 ).every( function () {
+        this.api().columns( 7 ).every( function () {
 
             var column = this;
             var select = $('select[name="performers"]')
@@ -158,7 +165,7 @@ var table = $('#datatable').DataTable({
                 select.append( '<option value="'+d+'">'+d+'</option>' )
             } );
         } );
-        this.api().columns( 5 ).every( function () {
+        this.api().columns( 6 ).every( function () {
 
             var column = this;
             var select = $('select[name="patients"]')
@@ -177,7 +184,7 @@ var table = $('#datatable').DataTable({
                 select.append( '<option value="'+d+'">'+d+'</option>' )
             } );
         } );
-        this.api().columns( 4 ).every( function () {
+        this.api().columns( 5 ).every( function () {
 
             var column = this;
             var select = $('select[name="prescribers"]')
@@ -200,7 +207,7 @@ var table = $('#datatable').DataTable({
                     }
             } );
         } );
-        this.api().columns( 3 ).every( function () {
+        this.api().columns( 4 ).every( function () {
 
             var column = this;
             var select = $('select[name="visitTypes"]')
@@ -231,6 +238,12 @@ $(document).ready(function(){
     if(employeeHasWorkOrder){
         $('select[name=prescribers]').val(employeeName).change();
     }
+
+    table.on( 'order.dt search.dt', function () {
+        table.column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
+            cell.innerHTML = i+1;
+        } );
+    } ).draw();
 
      $('input[name=dateFrom]').change(function() {
         table.draw();

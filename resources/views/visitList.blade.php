@@ -147,6 +147,7 @@
                         <table class="table table-hover" id="datatable">
                             <thead>
                                 <tr>
+                                    <th>#</th>
                                     <th>Preglej</th>
                                     <th>Načrtovan datum</th>
                                     <th>Dejanski datum</th>
@@ -161,6 +162,7 @@
                             @if( ! empty($visits) )
                                 @foreach($visits as $visit)
                                     <tr>
+                                        <td></td>
                                         <td>
                                             <a href='/obisk/{{$visit->visit_id}}'>Preglej obisk</a>
                                         </td>

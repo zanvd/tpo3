@@ -118,6 +118,7 @@
                         <table class="table table-hover" id="datatable">
                             <thead>
                                 <tr>
+                                    <th>#</th>
                                     <th>Preglej</th>
                                     <th>Izdan</th>
                                     <th>Vrsta obiska</th>
@@ -131,6 +132,7 @@
                             @if( ! empty($workOrders) )
                                 @foreach($workOrders as $workOrder)
                                     <tr>
+                                        <td></td>
                                         <td>
                                             <a href='/delovni-nalog/{{$workOrder->work_order_id}}'>Odpri delovni nalog</a>
                                         </td>
