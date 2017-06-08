@@ -77,7 +77,7 @@
 										<td style="{{ $fontFamily }} {{ $style['email-body_cell'] }}">
 											<!-- Greeting -->
 											<h1 style="{{ $style['header-1'] }}">
-												Pozdravljeni {{ $user->name }},
+												Pozdravljeni {{ $user->person->name }},
 											</h1>
 											<!-- Intro -->
 											<p style="{{ $style['paragraph'] }}">
