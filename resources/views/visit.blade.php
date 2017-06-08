@@ -28,6 +28,8 @@
 		@include('menuDoctor')
 	@elseif ($role == 'Patronažna sestra')
 		@include('menuPS')
+	@elseif ($role == 'Pacient')
+		@include('menuPatient')
 	@endif
 @endsection
 

@@ -3,9 +3,11 @@
 namespace App\Controllers\Employee;
 
 use App\Models\BloodTube;
+use App\Models\DependentPatient;
 use App\Models\Employee;
 use App\Models\Input;
 use App\Models\Medicine;
+use App\Models\Patient;
 use App\Models\Substitution;
 use App\Models\Visit;
 use App\Models\Visit_Input;
@@ -20,7 +22,7 @@ class VisitController extends Controller {
 
 	public function __construct() {
 		// Medical personal can view visits.
-		$this->middleware('role:Zdravnik|Vodja PS|Patronažna sestra')
+		$this->middleware('role:Zdravnik|Vodja PS|Patronažna sestra|Pacient')
 			 ->except(['edit', 'update']);
 		// Nurses can edit visit data.
 		$this->middleware('role:Patronažna sestra')
@@ -36,7 +38,13 @@ class VisitController extends Controller {
 
 	    $user = auth()->user();
         $userRole = $user->userRole->user_role_title;
-        $employeeId = $user->person->employee->employee_id;
+        $personId = $user->person->person_id;
+
+        if ($userRole != 'Pacient')
+            $employeeId = $user->person->employee->employee_id;
+        else {
+            $patientId = $user->person->patient->patient_id;
+        }
 
         switch($userRole) {
             case "Zdravnik":
@@ -59,6 +67,20 @@ class VisitController extends Controller {
                            return $subsId == $employeeId;
                         }
                     });
+                break;
+            case "Pacient":
+                $visits = Visit::all();
+                $patients = DependentPatient::select('dependent_patient_id')->where('guardian_patient_id', $patientId)->get();
+                $patients = Patient::select('patient_id')->wherein('patient_id', $patients)->orwhere('patient_id', $patientId)->get();
+                $visits = $visits->filter(
+                    function($visit) use ($patients) {
+                        foreach($patients as $patient) {
+                            $woPatients = $visit->workOrder->patients;
+                            if ($woPatients[0]->patient_id == $patient->patient_id)
+                                return true;
+                        }
+                    }
+                );
                 break;
             default:
                 // Something went wrong -> user not authorized for this page.

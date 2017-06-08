@@ -31,6 +31,13 @@ class WorkOrder extends Model {
 			'employee_id');
 	}
 
+	public function patients() {
+        return $this->hasMany(
+            'App\Models\WorkOrder_Patient',
+            'work_order_id',
+            'work_order_id');
+    }
+
 	/**
 	 * One Work Order belongs to one VisitSubtype.
 	 *

@@ -2,7 +2,9 @@
 <div class="row">
 	<div class="panel panel-default">
 		<div class="panel-heading main-color-bg">
-			<a class="pull-right white" href="/obisk/{{ $visit->visit_id }}/uredi" style="color: white;"><span class="glyphicon glyphicon-pencil"></span> Uredi</a>
+			@if($role != 'Pacient')
+				<a class="pull-right white" href="/obisk/{{ $visit->visit_id }}/uredi" style="color: white;"><span class="glyphicon glyphicon-pencil"></span> Uredi</a>
+			@endif
 			<h3 class="panel-title">Obisk</h3>
 		</div>
 		<div class="panel-body">
@@ -28,7 +30,7 @@
 									<div class="col-md-6 form-group">
 										<b>Datum izvedbe:</b>
 										@if ($visit->done == 1)
-											{{ \Carbon\Carbon::createFromFormat('Y-m-d', $visit->actual_date)->format('d.m.Y') }}
+											{{ 	\Carbon\Carbon::createFromFormat('Y-m-d', $visit->actual_date)->format('d.m.Y') }}
 										@else
 											Neopravljen
 										@endif
@@ -42,7 +44,9 @@
 										@endphp
 									</div>
 									<div class="col-md-6 form-group">
+										@if($role != 'Pacient')
 										<a href="/delovni-nalog/{{ $workOrder->work_order_id }}">Podrobnosti delovnega naloga</a>
+										@endif
 									</div>
 								</div>
 							@else
